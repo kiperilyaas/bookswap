@@ -22,3 +22,13 @@ Di solito si scrive in modo genarale cosa e' stato aggiunto.
 git push origin **vostro cognome** --> con questo comando salvate le modifiche sul vostro ramo, ma non sul MAIN!
 ```
 
+# to do
+- [ ] Progettazione Database
+    - [ ] Diagramma ER
+    - [ ] Progettazione Fisica
+- [ ] Crezione dei Models standard
+- [ ] Crezione dei Controller
+- [ ] Creazione della interfaccia grafica
+- [ ] Test 
+- [ ] Pubblicazione
+
