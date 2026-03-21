@@ -19,7 +19,7 @@ git add * --> aggiunge i file che avete modificato
 git commit -m " nome del snapshot " --> server per fare un snapshot per mandare dopo sul main.
 Di solito si scrive in modo genarale cosa e' stato aggiunto.
 
-git push origin //vostro cognome// --> con questo comando salvate le modifiche sul vostro ramo, ma non sul MAIN!
+git push origin ``vostro cognome`` --> con questo comando salvate le modifiche sul vostro ramo, ma non sul MAIN!
 ```
 
 # to do
