@@ -24,7 +24,7 @@ git push origin **vostro cognome** --> con questo comando salvate le modifiche s
 
 # to do
 - [ ] Progettazione Database
-    - [ ] Diagramma ER
+    - [x] Diagramma ER
     - [ ] Progettazione Fisica
 - [ ] Crezione dei Models standard
 - [ ] Crezione dei Controller
