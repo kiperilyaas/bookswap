@@ -27,8 +27,8 @@ git push origin ``vostro cognome`` --> con questo comando salvate le modifiche s
     - [x] Diagramma ER
     - [x] Progettazione Fisica
 - [ ] Crezione dei Models standard
-    - [ ] CRUD per bs_libro
-    - [ ] CRUD per bs_utenti
+    - [x] CRUD per bs_libro
+    - [x] CRUD per bs_utenti
     - [ ] CRUD per bs_ordini
 - [ ] Crezione dei Controller
 - [ ] Creazione della interfaccia grafica
