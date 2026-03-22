@@ -23,10 +23,13 @@ git push origin ``vostro cognome`` --> con questo comando salvate le modifiche s
 ```
 
 # to do
-- [ ] Progettazione Database
+- [x] Progettazione Database
     - [x] Diagramma ER
-    - [ ] Progettazione Fisica
+    - [x] Progettazione Fisica
 - [ ] Crezione dei Models standard
+    - [ ] CRUD per bs_libro
+    - [ ] CRUD per bs_utenti
+    - [ ] CRUD per bs_ordini
 - [ ] Crezione dei Controller
 - [ ] Creazione della interfaccia grafica
 - [ ] Test 
