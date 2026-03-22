@@ -4,8 +4,7 @@ progetto strutturato in 5 rami
 quello principale MAIN
 e 4 rami per ogni partecipante.
 
-# Tutte le modifiche facciamo solo su nostri rami
-# e dopo aver finito mandiamo la richesta PULL per modificare il main
+# Tutte le modifiche facciamo solo su nostri rami e dopo aver finito mandiamo la richesta PULL per modificare il main
 
 
 # commandi utili
@@ -26,10 +25,12 @@ git push origin ``vostro cognome`` --> con questo comando salvate le modifiche s
 - [x] Progettazione Database
     - [x] Diagramma ER
     - [x] Progettazione Fisica
-- [ ] Crezione dei Models standard
+- [ ] Crezione dei Models
     - [x] CRUD per bs_libro
     - [x] CRUD per bs_utenti
     - [ ] CRUD per bs_ordini
+    - [ ] CRUD per bs_incontri
+    - [ ] Login
 - [ ] Crezione dei Controller
 - [ ] Creazione della interfaccia grafica
 - [ ] Test 
