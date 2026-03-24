@@ -9,6 +9,7 @@ e 4 rami per ogni partecipante.
 
 # commandi utili
 ```
+git clone https://github.com/kiperilyaas/bookswap.git --> per scaricare la cartella in locale
 git checkout **vostro cognome** --> per cambiare il ramo di lavoro
 git pull origin main --> per scaricare in locale ultima versione aggiornata
 
@@ -33,6 +34,7 @@ git push origin ``vostro cognome`` --> con questo comando salvate le modifiche s
     - [ ] Login
 - [ ] Crezione dei Controller
 - [ ] Creazione della interfaccia grafica
+    - [ ] Creazione della idea visiva
 - [ ] Test 
 - [ ] Pubblicazione
 
