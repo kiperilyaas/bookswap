@@ -6,5 +6,6 @@ $trevisani = true;
 
 $melega = true;
 
+echo $melega . " " . $trevisani;
 
 ?>
