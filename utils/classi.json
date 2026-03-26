@@ -1,0 +1,298 @@
+[
+  {
+    "classe": "1A",
+    "indirizzo": "AFM"
+  },
+  {
+    "classe": "1B",
+    "indirizzo": "AFM"
+  },
+  {
+    "classe": "1C",
+    "indirizzo": "AFM"
+  },
+  {
+    "classe": "1D",
+    "indirizzo": "AFM"
+  },
+  {
+    "classe": "1F",
+    "indirizzo": "MECCANICA"
+  },
+  {
+    "classe": "1G",
+    "indirizzo": "MECCANICA"
+  },
+  {
+    "classe": "1H",
+    "indirizzo": "AUTOMAZIONE"
+  },
+  {
+    "classe": "1J",
+    "indirizzo": "MECCANICA"
+  },
+  {
+    "classe": "1M",
+    "indirizzo": "INFORMATICA-TELECOMUNICAZIONI"
+  },
+  {
+    "classe": "1N",
+    "indirizzo": "INFORMATICA-TELECOMUNICAZIONI"
+  },
+  {
+    "classe": "1P",
+    "indirizzo": "INFORMATICA-TELECOMUNICAZIONI"
+  },
+  {
+    "classe": "1Q",
+    "indirizzo": "LICEO-QUADRIENNALE"
+  },
+  {
+    "classe": "1S",
+    "indirizzo": "LICEO-SCIENT.-SCIENZE-APPL."
+  },
+  {
+    "classe": "1T",
+    "indirizzo": "LICEO-SCIENT.-SCIENZE-APPL."
+  },
+  {
+    "classe": "1U",
+    "indirizzo": "LICEO-SCIENT.-SCIENZE-APPL."
+  },
+  {
+    "classe": "2A",
+    "indirizzo": "AFM"
+  },
+  {
+    "classe": "2B",
+    "indirizzo": "AFM"
+  },
+  {
+    "classe": "2C",
+    "indirizzo": "AFM"
+  },
+  {
+    "classe": "2D",
+    "indirizzo": "AFM"
+  },
+  {
+    "classe": "2F",
+    "indirizzo": "MECCANICA"
+  },
+  {
+    "classe": "2G",
+    "indirizzo": "MECCANICA"
+  },
+  {
+    "classe": "2H",
+    "indirizzo": "AUTOMAZIONE"
+  },
+  {
+    "classe": "2K",
+    "indirizzo": "INFORMATICA-TELECOMUNICAZIONI"
+  },
+  {
+    "classe": "2L",
+    "indirizzo": "INFORMATICA-TELECOMUNICAZIONI"
+  },
+  {
+    "classe": "2M",
+    "indirizzo": "INFORMATICA-TELECOMUNICAZIONI"
+  },
+  {
+    "classe": "2N",
+    "indirizzo": "INFORMATICA-TELECOMUNICAZIONI"
+  },
+  {
+    "classe": "2P",
+    "indirizzo": "INFORMATICA-TELECOMUNICAZIONI"
+  },
+  {
+    "classe": "2Q",
+    "indirizzo": "LICEO-QUADRIENNALE"
+  },
+  {
+    "classe": "2S",
+    "indirizzo": "LICEO-SCIENT.-SCIENZE-APPL."
+  },
+  {
+    "classe": "2T",
+    "indirizzo": "LICEO-SCIENT.-SCIENZE-APPL."
+  },
+  {
+    "classe": "2U",
+    "indirizzo": "LICEO-SCIENT.-SCIENZE-APPL."
+  },
+  {
+    "classe": "3A",
+    "indirizzo": "AFM"
+  },
+  {
+    "classe": "3B",
+    "indirizzo": "RIM"
+  },
+  {
+    "classe": "3D",
+    "indirizzo": "RIM"
+  },
+  {
+    "classe": "3E",
+    "indirizzo": "RIM"
+  },
+  {
+    "classe": "3F",
+    "indirizzo": "MECCANICA"
+  },
+  {
+    "classe": "3G",
+    "indirizzo": "MECCANICA"
+  },
+  {
+    "classe": "3H",
+    "indirizzo": "AUTOMAZIONE"
+  },
+  {
+    "classe": "3J",
+    "indirizzo": "INFORMATICA"
+  },
+  {
+    "classe": "3K",
+    "indirizzo": "TELECOMUNICAZIONI"
+  },
+  {
+    "classe": "3M",
+    "indirizzo": "TELECOMUNICAZIONI"
+  },
+  {
+    "classe": "3N",
+    "indirizzo": "INFORMATICA"
+  },
+  {
+    "classe": "3P",
+    "indirizzo": "INFORMATICA"
+  },
+  {
+    "classe": "3S",
+    "indirizzo": "LICEO-SCIENT.-SCIENZE-APPL."
+  },
+  {
+    "classe": "3T",
+    "indirizzo": "LICEO-SCIENT.-SCIENZE-APPL."
+  },
+  {
+    "classe": "3U",
+    "indirizzo": "LICEO-SCIENT.-SCIENZE-APPL."
+  },
+  {
+    "classe": "4A",
+    "indirizzo": "AFM"
+  },
+  {
+    "classe": "4B",
+    "indirizzo": "SIA"
+  },
+  {
+    "classe": "4C",
+    "indirizzo": "SIA"
+  },
+  {
+    "classe": "4D",
+    "indirizzo": "RIM"
+  },
+  {
+    "classe": "4E",
+    "indirizzo": "RIM"
+  },
+  {
+    "classe": "4F",
+    "indirizzo": "MECCANICA"
+  },
+  {
+    "classe": "4G",
+    "indirizzo": "MECCANICA"
+  },
+  {
+    "classe": "4H",
+    "indirizzo": "AUTOMAZIONE"
+  },
+  {
+    "classe": "4M",
+    "indirizzo": "TELECOMUNICAZIONI"
+  },
+  {
+    "classe": "4N",
+    "indirizzo": "INFORMATICA"
+  },
+  {
+    "classe": "4P",
+    "indirizzo": "INFORMATICA"
+  },
+  {
+    "classe": "4R",
+    "indirizzo": "LICEO-SCIENT.-SCIENZE-APPL."
+  },
+  {
+    "classe": "4S",
+    "indirizzo": "LICEO-SCIENT.-SCIENZE-APPL."
+  },
+  {
+    "classe": "4T",
+    "indirizzo": "LICEO-SCIENT.-SCIENZE-APPL."
+  },
+  {
+    "classe": "4U",
+    "indirizzo": "LICEO-SCIENT.-SCIENZE-APPL."
+  },
+  {
+    "classe": "5A",
+    "indirizzo": "AFM"
+  },
+  {
+    "classe": "5C",
+    "indirizzo": "SIA"
+  },
+  {
+    "classe": "5D",
+    "indirizzo": "RIM"
+  },
+  {
+    "classe": "5E",
+    "indirizzo": "RIM"
+  },
+  {
+    "classe": "5F",
+    "indirizzo": "MECCANICA"
+  },
+  {
+    "classe": "5G",
+    "indirizzo": "MECCANICA"
+  },
+  {
+    "classe": "5H",
+    "indirizzo": "AUTOMAZIONE"
+  },
+  {
+    "classe": "5M",
+    "indirizzo": "TELECOMUNICAZIONI"
+  },
+  {
+    "classe": "5N",
+    "indirizzo": "INFORMATICA"
+  },
+  {
+    "classe": "5R",
+    "indirizzo": "LICEO-SCIENT.-SCIENZE-APPL."
+  },
+  {
+    "classe": "5S",
+    "indirizzo": "LICEO-SCIENT.-SCIENZE-APPL."
+  },
+  {
+    "classe": "5T",
+    "indirizzo": "LICEO-SCIENT.-SCIENZE-APPL."
+  },
+  {
+    "classe": "5U",
+    "indirizzo": "LICEO-SCIENT.-SCIENZE-APPL."
+  }
+]
