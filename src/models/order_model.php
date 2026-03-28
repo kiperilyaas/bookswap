@@ -4,7 +4,7 @@ if(!defined('APP')) die('Accesso negato');
 require_once 'config/dbconnect.php';
 
 // Sostituisci **** con il nome della page
-class BookModel // Iniziale maiuscola
+class OrderModel // Iniziale maiuscola
 {
   // Oggetto PDO
   private $pdo;
@@ -18,19 +18,15 @@ class BookModel // Iniziale maiuscola
  // Metodo DQL per estrarre una tabella
   public function selectAll(): array
   {
-    $dql = "SELECT id_book AS id_book,
-                   b.title AS title,
-                   b.isbn AS isbn,
-                   b.vol AS volume,
-                   b.author AS author,
-                   b.school_year AS school_year,
-                   b.id_class AS id_class,
-                   b.id_subject AS id_subject,
-                   b.id_publish_house AS id_publish_house,
-                   b.id_faculty AS id_faculty,
-                   b.id_order AS id_order,
-                   b.price AS price
-            FROM books b";
+    $dql = "SELECT id_order AS id_order,
+                   o.date_order AS date_order,
+                   o.state AS state,
+                   o.time_meet AS time_meet,
+                   o.place_meet AS place_meet,
+                   o.description_meet AS description_meet,
+                   o.id_customer AS id_customer,
+                   o.id_seller AS id_seller
+            FROM orders o";
     $param = [];
     //-----------------------------------
     $stm = $this->pdo->prepare($dql);
@@ -42,7 +38,7 @@ class BookModel // Iniziale maiuscola
   // Metodo DQL per estrarre una colonna
   public function selectIds(): array
   {
-    $dql = "SELECT id_book FROM books ORDER BY id_book ASC";
+    $dql = "SELECT id_order FROM orders ORDER BY id_order ASC";
     $param = [];
     //-----------------------------------
     $stm = $this->pdo->prepare($dql);
@@ -55,7 +51,7 @@ class BookModel // Iniziale maiuscola
   public function find($key, $value): bool
   {
     $dql = "SELECT 1 
-            FROM books 
+            FROM orders 
             WHERE $key = ?
             LIMIT 1";
     //-----------------------------------
@@ -68,7 +64,7 @@ class BookModel // Iniziale maiuscola
   // Metodo DML per inserire un record
   public function insertRecord(array $param): bool
   {
-    $dml = "INSERT INTO books (title, isbn, vol, author, school_year, id_class, id_subject, id_publish_house, id_faculty, id_order, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $dml = "INSERT INTO orders (state, time_meet, place_meet, description_meet, id_customer, id_seller) VALUES (?, ?, ?, ?, ?, ?)";
     //-----------------------------------
     $stm = $this->pdo->prepare($dml);
     $stm->execute($param);
@@ -79,7 +75,7 @@ class BookModel // Iniziale maiuscola
   // Metodo DML per cancellare un record
   public function deleteRecord(array $param): bool
   {
-    $dml = "DELETE FROM books WHERE id_book = ?";
+    $dml = "DELETE FROM orders WHERE id_order = ?";
     //-----------------------------------
     $stm = $this->pdo->prepare($dml);
     $stm->execute($param);
@@ -90,9 +86,9 @@ class BookModel // Iniziale maiuscola
   // Metodo DML per modificare un record
   public function updateRecord(array $param): bool
   {
-    $dml = "UPDATE books 
-              SET `title` = ?, `isbn` = ?, `vol` = ?, `author` = ?, `school_year` = ?, `id_class` = ?, `id_subject` = ?, `id_publish_house` = ?, `id_faculty` = ?, `id_order` = ?, `price` = ?
-              WHERE id_book = ?";
+    $dml = "UPDATE orders 
+              SET `state` = ?, `time_meet` = ?, `place_meet` = ?, `description_meet` = ?, `id_customer` = ?, `id_seller` = ?
+              WHERE id_order = ?";
     //-----------------------------------
     $stm = $this->pdo->prepare($dml);
     $stm->execute($param);
