@@ -68,7 +68,7 @@ class BookModel // Iniziale maiuscola
   // Metodo DML per inserire un record
   public function insertRecord(array $param): bool
   {
-    $dml = "INSERT INTO books (title, isbn, vol, author, school_year, id_class, id_subject, id_publish_house, id_faculty, id_order, price) VALUES (?, ?)";
+    $dml = "INSERT INTO books (title, isbn, vol, author, school_year, id_class, id_subject, id_publish_house, id_faculty, id_order, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     //-----------------------------------
     $stm = $this->pdo->prepare($dml);
     $stm->execute($param);

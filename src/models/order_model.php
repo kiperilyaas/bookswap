@@ -64,7 +64,7 @@ class OrderModel // Iniziale maiuscola
   // Metodo DML per inserire un record
   public function insertRecord(array $param): bool
   {
-    $dml = "INSERT INTO orders (state, time_meet, place_meet, description_meet, id_customer, id_seller) VALUES (?, ?)";
+    $dml = "INSERT INTO orders (state, time_meet, place_meet, description_meet, id_customer, id_seller) VALUES (?, ?, ?, ?, ?, ?)";
     //-----------------------------------
     $stm = $this->pdo->prepare($dml);
     $stm->execute($param);

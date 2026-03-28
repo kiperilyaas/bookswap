@@ -62,7 +62,7 @@ class UserModel // Iniziale maiuscola
   // Metodo DML per inserire un record
   public function insertRecord(array $param): bool
   {
-    $dml = "INSERT INTO users (name, surname, class, email, password) VALUES (?, ?)";
+    $dml = "INSERT INTO users (name, surname, class, email, password) VALUES (?, ?, ?, ?, ?)";
     //-----------------------------------
     $stm = $this->pdo->prepare($dml);
     $stm->execute($param);
