@@ -29,10 +29,14 @@ git push origin ``vostro cognome`` --> con questo comando salvate le modifiche s
 - [ ] Crezione dei Models
     - [x] CRUD per users
     - [x] CRUD per books
-    - [ ] CRUD per orders
+    - [x] CRUD per orders
 - [ ] Crezione dei Controller
 - [ ] Creazione della interfaccia grafica
-    - [ ] Creazione della idea visiva
+    - [x] Creazione della idea visiva
+    - [x] Schermata Home
+    - [x] Schermata Vendi
+    - [ ] Schermata Login
+    - [ ] Schermata Personali
 - [ ] Test 
 - [ ] Pubblicazione
 
