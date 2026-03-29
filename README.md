@@ -26,7 +26,6 @@ git push origin ``vostro cognome`` --> con questo comando salvate le modifiche s
 - [x] Progettazione del Database
     - [x] Diagramma ER
     - [x] Progettazione Fisica
-
 - [ ] Front-End
     - [x] Idea visiva
         - [x] Schermata Home
@@ -40,7 +39,6 @@ git push origin ``vostro cognome`` --> con questo comando salvate le modifiche s
         - [ ] Vendita
         - [ ] Info personali
         - [ ] Carello
-
 - [ ] Back-End
     - [ ] Crezione dei Models
         - [x] CRUD per users
@@ -49,7 +47,6 @@ git push origin ``vostro cognome`` --> con questo comando salvate le modifiche s
         - [ ] gestione del login
         - [ ] select Model #tutti select utili
     - [ ] Creazione dei Controller
-
 - [ ] Test 
 - [ ] Pubblicazione
 
