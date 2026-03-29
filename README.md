@@ -23,20 +23,33 @@ git push origin ``vostro cognome`` --> con questo comando salvate le modifiche s
 ```
 
 # to do
-- [x] Progettazione Database
+- [x] Progettazione del Database
     - [x] Diagramma ER
     - [x] Progettazione Fisica
-- [ ] Crezione dei Models
-    - [x] CRUD per users
-    - [x] CRUD per books
-    - [x] CRUD per orders
-- [ ] Creazione della interfaccia grafica
-    - [x] Creazione della idea visiva
-    - [x] Schermata Home
-    - [x] Schermata Vendi
-    - [x] Schermata Login
-    - [x] Schermata Personali
-- [ ] Crezione dei Controller
+
+- [ ] Front-End
+    - [x] Idea visiva
+        - [x] Schermata Home
+        - [x] Schermata Vendi
+        - [x] Schermata Login
+        - [x] Schermata Personali
+        - [ ] Schermata Carello
+    - [ ] Creazione delle pagine web
+        - [ ] Home
+        - [ ] Login
+        - [ ] Vendita
+        - [ ] Info personali
+        - [ ] Carello
+
+- [ ] Back-End
+    - [ ] Crezione dei Models
+        - [x] CRUD per users
+        - [x] CRUD per books
+        - [x] CRUD per orders
+        - [ ] gestione del login
+        - [ ] select Model #tutti select utili
+    - [ ] Creazione dei Controller
+
 - [ ] Test 
 - [ ] Pubblicazione
 

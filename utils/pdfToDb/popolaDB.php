@@ -1,4 +1,6 @@
 <?php
+// 1. CONFIGURAZIONE DEL DATABASE
+
 
 // 2. OPZIONI DI SICUREZZA PDO
 $options = [
