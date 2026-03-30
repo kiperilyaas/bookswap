@@ -47,7 +47,10 @@ git push origin ``vostro cognome`` --> con questo comando salvate le modifiche s
         - [x] gestione del login
         - [ ] select Model #tutti select utili
     - [ ] Creazione dei Controller
-        - [x] Login
+        - [ ] Login
+            - [x] Funzionamento generale
+            - [ ] Gestione dei errori
+            - [ ] Verificazione dei dati personali (solo studenti della scuola)
 - [ ] Test 
 - [ ] Pubblicazione
 
