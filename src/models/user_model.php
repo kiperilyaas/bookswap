@@ -1,7 +1,7 @@
 <?php
 if(!defined('APP')) die('Accesso negato');
 
-require_once 'config/dbconnect.php';
+require_once "config/dbconnect.php";
 
 // Sostituisci **** con il nome della page
 class UserModel // Iniziale maiuscola
@@ -48,10 +48,9 @@ class UserModel // Iniziale maiuscola
   // Metodo DQL per controllare l'esistenza di un valore di una colonna
   public function find($key, $value): bool
   {
-    $dql = "SELECT 1 
+    $dql = "SELECT * 
             FROM users 
-            WHERE $key = ?
-            LIMIT 1";
+            WHERE $key = ?";
     //-----------------------------------
     $stm = $this->pdo->prepare($dql);
     $stm->execute([$value]);
@@ -92,5 +91,16 @@ class UserModel // Iniziale maiuscola
     $stm->execute($param);
     //-----------------------------------
     return $stm->rowCount() !== 0;
+  }
+
+  //ricerca di un user per la mail
+  public function findUserByMail($param = []) {
+    $dml = "SELECT * FROM users 
+    where email = ?
+    limit 1";
+    $stm = $this->pdo->prepare($dml);
+    $stm->execute($param);
+
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 }

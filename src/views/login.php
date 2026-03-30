@@ -16,5 +16,6 @@ defined("APP") or die("ACESSO NEGATO");
         <input type="password" name="password">
         <button type="submit">Login</button>
     </form>
+    <a href="index.php?table=login&action=register">Registrati</a>
 </body>
 </html>

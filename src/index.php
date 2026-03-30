@@ -3,8 +3,21 @@ define("APP", true);
 session_start();
 
 if(isset($_GET['action'])){
-    $action = $_GET['action'] ?? "index";
-    $table = $_GET['table'] ?? "home";
+
+    if($_GET['action'] == "login"){
+        if(isset($_SESSION['id_user'])){
+            $action = "index";
+            $table = "home";
+        }
+        else{
+            $action = "login";
+            $table = "login";
+        }
+    }
+    else{
+        $action = $_GET['action'] ?? "index";
+        $table = $_GET['table'] ?? "home";
+    }
 }
 else{
     $action = "index";

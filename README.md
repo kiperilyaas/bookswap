@@ -44,9 +44,10 @@ git push origin ``vostro cognome`` --> con questo comando salvate le modifiche s
         - [x] CRUD per users
         - [x] CRUD per books
         - [x] CRUD per orders
-        - [ ] gestione del login
+        - [x] gestione del login
         - [ ] select Model #tutti select utili
     - [ ] Creazione dei Controller
+        - [x] Login
 - [ ] Test 
 - [ ] Pubblicazione
 
