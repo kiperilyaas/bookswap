@@ -80,7 +80,7 @@ class BookModel // Iniziale maiuscola
     $stm = $this->pdo->prepare($dql);
     $stm->execute($param);
     //-----------------------------------
-    return $stm->fetchAll(PDO::FETCH_COLUMN);
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
   // Metodo DQL per controllare l'esistenza di un valore di una colonna
@@ -131,4 +131,174 @@ class BookModel // Iniziale maiuscola
     //-----------------------------------
     return $stm->rowCount() !== 0;
   }
+
+  // Metodo DQL per trovare un ID
+  public function findById($param = []): array
+  {
+    $dql = "SELECT * 
+            FROM books 
+            WHERE id_book = ?";
+    //-----------------------------------
+    $stm = $this->pdo->prepare(query: $dql);
+    $stm->execute($param);
+    //-----------------------------------
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  // Metodo DQL per trovare un Titolo
+  public function findByTitle($param = []): array
+  {
+    $dql = "SELECT * 
+            FROM books 
+            WHERE title LIKE ?";
+    //-----------------------------------
+    $stm = $this->pdo->prepare($dql);
+    $stm->execute($param);
+    //-----------------------------------
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+    // Metodo DQL per trovare un ISBN
+  public function findByIsbn($param = []): array
+  {
+    $dql = "SELECT * 
+            FROM books 
+            WHERE isbn LIKE ?";
+    //-----------------------------------
+    $stm = $this->pdo->prepare($dql);
+    $stm->execute($param);
+    //-----------------------------------
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+    // Metodo DQL per trovare un Volume
+  public function findByVol($param = []): array
+  {
+    $dql = "SELECT * 
+            FROM books 
+            WHERE title = ?";
+    //-----------------------------------
+    $stm = $this->pdo->prepare($dql);
+    $stm->execute($param);
+    //-----------------------------------
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  // Metodo DQL per trovare un Autore
+  public function findByAuthor($param = []): array
+  {
+    $dql = "SELECT * 
+            FROM books 
+            WHERE author LIKE ?";
+    //-----------------------------------
+    $stm = $this->pdo->prepare($dql);
+    $stm->execute($param);
+    //-----------------------------------
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  // Metodo DQL per la ricerca in base all'Anno
+  public function findByYear($param = []): array
+  {
+    $dql = "SELECT * 
+            FROM books 
+            WHERE school_year = ?";
+    //-----------------------------------
+    $stm = $this->pdo->prepare($dql);
+    $stm->execute($param);
+    //-----------------------------------
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  // Metodo DQL per la ricerca in base alla Classe
+  public function findByClass($param = []): array
+  {
+    $dql = "SELECT * 
+            FROM books 
+            WHERE id_class = ?";
+    //-----------------------------------
+    $stm = $this->pdo->prepare($dql);
+    $stm->execute($param);
+    //-----------------------------------
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  // Metodo DQL per la ricerca in base alla Materia
+  public function findBySubject($param = []): array 
+  {
+    $dql = "SELECT * 
+            FROM books 
+            WHERE id_subject = ?";
+    //-----------------------------------
+    $stm = $this->pdo->prepare($dql);
+    $stm->execute($param);
+    //-----------------------------------
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  // Metodo DQL per la ricerca in base alla Casa Produttrice
+  public function findByPublishHouse($param = []): array 
+  {
+    $dql = "SELECT * 
+            FROM books 
+            WHERE id_publish_house LIKE ?";
+    //-----------------------------------
+    $stm = $this->pdo->prepare($dql);
+    $stm->execute($param);
+    //-----------------------------------
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  // Metodo DQL per la ricerca in base alla Facoltà
+  public function findByFaculty($param = []): array 
+  {
+    $dql = "SELECT * 
+            FROM books 
+            WHERE id_faculty LIKE ?";
+    //-----------------------------------
+    $stm = $this->pdo->prepare($dql);
+    $stm->execute($param);
+    //-----------------------------------
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  // Metodo DQL per la ricerca in base alla Casa Produttrice
+  public function findByOrder($param = []): array 
+  {
+    $dql = "SELECT * 
+            FROM books 
+            WHERE id_order LIKE ?";
+    //-----------------------------------
+    $stm = $this->pdo->prepare($dql);
+    $stm->execute($param);
+    //-----------------------------------
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  // Metodo DQL per la ricerca in base all Prezzo (Singolo)
+  public function findByPriceFirst($param = []): array   
+  {
+    $dql = "SELECT * 
+            FROM books 
+            WHERE price = ?";
+    //-----------------------------------
+    $stm = $this->pdo->prepare($dql);
+    $stm->execute($param);
+    //-----------------------------------
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  // Metodo DQL per la ricerca in base all Prezzo (Tra Minimo e Massimo Specificati)
+  public function findByPriceSecond(int $min, int $max): array   
+  {
+    $dql = "SELECT * 
+            FROM books 
+            WHERE price BETWEEN ? AND ?";
+    //-----------------------------------
+    $stm = $this->pdo->prepare($dql);
+    $stm->execute([$min, $max]);
+    //-----------------------------------
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
 }
