@@ -34,7 +34,7 @@ try {
     $pdo = new PDO($dsn, $user, $pass, $options);
 
     // 4. LETTURA DEL FILE JSON
-    $jsonFile = './libri_2025.json';
+    $jsonFile = './libriv2.json';
     if (!file_exists($jsonFile)) {
         die("Errore di sicurezza: Il file JSON non trovato.");
     }
@@ -50,8 +50,8 @@ try {
     $pdo->beginTransaction();
 
     // Query AGGIORNATA: Aggiunto il campo `price`
-    $sqlBook = "INSERT INTO books (titolo, isbn, vol, author, school_year, price, id_class, id_subject, id_publish_house, id_faculty) 
-                VALUES (:titolo, :isbn, :vol, :author, :school_year, :price, :id_class, :id_subject, :id_publish_house, :id_faculty)";
+    $sqlBook = "INSERT INTO books (title, isbn, vol, author, school_year, price, id_class, id_subject, id_publish_house, id_faculty) 
+                VALUES (:title, :isbn, :vol, :author, :school_year, :price, :id_class, :id_subject, :id_publish_house, :id_faculty)";
     
     $stmtBook = $pdo->prepare($sqlBook);
     $libriInseriti = 0;
@@ -79,7 +79,7 @@ try {
                     
                     // Inserimento del Libro con il PREZZO
                     $stmtBook->execute([
-                        ':titolo'           => $libro['titolo'],
+                        ':title'           => $libro['titolo'],
                         ':isbn'             => $libro['isbn'],
                         ':vol'              => '', 
                         ':author'           => $libro['autore'],
