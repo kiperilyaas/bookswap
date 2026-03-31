@@ -48,7 +48,7 @@ class BookModel // Iniziale maiuscola
     $stm = $this->pdo->prepare($dql);
     $stm->execute($param);
     //-----------------------------------
-    return $stm->fetchAll(PDO::FETCH_COLUMN);
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
   // Metodo DQL per controllare l'esistenza di un valore di una colonna
@@ -110,7 +110,7 @@ class BookModel // Iniziale maiuscola
     $stm = $this->pdo->prepare(query: $dql);
     $stm->execute($param);
     //-----------------------------------
-    return $stm->fetchAll(PDO::FETCH_COLUMN);
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
   // Metodo DQL per trovare un Titolo
@@ -123,7 +123,7 @@ class BookModel // Iniziale maiuscola
     $stm = $this->pdo->prepare($dql);
     $stm->execute($param);
     //-----------------------------------
-    return $stm->fetchAll(PDO::FETCH_COLUMN);
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
     // Metodo DQL per trovare un ISBN
@@ -136,7 +136,7 @@ class BookModel // Iniziale maiuscola
     $stm = $this->pdo->prepare($dql);
     $stm->execute($param);
     //-----------------------------------
-    return $stm->fetchAll(PDO::FETCH_COLUMN);
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
     // Metodo DQL per trovare un Volume
@@ -149,7 +149,7 @@ class BookModel // Iniziale maiuscola
     $stm = $this->pdo->prepare($dql);
     $stm->execute($param);
     //-----------------------------------
-    return $stm->fetchAll(PDO::FETCH_COLUMN);
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
   // Metodo DQL per trovare un Autore
@@ -162,7 +162,7 @@ class BookModel // Iniziale maiuscola
     $stm = $this->pdo->prepare($dql);
     $stm->execute($param);
     //-----------------------------------
-    return $stm->fetchAll(PDO::FETCH_COLUMN);
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
   // Metodo DQL per la ricerca in base all'Anno
@@ -175,7 +175,7 @@ class BookModel // Iniziale maiuscola
     $stm = $this->pdo->prepare($dql);
     $stm->execute($param);
     //-----------------------------------
-    return $stm->fetchAll(PDO::FETCH_COLUMN);
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
   // Metodo DQL per la ricerca in base alla Classe
@@ -188,7 +188,7 @@ class BookModel // Iniziale maiuscola
     $stm = $this->pdo->prepare($dql);
     $stm->execute($param);
     //-----------------------------------
-    return $stm->fetchAll(PDO::FETCH_COLUMN);
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
   // Metodo DQL per la ricerca in base alla Materia
@@ -201,7 +201,7 @@ class BookModel // Iniziale maiuscola
     $stm = $this->pdo->prepare($dql);
     $stm->execute($param);
     //-----------------------------------
-    return $stm->fetchAll(PDO::FETCH_COLUMN);
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
   // Metodo DQL per la ricerca in base alla Casa Produttrice
@@ -214,7 +214,7 @@ class BookModel // Iniziale maiuscola
     $stm = $this->pdo->prepare($dql);
     $stm->execute($param);
     //-----------------------------------
-    return $stm->fetchAll(PDO::FETCH_COLUMN);
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
   // Metodo DQL per la ricerca in base alla Facoltà
@@ -227,7 +227,7 @@ class BookModel // Iniziale maiuscola
     $stm = $this->pdo->prepare($dql);
     $stm->execute($param);
     //-----------------------------------
-    return $stm->fetchAll(PDO::FETCH_COLUMN);
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
   // Metodo DQL per la ricerca in base alla Casa Produttrice
@@ -240,7 +240,7 @@ class BookModel // Iniziale maiuscola
     $stm = $this->pdo->prepare($dql);
     $stm->execute($param);
     //-----------------------------------
-    return $stm->fetchAll(PDO::FETCH_COLUMN);
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
   // Metodo DQL per la ricerca in base all Prezzo (Singolo)
@@ -253,7 +253,7 @@ class BookModel // Iniziale maiuscola
     $stm = $this->pdo->prepare($dql);
     $stm->execute($param);
     //-----------------------------------
-    return $stm->fetchAll(PDO::FETCH_COLUMN);
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
   // Metodo DQL per la ricerca in base all Prezzo (Tra Minimo e Massimo Specificati)
@@ -266,7 +266,7 @@ class BookModel // Iniziale maiuscola
     $stm = $this->pdo->prepare($dql);
     $stm->execute([$min, $max]);
     //-----------------------------------
-    return $stm->fetchAll(PDO::FETCH_COLUMN);
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
 }
