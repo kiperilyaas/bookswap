@@ -27,8 +27,6 @@ class BookModel // Iniziale maiuscola
                    b.id_class AS id_class,
                    b.id_subject AS id_subject,
                    b.id_publish_house AS id_publish_house,
-                   b.id_faculty AS id_faculty,
-                   b.id_order AS id_order,
                    b.price AS price
             FROM books b";
     
@@ -100,7 +98,7 @@ class BookModel // Iniziale maiuscola
   // Metodo DML per inserire un record
   public function insertRecord(array $param): bool
   {
-    $dml = "INSERT INTO books (title, isbn, vol, author, school_year, id_class, id_subject, id_publish_house, id_faculty, id_order, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $dml = "INSERT INTO books (title, isbn, vol, author, school_year, id_class, id_subject, id_publish_house, id_faculty, price) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     //-----------------------------------
     $stm = $this->pdo->prepare($dml);
     $stm->execute($param);
@@ -123,7 +121,7 @@ class BookModel // Iniziale maiuscola
   public function updateRecord(array $param): bool
   {
     $dml = "UPDATE books 
-              SET `title` = ?, `isbn` = ?, `vol` = ?, `author` = ?, `school_year` = ?, `id_class` = ?, `id_subject` = ?, `id_publish_house` = ?, `id_faculty` = ?, `id_order` = ?, `price` = ?
+              SET `title` = ?, `isbn` = ?, `vol` = ?, `author` = ?, `school_year` = ?, `id_class` = ?, `id_subject` = ?, `id_publish_house` = ?, `id_faculty` = ?, `price` = ?
               WHERE id_book = ?";
     //-----------------------------------
     $stm = $this->pdo->prepare($dml);
@@ -255,19 +253,6 @@ class BookModel // Iniziale maiuscola
     $dql = "SELECT * 
             FROM books 
             WHERE id_faculty LIKE ?";
-    //-----------------------------------
-    $stm = $this->pdo->prepare($dql);
-    $stm->execute($param);
-    //-----------------------------------
-    return $stm->fetchAll(PDO::FETCH_ASSOC);
-  }
-
-  // Metodo DQL per la ricerca in base alla Casa Produttrice
-  public function findByOrder($param = []): array 
-  {
-    $dql = "SELECT * 
-            FROM books 
-            WHERE id_order LIKE ?";
     //-----------------------------------
     $stm = $this->pdo->prepare($dql);
     $stm->execute($param);
