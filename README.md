@@ -32,7 +32,7 @@ git push origin ``vostro cognome`` --> con questo comando salvate le modifiche s
         - [x] Schermata Vendi
         - [x] Schermata Login
         - [x] Schermata Personali
-        - [ ] Schermata Carello
+        - [x] Schermata Carello
     - [ ] Creazione delle pagine web
         - [ ] Home
         - [ ] Login
@@ -45,7 +45,7 @@ git push origin ``vostro cognome`` --> con questo comando salvate le modifiche s
         - [x] CRUD per books
         - [x] CRUD per orders
         - [x] gestione del login
-        - [ ] select Model #tutti select utili
+        - [x] select Model #tutti select utili
     - [ ] Creazione dei Controller
         - [ ] Login
             - [x] Funzionamento generale
