@@ -16,7 +16,7 @@ class BookModel // Iniziale maiuscola
   }
   
  // Metodo DQL per estrarre una tabella
-  public function selectAll(): array
+  public function selectAll($param = []): array
   {
     $dql = "SELECT id_book AS id_book,
                    b.title AS title,
@@ -31,7 +31,7 @@ class BookModel // Iniziale maiuscola
                    b.id_order AS id_order,
                    b.price AS price
             FROM books b";
-    $param = [];
+    
     //-----------------------------------
     $stm = $this->pdo->prepare($dql);
     $stm->execute($param);
