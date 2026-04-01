@@ -1,6 +1,8 @@
 <?php 
 define("APP", true);
 session_start();
+$_SESSION['error'] = [];
+
 
 if(!isset($_SESSION['error'])){
     $_SESSION['error'] = "niente";
