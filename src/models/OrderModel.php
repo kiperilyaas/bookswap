@@ -25,7 +25,8 @@ class OrderModel // Iniziale maiuscola
                    o.place_meet AS place_meet,
                    o.description_meet AS description_meet,
                    o.id_customer AS id_customer,
-                   o.id_seller AS id_seller
+                   o.id_seller AS id_seller,
+                   o.id_book AS id_book
             FROM orders o";
     $param = [];
     //-----------------------------------
@@ -64,7 +65,7 @@ class OrderModel // Iniziale maiuscola
   // Metodo DML per inserire un record
   public function insertRecord(array $param): bool
   {
-    $dml = "INSERT INTO orders (state, time_meet, place_meet, description_meet, id_customer, id_seller) VALUES (?, ?, ?, ?, ?, ?)";
+    $dml = "INSERT INTO orders (state, time_meet, place_meet, description_meet, id_customer, id_seller, id_book) VALUES (?,?, ?, ?, ?, ?, ?)";
     //-----------------------------------
     $stm = $this->pdo->prepare($dml);
     $stm->execute($param);
@@ -87,7 +88,7 @@ class OrderModel // Iniziale maiuscola
   public function updateRecord(array $param): bool
   {
     $dml = "UPDATE orders 
-              SET `state` = ?, `time_meet` = ?, `place_meet` = ?, `description_meet` = ?, `id_customer` = ?, `id_seller` = ?
+              SET `state` = ?, `time_meet` = ?, `place_meet` = ?, `description_meet` = ?, `id_customer` = ?, `id_seller` = ?, `id_book` = ?
               WHERE id_order = ?";
     //-----------------------------------
     $stm = $this->pdo->prepare($dml);
