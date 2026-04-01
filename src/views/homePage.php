@@ -323,7 +323,7 @@ defined("APP") or die("ACCESSO NEGATO");
         <nav>
             <ul>
                 <li><a href="#">vendi</a></li>
-                <li><a href="#">LOGIN</a></li>
+                <li><a href="index.php?table=login&action=login">LOGIN</a></li>
                 <li><a href="#">carrello</a></li>
             </ul>
         </nav>

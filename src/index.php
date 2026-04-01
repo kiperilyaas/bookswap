@@ -32,7 +32,7 @@ if(method_exists($controller, $action)){
     $controller->$action();
 }
 else{
-    die("METODO NON ESISTE");
+    die("METODO INESISTENTE");
 }
 
 ?>
