@@ -4,6 +4,10 @@ session_start();
 $_SESSION['error'] = [];
 
 
+if(!isset($_SESSION['error'])){
+    $_SESSION['error'] = "niente";
+}
+
 if(isset($_GET['action']) || isset($_GET['table'])){
 
     if($_GET['action'] == "login"){

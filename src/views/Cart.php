@@ -1,3 +1,7 @@
+<?php 
+defined("APP") or die("ACESSO NEGATO");
+?>
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
