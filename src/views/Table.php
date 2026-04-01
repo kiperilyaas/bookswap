@@ -2,6 +2,7 @@
 
 defined("APP") or die("ACCESSO NEGATO");
 /*
+
 if(!empty($table)){
     $keys = array_keys($table[0]); #prende tutte le chiavi della tabella
 
@@ -47,10 +48,11 @@ if(!empty($table)){
     }
     echo "</tbody></table>";
 }
-*/
+
 
 // Esempio di come stampare un "cart" (scheda libro) nel tuo loop
-/*foreach($table as $record){
+
+foreach($table as $record){
     echo "<div class='book-cart'>";
     echo "  <div class='book-info'>";
     echo "    <h3 class='book-title'>" . $record['title'] . "</h3>";
@@ -62,7 +64,7 @@ if(!empty($table)){
     echo "  </div>";
     echo "</div>";
 }
-    */
+*/
 
 // Ciclo per stampare ogni scheda libro
 foreach($table as $record){

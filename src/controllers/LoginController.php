@@ -24,7 +24,8 @@ class LoginController{
         "dropbox.com",
         "spotify.com",
         "zoom.us",
-        "nasa.gov"   
+        "nasa.gov",
+        "gmail.com"
     ];
 
     public function __construct()
@@ -33,19 +34,22 @@ class LoginController{
     }
 
     public function login(){
-        include "views/login.php";
+        include "views/Login.php";
     }
 
     public function check(){
         //email check
         $email = $_POST['email'] ?? null;
+        $domain = substr($email, strpos($email, '@') + 1);
+
         if($email != null){
-            if(!in_array($email, $this->emailVerified)){
-                $_SESSION["error"][] = "dominio di email non verificato";
+            if(!in_array($domain, $this->emailVerified)){
+                $_SESSION["error"] = "dominio di email non verificato";
                 header("location: index.php?table=error&action=errorview");
                 exit;
             }
         }
+        
         //password check
         $password = $_POST['password'] ?? null;
         $credenziali = $this->model->findUserByMail([$email]);
@@ -56,14 +60,14 @@ class LoginController{
             exit;
         }
         else{
-            $_SESSION['error'][] = "La password non e' valida";
+            $_SESSION['error'] = "La password non e' valida";
             header("location: index.php?table=error&action=errorview");
             exit;
         }
     }
 
     public function register(){
-        include "views/register.php";
+        include "views/Register.php";
     }
 
     public function insert(){
@@ -78,17 +82,25 @@ class LoginController{
         $response = file_get_contents($url);
         $classi = json_decode($response, true);
 
+        
         foreach($classi as $classe){
-            if(!in_array($class, $classe)){
-                $_SESSION['error'][] = "Classe insesitente";
-                header("location: index.php?table=error&action=error");
-                exit;
+            if($classe['classe'] == $class){
+                $isGood = true;
+                break;
             }
+            else $isGood = false;
         }
-
-        if(!in_array($email, $this->emailVerified)){
+        if(!$isGood){
+            $_SESSION['error'][] = "classe non esistente";
+            header("location: index.php?table=error&action=errorview");
+            exit;
+        }
+        
+        $domain = substr($email, strpos($email, '@') + 1);
+        if(!in_array($domain, $this->emailVerified)){
             $_SESSION['error'][] = "dominio del email non esiste";
-            header("location: index.php?table=error&action=error");
+            print_r($_SESSION['error']);
+            header("location: index.php?table=error&action=errorview");
             exit;
         }
 

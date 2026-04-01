@@ -128,7 +128,7 @@ defined("APP") or die("ACCESSO NEGATO");
         
         <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
             
-                <?php include 'table.php'; ?>
+                <?php include 'Table.php'; ?>
             
 
         </div>
