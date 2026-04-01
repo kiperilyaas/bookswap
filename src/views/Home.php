@@ -8,72 +8,154 @@ defined("APP") or die("ACCESSO NEGATO");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizzazione Libri | BookSwap</title>
+    <title>BookSwap | Compra e Vendi Libri</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Piccoli aggiustamenti per personalizzare il tema */
+        :root {
+            --amazon-blue: #007bff; /* Azzurro vivace */
+            --light-bg: #f0f2f2;    /* Grigio chiarissimo stile Amazon */
+        }
+
         body {
-            background-color: #f8f9fa;
+            background-color: var(--light-bg);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
-        main {
-            flex: 1;
+
+        /* Navbar personalizzata azzurra */
+        .navbar {
+            background-color: #ffffff !important;
+            border-bottom: 1px solid #ddd;
         }
+
         .navbar-brand {
+            color: var(--amazon-blue) !important;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        /* Search Bar stile Amazon */
+        .search-container {
+            background-color: #232f3e; /* Blu scuro per contrasto ricerca */
+            padding: 10px 0;
+        }
+
+        .btn-search {
+            background-color: var(--amazon-blue);
+            border-color: var(--amazon-blue);
+            color: white;
+        }
+
+        .btn-search:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        /* Card Libri */
+        .book-card {
+            transition: transform 0.2s;
+            border: none;
+            height: 100%;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .book-img {
+            height: 250px;
+            object-fit: contain; /* Mantiene le proporzioni della copertina */
+            padding: 15px;
+            background-color: #fff;
+        }
+
+        .price {
+            font-size: 1.25rem;
             font-weight: bold;
-            letter-spacing: 1px;
+            color: #B12704; /* Colore prezzo tipico */
+        }
+
+        footer {
+            background-color: #232f3e;
+            color: white;
         }
     </style>
 </head>
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-light shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="#">BookSwap</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item"><a class="nav-link" href="#">Vendi</a></li>
-                    <li class="nav-item"><a class="nav-link btn btn-outline-light btn-sm mx-lg-2 my-2 my-lg-0" href="index.php?table=login&action=login">LOGIN</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Carrello</a></li>
+                    <li class="nav-item mx-2"><a class="btn btn-primary btn-sm px-4" href="index.php?table=login&action=login">LOGIN</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link position-relative" href="#">
+                            Carrello
+                            <span class="badge rounded-pill bg-danger">0</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="input-group mb-3 shadow-sm">
-                    <button class="btn btn-secondary" type="button">Filtro</button>
-                    <input type="text" class="form-control" placeholder="Cerca libri, autori, generi..." aria-label="Cerca">
-                    <button class="btn btn-primary" type="button">Cerca</button>
+    <div class="search-container">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10 offset-md-1">
+                    <div class="input-group">
+                        <button class="btn btn-light dropdown-toggle" type="button">Tutti</button>
+                        <input type="text" class="form-control" placeholder="Cerca il tuo prossimo libro...">
+                        <button class="btn btn-search px-4" type="button">
+                             Cerca
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <main class="container my-4">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <div class="display-area">
-                    <?php
-                    // Assicurati che table.php generi una tabella con classe .table di Bootstrap
-                    include 'table.php';
-                    ?>
+    <main class="container my-5">
+        <h3 class="mb-4">Risultati della ricerca</h3>
+        
+        <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+            
+            <div class="col">
+                <div class="card book-card">
+                    <img src="https://via.placeholder.com/200x280?text=Copertina+Libro" class="card-img-top book-img" alt="Titolo Libro">
+                    <div class="card-body">
+                        <h5 class="card-title text-truncate">Il Signore degli Anelli</h5>
+                        <p class="card-text text-muted small">J.R.R. Tolkien</p>
+                        <p class="card-text small text-secondary" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                            Un'epica avventura nella Terra di Mezzo per distruggere l'Unico Anello.
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="price">€19,90</span>
+                            <button class="btn btn-outline-primary btn-sm">Aggiungi</button>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <?php 
+                include 'table.php'; 
+            ?>
+
         </div>
     </main>
 
-    <footer class="bg-dark text-white text-center py-3 mt-auto">
+    <footer class="text-center py-4 mt-auto">
         <div class="container">
-            <small>© Kiper Illia, Melega Leonardo, Trevisani Martina, Bertolani Leo</small>
+            <p class="mb-1">© 2026 BookSwap Team</p>
+            <small class="text-muted">Kiper Illia, Melega Leonardo, Trevisani Martina, Bertolani Leo</small>
         </div>
     </footer>
 
