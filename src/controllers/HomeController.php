@@ -15,7 +15,7 @@ class HomeController{
 
     public function index(){
         $table = $this->model->selectAll();
-        include "views/homePage.php";
+        include "views/Home.php";
     }
 }
 
