@@ -128,26 +128,8 @@ defined("APP") or die("ACCESSO NEGATO");
         
         <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
             
-            <div class="col">
-                <div class="card book-card">
-                    <img src="https://via.placeholder.com/200x280?text=Copertina+Libro" class="card-img-top book-img" alt="Titolo Libro">
-                    <div class="card-body">
-                        <h5 class="card-title text-truncate">Il Signore degli Anelli</h5>
-                        <p class="card-text text-muted small">J.R.R. Tolkien</p>
-                        <p class="card-text small text-secondary" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                            Un'epica avventura nella Terra di Mezzo per distruggere l'Unico Anello.
-                        </p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="price">€19,90</span>
-                            <button class="btn btn-outline-primary btn-sm">Aggiungi</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <?php 
-                include 'table.php'; 
-            ?>
+                <?php include 'table.php'; ?>
+            
 
         </div>
     </main>
