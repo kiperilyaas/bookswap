@@ -56,7 +56,11 @@ https://github.com/kiperilyaas/bookswap
         - [ ] Login
             - [x] Funzionamento generale
             - [ ] Gestione dei errori
-            - [ ] Verificazione dei dati personali (solo studenti della scuola)
+            - [ ] Verifica dei dati personali (solo studenti della scuola)
+        - [ ] User
+            - [ ] creare un ordine di vendita
+            - [ ] aggiungere/eliminare i libri dal carrello
+            - [ ] acquistare un libro
 - [ ] Test 
 - [ ] Pubblicazione
 
