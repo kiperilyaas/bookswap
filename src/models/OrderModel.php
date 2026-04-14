@@ -18,7 +18,7 @@ class OrderModel
     // Ho aggiunto una JOIN per permetterti di recuperare anche il titolo del libro associato all'annuncio
     $dql = "SELECT o.id_order AS id_order,
                    o.date_order AS date_order,
-                   o.state AS state, -- ho usato 'status' come definito nel nuovo DB
+                   o.status AS state, -- ho usato 'status' come definito nel nuovo DB
                    o.time_meet AS time_meet,
                    o.place_meet AS place_meet,
                    o.description_meet AS description_meet,
