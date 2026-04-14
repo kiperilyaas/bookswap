@@ -37,6 +37,14 @@ class OrderModel
     return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  public function selectListings($param = []){
+    $dql = "SELECT * from listings";
+    $stm = $this->pdo->prepare($dql);
+    $stm->execute();
+
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
   // Metodo DQL per estrarre una colonna
   public function selectIds(): array
   {
