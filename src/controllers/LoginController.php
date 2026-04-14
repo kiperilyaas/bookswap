@@ -1,6 +1,6 @@
 <?php 
 defined("APP") or die("ACCESSO NEGATO");
-require_once("models/user_model.php");
+require_once("models/UserModel.php");
 
 class LoginController{
     private $model;
@@ -61,7 +61,7 @@ class LoginController{
         }
         else{
             $_SESSION['error'] = "La password non e' valida";
-            header("location: index.php?table=error&action=errorview");
+            header("location: index.php?table=error&action=error");
             exit;
         }
     }
@@ -92,7 +92,7 @@ class LoginController{
         }
         if(!$isGood){
             $_SESSION['error'][] = "classe non esistente";
-            header("location: index.php?table=error&action=errorview");
+            header("location: index.php?table=error&action=errorClasse");
             exit;
         }
         
@@ -100,7 +100,7 @@ class LoginController{
         if(!in_array($domain, $this->emailVerified)){
             $_SESSION['error'][] = "dominio del email non esiste";
             print_r($_SESSION['error']);
-            header("location: index.php?table=error&action=errorview");
+            header("location: index.php?table=error&action=errorDominio");
             exit;
         }
 
