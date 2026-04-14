@@ -1,5 +1,5 @@
 <?php 
-defined("APP") or die("ACCESSO NEGATO");
+defined("APP") or die("ACESSO NEGATO");
 ?>
 
 <!DOCTYPE html>
@@ -182,6 +182,7 @@ defined("APP") or die("ACCESSO NEGATO");
     </style>
 </head>
 <body>
+<<<<<<< HEAD:src/views/homePage.php
 
     <header>
         <div class="logo">BookSwap</div>
@@ -214,5 +215,10 @@ defined("APP") or die("ACCESSO NEGATO");
         © Kiper Illia, Melega Leonardo, Trevisani Martina, Bertolani Leo
     </footer>
 
+=======
+    <?php 
+    print_r($errors)
+    ?>
+>>>>>>> 212b98673b1fee717b98c0af78581f66a4ceddca:src/views/Error.php
 </body>
 </html>

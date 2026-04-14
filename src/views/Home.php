@@ -1,0 +1,257 @@
+<?php
+defined("APP") or die("ACCESSO NEGATO");
+?>
+
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookSwap | Compra e Vendi Libri</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --amazon-orange: #ff9900;
+            --amazon-dark: #131921;
+            --amazon-light: #232f3e;
+            --light-bg: #eaeded;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            font-family: 'Amazon Ember', Arial, sans-serif;
+        }
+
+        /* Navbar stile Amazon */
+        .navbar {
+            background-color: var(--amazon-dark) !important;
+            padding: 0.5rem 0;
+        }
+
+        .navbar-brand {
+            color: white !important;
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-brand:hover {
+            color: var(--amazon-orange) !important;
+        }
+
+        .nav-link {
+            color: white !important;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem !important;
+        }
+
+        .nav-link:hover {
+            color: var(--amazon-orange) !important;
+        }
+
+        .btn-login {
+            background-color: var(--amazon-orange);
+            border: none;
+            color: var(--amazon-dark);
+            font-weight: 600;
+            padding: 0.4rem 1.5rem;
+        }
+
+        .btn-login:hover {
+            background-color: #ec8b00;
+            color: var(--amazon-dark);
+        }
+
+        /* Search Bar stile Amazon */
+        .search-container {
+            background-color: var(--amazon-light);
+            padding: 15px 0;
+        }
+
+        .search-container .input-group {
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+
+        .search-container input {
+            border: none;
+            padding: 0.7rem;
+        }
+
+        .search-container input:focus {
+            box-shadow: none;
+            border: 2px solid var(--amazon-orange);
+        }
+
+        .btn-search {
+            background-color: var(--amazon-orange);
+            border: none;
+            color: var(--amazon-dark);
+            font-weight: 600;
+            padding: 0 1.5rem;
+        }
+
+        .btn-search:hover {
+            background-color: #ec8b00;
+        }
+
+        .dropdown-toggle {
+            background-color: #f3f3f3;
+            border: none;
+            border-radius: 4px 0 0 4px;
+        }
+
+        /* Card Libri stile Amazon */
+        .book-card {
+            transition: all 0.2s ease;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .book-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-color: #bbb;
+        }
+
+        .book-img {
+            height: 280px;
+            object-fit: contain;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #0066c0;
+            line-height: 1.3;
+            min-height: 2.6rem;
+        }
+
+        .card-title:hover {
+            color: #c45500;
+            text-decoration: underline;
+        }
+
+        .price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #B12704;
+        }
+
+        .btn-warning {
+            background-color: var(--amazon-orange);
+            border: none;
+            color: var(--amazon-dark);
+            font-weight: 600;
+            border-radius: 20px;
+            padding: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-warning:hover {
+            background-color: #ec8b00;
+            color: var(--amazon-dark);
+        }
+
+        .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+        }
+
+        footer {
+            background-color: var(--amazon-dark);
+            color: white;
+            margin-top: auto;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--amazon-dark);
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand ms-3" href="#">📚 BookSwap</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center me-3">
+                    <li class="nav-item"><a class="nav-link" href="#">Vendi i tuoi libri</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Ordini</a></li>
+                    <li class="nav-item mx-2">
+                        <a class="btn btn-login" href="index.php?table=login&action=login">Accedi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link position-relative" href="#">
+                            🛒 Carrello
+                            <span class="badge rounded-pill bg-danger">0</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="search-container">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 offset-lg-1">
+                    <div class="input-group">
+                        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            Tutte le categorie
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Tutti i libri</a></li>
+                            <li><a class="dropdown-item" href="#">Narrativa</a></li>
+                            <li><a class="dropdown-item" href="#">Saggistica</a></li>
+                            <li><a class="dropdown-item" href="#">Scolastica</a></li>
+                        </ul>
+                        <input type="text" class="form-control" placeholder="Cerca libri per titolo, autore o ISBN...">
+                        <button class="btn btn-search" type="button">
+                            🔍 Cerca
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="container my-5">
+        <h2 class="section-title">Libri disponibili</h2>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
+
+                <?php include 'Table.php'; ?>
+
+
+        </div>
+    </main>
+
+    <footer class="text-center py-4 mt-auto">
+        <div class="container">
+            <p class="mb-1">© 2026 BookSwap Team</p>
+            <small class="text-muted">Kiper Illia, Melega Leonardo, Trevisani Martina, Bertolani Leo</small>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -1,38 +1,44 @@
 # bookswap
 
-progetto strutturato in 5 rami
-quello principale MAIN
-e 4 rami per ogni partecipante.
-
 # Tutte le modifiche facciamo solo su nostri rami e dopo aver finito mandiamo la richesta PULL per modificare il main
 
+# commandi da seguire
 
-# commandi utili
-```
-git clone https://github.com/kiperilyaas/bookswap.git --> per scaricare la cartella in locale
-git checkout **vostro cognome** --> per cambiare il ramo di lavoro
-git pull origin main --> per scaricare in locale ultima versione aggiornata
+#### se non hai ancora il git
+0. nella powershell di windows metti il commando --> winget install -e --id Git.Git
 
-git add **nomefile** oppure
-git add * --> aggiunge i file che avete modificato
+#### per scaricare la cartella
+0.1  git clone https://github.com/kiperilyaas/bookswap.git
+0.2  cd bookswap
 
-git commit -m " nome del snapshot " --> server per fare un snapshot per mandare dopo sul main.
-Di solito si scrive in modo genarale cosa e' stato aggiunto.
+#### se hai gia la cartella
+1. git checkout il-tuo-cognome --> per spostarti sul tuo ramo
+2. git pull origin main --> per sinconizarti con il codice funzionante(main)
 
-git push origin ``vostro cognome`` --> con questo comando salvate le modifiche sul vostro ramo, ma non sul MAIN!
-```
+#### FAI LE MODIFICHE DEI FILE
+
+3. git status --> per vedere cosa hai modificato
+4. git add * --> per aggiungere nel git tutti i file che hai modificato
+5. git commit -m "scrivi qua il commento che ritieni giusto, che riasume quello che hai fatto"
+6. git push origin il-tuo-cognome
+
+#### APRI IL BROWSER CON QUESTO LINK
+https://github.com/kiperilyaas/bookswap
+
+#### nella sezione dei branch sceglio il tuo cognome e dopo trova il buttone `CONTRIBUTE` e fai una pool richiesta
+
 
 # to do
-- [x] Progettazione del Database
+1. [x] Progettazione del Database
     - [x] Diagramma ER
     - [x] Progettazione Fisica
-- [ ] Front-End
+2. [ ] Front-End
     - [x] Idea visiva
         - [x] Schermata Home
         - [x] Schermata Vendi
         - [x] Schermata Login
         - [x] Schermata Personali
-        - [ ] Schermata Carello
+        - [x] Schermata Carello
     - [ ] Creazione delle pagine web
         - [ ] Home
         - [ ] Login
@@ -45,12 +51,16 @@ git push origin ``vostro cognome`` --> con questo comando salvate le modifiche s
         - [x] CRUD per books
         - [x] CRUD per orders
         - [x] gestione del login
-        - [ ] select Model #tutti select utili
+        - [x] select Model #tutti select utili
     - [ ] Creazione dei Controller
         - [ ] Login
             - [x] Funzionamento generale
             - [ ] Gestione dei errori
-            - [ ] Verificazione dei dati personali (solo studenti della scuola)
+            - [ ] Verifica dei dati personali (solo studenti della scuola)
+        - [ ] User
+            - [ ] creare un ordine di vendita
+            - [ ] aggiungere/eliminare i libri dal carrello
+            - [ ] acquistare un libro
 - [ ] Test 
 - [ ] Pubblicazione
 

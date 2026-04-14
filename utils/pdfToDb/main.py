@@ -161,6 +161,8 @@ DATA_Y_MIN = 120   # px: ignora tutto sopra (intestazioni)
 COL_MATERIA  = (0,   167)
 COL_AUTORE   = (223, 395)
 COL_TITOLO   = (395, 601)
+COL_VOL      = (597, 617)
+COL_TIPO     = (617, 637)
 COL_EDITORE  = (640, 722)
 COL_PREZZO   = (695, 730)
 
@@ -236,6 +238,7 @@ def extract_books_from_pdf(pdf_path):
         materia = _col(row['words'], *COL_MATERIA)
         autore  = _col(row['words'], *COL_AUTORE)
         titolo  = _col(row['words'], *COL_TITOLO)
+        vol     = _col(row['words'], *COL_VOL)
         editore = _col(row['words'], *COL_EDITORE)
 
         # ── Righe di CONTINUAZIONE (entro ADJ_MAX_DY) ────────────────────
@@ -278,6 +281,7 @@ def extract_books_from_pdf(pdf_path):
                 "school_year": school_year,
                 "editore":     editore.strip()[:255],
                 "materia":     materia.strip()[:255],
+                "vol":         vol.strip(),
                 "prezzo":      prezzo,
             })
 
@@ -336,11 +340,11 @@ def get_or_create(cursor, table, id_col, where_col, where_val, extra=None):
 def upsert_book(cursor, book, id_class, id_subject, id_publish_house, id_order):
     cursor.execute("""
         INSERT IGNORE INTO books
-            (titolo, isbn, author, school_year,
+            (titolo, isbn, vol, author, school_year,
              id_class, id_subject, id_publish_house, id_order)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
     """, (
-        book["titolo"], book["isbn"], book["author"], book["school_year"],
+        book["titolo"], book["isbn"], book["vol"], book["author"], book["school_year"],
         id_class, id_subject, id_publish_house, id_order,
     ))
 
@@ -415,7 +419,8 @@ def main(dry_run=False, json_out=None):
 
         libri_json = [
             {"isbn": b["isbn"], "titolo": b["titolo"], "autore": b["author"],
-             "materia": b["materia"], "editore": b["editore"], "prezzo": b["prezzo"]}
+             "materia": b["materia"], "vol": b["vol"],
+             "editore": b["editore"], "prezzo": b["prezzo"]}
             for b in books
         ]
 
