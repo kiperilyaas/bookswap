@@ -72,7 +72,7 @@ class OrderModel
   {
     // Aggiunto final_price e id_listing (al posto di id_book)
     // L'ordine dei parametri deve essere: state, time_meet, place_meet, description_meet, id_customer, id_seller, id_listing, final_price
-    $dml = "INSERT INTO orders (id_order, id_listing, id_customer, id_seller, final_price, date_order, state, time_meet, place_meet, description_meet, created_at) 
+    $dml = "INSERT INTO orders (id_order, id_listing, id_customer, id_seller, final_price, date_order, status, time_meet, place_meet, description_meet, created_at) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     $stm = $this->pdo->prepare($dml);
