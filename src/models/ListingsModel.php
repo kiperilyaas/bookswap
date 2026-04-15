@@ -27,6 +27,14 @@ class ListingsModel{
 
         return $stm->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function selectAllBooks($param = []){
+        $dql = "SELECT * from books";
+        $stm = $this->pdo->prepare($dql);
+        $stm->execute($param);
+
+        return $stm->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 
 ?>

@@ -11,7 +11,12 @@ class ListingsController{
     }
 
     public function createListings(){
+        $books = $this->model->selectAllBooks();
         include "views/ListingForm.php";
+    }
+
+    public function getBooks(){
+        
     }
 }
 
