@@ -193,11 +193,28 @@ defined("APP") or die("ACCESSO NEGATO");
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center me-3">
-                    <li class="nav-item"><a class="nav-link" href="#">Vendi i tuoi libri</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Ordini</a></li>
-                    <li class="nav-item mx-2">
-                        <a class="btn btn-login" href="index.php?table=login&action=login">Accedi</a>
+                    <li class="nav-item">
+                        <?php if(isset($_SESSION['id_user'])): ?>
+                            <a class="nav-link" href="index.php?table=Listings&action=createListings">Crea Annuncio</a>
+                        <?php else: ?>
+                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                Crea Annuncio
+                            </a>
+                        <?php endif; ?>
                     </li>
+                    <li class="nav-item"><a class="nav-link" href="#">Ordini</a></li>
+                    <?php
+                            if(!isset($_SESSION['id_user'])){
+                                echo '<li class="nav-item mx-2">';
+                                echo '<a class="btn btn-login" href="index.php?table=login&action=login">Accedi</a>';
+                                echo "</li>";
+                            }
+                            else{
+                                echo '<li class="nav-item mx-2">';
+                                echo '<a class="btn btn-login" href="index.php?table=login&action=logout">Logout</a>';
+                                echo "</li>";
+                            }
+                        ?>
                     <li class="nav-item">
                         <a class="nav-link position-relative" href="#">
                             🛒 Carrello
@@ -243,6 +260,24 @@ defined("APP") or die("ACCESSO NEGATO");
 
         </div>
     </main>
+
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Accesso richiesto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Per pubblicare un annuncio su <strong>BookSwap</strong> e vendere i tuoi libri, devi prima autenticarti.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                <a href="index.php?table=login&action=login" class="btn btn-warning">Accedi ora</a>
+            </div>
+            </div>
+        </div>
+    </div>
 
     <footer class="text-center py-4 mt-auto">
         <div class="container">

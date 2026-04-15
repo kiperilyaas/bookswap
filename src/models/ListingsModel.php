@@ -1,7 +1,11 @@
 <?php 
 defined("APP") or die("ACESSO NEGATO");
 
+<<<<<<< HEAD
 require_once("config/dbconnect.php");
+=======
+require_once 'config/dbconnect.php';
+>>>>>>> 957e3da1af34a92676a50dd23f9ce9b5e4fe6c13
 
 class ListingsModel{
     private $pdo;

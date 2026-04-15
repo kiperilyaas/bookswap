@@ -8,30 +8,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Nome Azienda</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
+        :root {
+            --amazon-orange: #ff9900;
+            --amazon-dark: #131921;
+            --amazon-light: #232f3e;
+            --light-bg: #eaeded;
+        }
+
         body {
-            background-color: #f0f5fa;
-            height: 100vh;
+            background-color: var(--light-bg);
             display: flex;
             flex-direction: column;
+            min-height: 100vh;
+            font-family: 'Amazon Ember', Arial, sans-serif;
             margin: 0;
         }
 
-        /* Stile Header (Immagine 2) */
+        /* Navbar stile Amazon */
         .navbar-custom {
-            background-color: #004085;
-            padding: 1rem 2rem;
+            background-color: var(--amazon-dark);
+            padding: 0.7rem 2rem;
         }
 
         .navbar-brand {
             color: white !important;
-            font-weight: bold;
-            text-transform: uppercase;
-            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.4rem;
+            letter-spacing: -0.5px;
         }
 
-        /* Container centrale */
+        .navbar-brand:hover {
+            color: var(--amazon-orange) !important;
+        }
+
+        /* Container centrato */
         .login-container {
             flex-grow: 1;
             display: flex;
@@ -40,80 +54,77 @@
             padding: 20px;
         }
 
+        /* Card stile Amazon */
         .login-card {
             background: white;
             padding: 2.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 450px;
-            border: 1px solid #dee2e6;
+            max-width: 420px;
+            border: 1px solid #ddd;
         }
 
         .login-title {
-            color: #004085;
-            font-weight: bold;
+            color: var(--amazon-dark);
+            font-weight: 700;
             margin-bottom: 2rem;
             text-align: center;
         }
 
-        /* Input Arrotondati (Immagine 1) */
         .form-control {
-            border-radius: 25px; 
-            padding: 0.75rem 1.5rem;
-            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 0.7rem;
+            border: 1px solid #ccc;
         }
 
-        /* Bottoni (Immagine 2) */
+        .form-control:focus {
+            box-shadow: none;
+            border: 2px solid var(--amazon-orange);
+        }
+
+        /* Bottone stile Amazon */
         .btn-login {
-            background-color: #007bff;
-            color: white;
-            border-radius: 4px;
-            padding: 0.6rem 2rem;
+            background-color: var(--amazon-orange);
             border: none;
-            font-weight: 500;
+            color: var(--amazon-dark);
+            font-weight: 600;
+            border-radius: 20px;
+            padding: 0.6rem;
         }
 
         .btn-login:hover {
-            background-color: #0056b3;
-            color: white;
-        }
-
-        .btn-annulla {
-            background-color: transparent;
-            color: #6c757d;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            padding: 0.6rem 2rem;
-            text-decoration: none;
-            text-align: center;
+            background-color: #ec8b00;
+            color: var(--amazon-dark);
         }
 
         .register-link {
             display: block;
             text-align: center;
             margin-top: 1.5rem;
-            color: #007bff;
+            color: #0066c0;
             text-decoration: none;
             font-size: 0.9rem;
         }
 
-        /* Footer */
+        .register-link:hover {
+            color: #c45500;
+            text-decoration: underline;
+        }
+
         footer {
-            background: white;
-            padding: 1rem;
-            text-align: center;
-            font-size: 0.85rem;
-            color: #6c757d;
-            border-top: 1px solid #dee2e6;
+            background-color: var(--amazon-dark);
+            color: white;
+            margin-top: auto;
         }
     </style>
 </head>
+
 <body>
 
     <nav class="navbar navbar-custom">
         <div class="container-fluid">
-            <a href="#" class="navbar-brand">NOME AZIENDA</a>
+            <a href="#" class="navbar-brand">📚 BookSwap</a>
         </div>
     </nav>
 
@@ -123,14 +134,15 @@
             
             <form method="post" action="index.php?action=check&table=Login">
                 <div class="mb-3">
-                    <input type="email" name="email" class="form-control" placeholder="inserisci email" required>
-                </div>
-                <div class="mb-4">
-                    <input type="password" name="password" class="form-control" placeholder="metti la password" required>
+                    <input type="email" name="email" class="form-control" placeholder="Inserisci Email" required>
                 </div>
 
-                <div class="d-flex justify-content-between gap-2">
-                    <button type="submit" class="btn-login flex-grow-1">login</button>
+                <div class="mb-4">
+                    <input type="password" name="password" class="form-control" placeholder="Inserisci Password" required>
+                </div>
+
+                <div class="d-flex">
+                    <button type="submit" class="btn-login w-100">Login</button>
                 </div>
             </form>
 
@@ -140,8 +152,11 @@
         </div>
     </div>
 
-    <footer>
-        footer - © 2026 Nome Azienda
+    <footer class="text-center py-4 mt-auto">
+        <div class="container">
+            <p class="mb-1">© 2026 BookSwap Team</p>
+            <small class="text-muted">Kiper Illia, Melega Leonardo, Trevisani Martina, Bertolani Leo</small>
+        </div>
     </footer>
 
 </body>

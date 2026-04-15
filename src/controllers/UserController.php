@@ -68,7 +68,7 @@ class UserController
     $id_book = $_SESSION['cart'];
 
     // crea ordine (1 libro solo)
-    $this->model->insertRecord($id_user, $id_book);
+    #$this->model->insertRecord($id_user, $id_book);
 
     // svuota carrello
     $_SESSION['cart'] = null;
