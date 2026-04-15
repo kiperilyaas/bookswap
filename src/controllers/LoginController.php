@@ -4,29 +4,6 @@ require_once("models/UserModel.php");
 
 class LoginController{
     private $model;
-    private $emailVerified = [
-        "google.com",
-        "amazon.it",
-        "wikipedia.org",
-        "github.com",
-        "apple.com",
-        "microsoft.it",
-        "linkedin.com",
-        "netflix.com",
-        "wordpress.org",
-        "italia.it",
-        "yahoo.com",
-        "adobe.com",
-        "cloudflare.com",
-        "stackoverflow.com",
-        "reddit.com",
-        "medium.com",
-        "dropbox.com",
-        "spotify.com",
-        "zoom.us",
-        "nasa.gov",
-        "gmail.com"
-    ];
 
     public function __construct()
     {
@@ -42,9 +19,9 @@ class LoginController{
         $email = $_POST['email'] ?? null;
         $domain = substr($email, strpos($email, '@') + 1);
 
-        if($email != null){
-            if(!in_array($domain, $this->emailVerified)){
-                $_SESSION["error"] = "dominio di email non verificato";
+        if($email != null){  
+            if($domain != "isit100.fe.it"){
+                $_SESSION["error"][] = "dominio di email non verificato";
                 header("location: index.php?table=error&action=errorview");
                 exit;
             }
@@ -60,8 +37,8 @@ class LoginController{
             exit;
         }
         else{
-            $_SESSION['error'] = "La password non e' valida";
-            header("location: index.php?table=error&action=error");
+            $_SESSION['error'][] = "La password non e' valida";
+            header("location: index.php?table=error&action=errorview");
             exit;
         }
     }
@@ -82,7 +59,7 @@ class LoginController{
         $response = file_get_contents($url);
         $classi = json_decode($response, true);
 
-        
+        $isGood = false;
         foreach($classi as $classe){
             if($classe['classe'] == $class){
                 $isGood = true;
@@ -92,15 +69,14 @@ class LoginController{
         }
         if(!$isGood){
             $_SESSION['error'][] = "classe non esistente";
-            header("location: index.php?table=error&action=errorClasse");
+            header("location: index.php?table=error&action=errorview");
             exit;
         }
         
         $domain = substr($email, strpos($email, '@') + 1);
-        if(!in_array($domain, $this->emailVerified)){
-            $_SESSION['error'][] = "dominio del email non esiste";
-            print_r($_SESSION['error']);
-            header("location: index.php?table=error&action=errorDominio");
+        if($domain != "isit100.fe.it"){
+            $_SESSION['error'][] = "dominio del email non verificato";
+            header("location: index.php?table=error&action=errorview");
             exit;
         }
 
@@ -111,6 +87,11 @@ class LoginController{
 
         header("location: index.php?table=login&action=login");
         exit;
+    }
+
+    public function logout(){
+        session_destroy();
+        header("location: index.php");
     }
 }
 
