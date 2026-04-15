@@ -209,6 +209,11 @@ defined("APP") or die("ACCESSO NEGATO");
                                 echo '<a class="btn btn-login" href="index.php?table=login&action=login">Accedi</a>';
                                 echo "</li>";
                             }
+                            else{
+                                echo '<li class="nav-item mx-2">';
+                                echo '<a class="btn btn-login" href="index.php?table=login&action=logout">Logout</a>';
+                                echo "</li>";
+                            }
                         ?>
                     <li class="nav-item">
                         <a class="nav-link position-relative" href="#">
