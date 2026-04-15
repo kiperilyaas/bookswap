@@ -1,12 +1,12 @@
 <?php
 defined("APP") or die("ACCESSO NEGATO");
-require_once 'models/book_model.php';
+require_once 'models/OrderModel.php';
 class HomeController{
 
     private $model;
     public function __construct()
     {
-        $this->model = new BookModel();
+        $this->model = new OrderModel();
     }
 
     public function getTable(){
@@ -14,8 +14,8 @@ class HomeController{
     }
 
     public function index(){
-        $table = $this->model->selectAll();
-        include "views/homePage.php";
+        $table = $this->model->selectListings();
+        include "views/Home.php";
     }
 }
 
