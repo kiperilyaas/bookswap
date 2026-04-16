@@ -37,28 +37,19 @@ class ListingsModel{
     }
 
     public function searchBooks($query, $filter) {
-        // 1. Aggiungiamo 'class' ai filtri permessi
         $allowedFilters = ['title', 'author', 'isbn', 'class'];
         if (!in_array($filter, $allowedFilters)) {
             $filter = 'title';
         }
-
-        // 2. Prepariamo la query base con la JOIN (uniamo libri e classi)
-        // Selezioniamo anche il nome della classe per poterlo stampare!
-        $sql = "SELECT MIN(b.id_book) AS id_book, b.title, b.author, b.isbn, c.class AS class_name 
+        $sql = "SELECT MIN(b.id_book) AS id_book, b.title, b.author, b.isbn, c.class AS class_name, b.price
                 FROM books b
                 LEFT JOIN class c ON b.id_class = c.id_class ";
 
-        // 3. Applichiamo il filtro corretto
-        if ($filter === 'class') {
-            // Se cerco per classe, cerco nella tabella class (c)
+        if ($filter === 'class') {           
             $sql .= "WHERE c.class LIKE :query "; 
         } else {
-            // Altrimenti cerco nella tabella books (b)
             $sql .= "WHERE b.$filter LIKE :query ";
         }
-
-        // 4. Raggruppiamo per evitare i doppioni
         $sql .= "GROUP BY b.isbn, b.title, b.author, c.class
                 LIMIT 10";
 

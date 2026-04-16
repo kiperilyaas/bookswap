@@ -25,6 +25,19 @@ class ListingsController{
         echo json_encode($results);
         exit; 
     }
+
+    public function addListing(){
+        $price = $_POST['prezzo'];
+        $condition = $_POST['condizioni'];
+        $description = $_POST['descrizione'];
+        $book = $_POST['id_book'];
+        $seller = $_SESSION['id_user'];
+
+        $param = [$book, $seller, $price, $condition, $description, 1];
+        $this->model->insertRecord($param);
+        header("location: index.php");
+        exit;
+    }
 }
 
 ?>
