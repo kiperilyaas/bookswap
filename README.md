@@ -53,10 +53,10 @@ https://github.com/kiperilyaas/bookswap
         - [x] gestione del login
         - [x] select Model #tutti select utili
     - [ ] Creazione dei Controller
-        - [ ] Login
+        - [x] Login
             - [x] Funzionamento generale
-            - [ ] Gestione dei errori
-            - [ ] Verifica dei dati personali (solo studenti della scuola)
+            - [x] Gestione dei errori
+            - [x] Verifica dei dati personali (solo studenti della scuola)
         - [ ] User
             - [ ] creare un ordine di vendita
             - [ ] aggiungere/eliminare i libri dal carrello

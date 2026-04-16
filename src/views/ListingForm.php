@@ -3,7 +3,6 @@ defined("APP") or die("ACCESSO NEGATO");
 
 // Controllo di sicurezza: solo gli utenti loggati possono accedere
 if (!isset($_SESSION['id_user'])) {
-    // Se non è loggato, salviamo l'errore e rimandiamo al login
     $_SESSION['errors'] = ["Devi effettuare il login per aggiungere un'offerta."];
     header("Location: index.php?table=login&action=login");
     exit();
@@ -16,67 +15,181 @@ if (!isset($_SESSION['id_user'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aggiungi Offerta Libro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .book-card-selected {
+            border: 2px solid #0d6efd !important;
+            background-color: #f8fbff;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-light">
 
-    <h1>Inserisci una nuova offerta</h1>
-    <p>Compila i campi sottostanti per mettere in vendita il tuo libro.</p>
-
-    <form action="index.php?table=libri&action=save" method="POST">
-        
-        <div>
-            <label for="libro">Ricerca per ISBN</label><br>
-            <input type="search" id="search" name="isbn" placeholder="Esempio: Informatica" required>
-            <?php 
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
             
-                
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Inserisci una nuova offerta</h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Cerca il libro che vuoi mettere in vendita o scambiare, selezionalo e compila i dettagli.</p>
 
-            ?>
+                    <form action="index.php?table=libri&action=save" method="POST" id="offerForm">
+                        
+                        <input type="hidden" id="id_book_selezionato" name="id_book" required>
+
+                        <div class="mb-4 p-3 border rounded bg-white">
+                            <label class="form-label fw-bold">1. Trova il libro nel catalogo</label>
+                            <div class="input-group mb-2">
+                                <select class="form-select" id="searchFilter" style="max-width: 150px;">
+                                    <option value="title">Titolo</option>
+                                    <option value="author">Autore</option>
+                                    <option value="isbn">ISBN</option>
+                                    <option value="class">Classe (es. 5N)</option>
+                                </select>
+                                <input type="text" class="form-control" id="searchInput" placeholder="Inizia a digitare...">
+                            </div>
+
+                            <div id="quickAddBook" class="text-end mb-3">
+                                <a href="index.php?table=books&action=create" class="btn btn-sm btn-success">+ Aggiungi un nuovo libro al catalogo</a>
+                            </div>
+
+                            <div id="searchResults"></div>
+
+                            <div id="noResults" class="alert alert-warning mt-3" style="display: none;">
+                                Nessun libro trovato con questi criteri. 
+                                <a href="index.php?table=books&action=create" class="alert-link">Aggiungi un nuovo libro al catalogo</a>.
+                            </div>
+                            
+                            <div id="selectedBookMessage" class="alert alert-success mt-2" style="display:none;">
+                                ✔ Libro selezionato con successo! Ora compila i dettagli dell'offerta qui sotto.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="prezzo" class="form-label fw-bold">2. Prezzo (€)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">€</span>
+                                <input type="number" class="form-control" id="prezzo" name="prezzo" step="0.01" min="0" placeholder="0.00" required>
+                            </div>
+                            <div class="form-text">Inserisci 0.00 se vuoi solo scambiarlo senza venderlo.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="condizioni" class="form-label fw-bold">3. Condizioni del libro</label>
+                            <select class="form-select" id="condizioni" name="condizioni" required>
+                                <option value="" selected disabled>-- Seleziona condizione --</option>
+                                <option value="nuovo">Nuovo (mai aperto)</option>
+                                <option value="quasi_nuovo">Quasi nuovo (ottime condizioni)</option>
+                                <option value="usato_buono">Usato - Buono (segni di usura minimi)</option>
+                                <option value="usato_accettabile">Usato - Accettabile (scritte o pieghe)</option>
+                                <option value="rovinato">Rovinato (ma leggibile)</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="descrizione" class="form-label fw-bold">4. Descrizione dell'offerta (Opzionale)</label>
+                            <textarea class="form-control" id="descrizione" name="descrizione" rows="4" placeholder="Aggiungi dettagli come l'edizione, presenza di sottolineature, appunti, ecc..."></textarea>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="reset" class="btn btn-outline-secondary me-md-2">Svuota Campi</button>
+                            <button type="submit" class="btn btn-primary" id="submitBtn" disabled>Pubblica Offerta</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+            <div class="mt-3 text-center">
+                <a href="index.php" class="text-decoration-none text-secondary">&larr; Annulla e torna alla home</a>
+            </div>
+
         </div>
+    </div>
+</div>
 
-        <br>
+<script>
+document.getElementById('searchInput').addEventListener('input', function() {
+    let query = this.value;
+    let filter = document.getElementById('searchFilter').value;
+    let resultsDiv = document.getElementById('searchResults');
+    let noResultsDiv = document.getElementById('noResults');
+    let quickAddBtn = document.getElementById('quickAddBook');
 
-        <div>
-            <label for="prezzo">Prezzo (€):</label><br>
-            <input type="number" id="prezzo" name="prezzo" step="0.01" min="0" placeholder="0.00" required>
-        </div>
+    // Se l'utente ha scritto meno di 2 lettere (o ha cancellato tutto)
+    if (query.length < 2) {
+        resultsDiv.innerHTML = '';
+        noResultsDiv.style.display = 'none';
+        quickAddBtn.style.display = 'block'; // Mostriamo di nuovo il bottone rapido
+        return; 
+    }
 
-        <br>
+    // Se l'utente sta cercando, nascondiamo il bottone rapido
+    quickAddBtn.style.display = 'none';
 
-        <div>
-            <label for="condizioni">Condizioni del libro:</label><br>
-            <select id="condizioni" name="condizioni" required>
-                <option value="">-- Seleziona condizione --</option>
-                <option value="nuovo">Nuovo (mai aperto)</option>
-                <option value="quasi_nuovo">Quasi nuovo (ottime condizioni)</option>
-                <option value="usato_buono">Usato - Buono (segni di usura minimi)</option>
-                <option value="usato_accettabile">Usato - Accettabile (scritte o pieghe)</option>
-                <option value="rovinato">Rovinato (ma leggibile)</option>
-            </select>
-        </div>
+    let url = `index.php?table=Listings&action=liveSearch&query=${encodeURIComponent(query)}&filter=${filter}`;
 
-        <br>
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            resultsDiv.innerHTML = ''; 
 
-        <div>
-            <label for="descrizione">Descrizione dell'offerta:</label><br>
-            <textarea id="descrizione" name="descrizione" rows="5" cols="40" placeholder="Aggiungi dettagli come l'edizione, se ci sono sottolineature, ecc..."></textarea>
-        </div>
+            if (data.length > 0) {
+                noResultsDiv.style.display = 'none'; 
+                data.forEach(book => {
+                    let coverImg = book.cover_image ? book.cover_image : '../utils/immagini/prova_libro.png';
+                    
+                    resultsDiv.innerHTML += `
+                        <div class="card mb-2 book-result-card" id="card-book-${book.id_book}">
+                            <div class="row g-0">
+                                <div class="col-3 col-md-2 d-flex align-items-center justify-content-center p-2">
+                                    <img src="${coverImg}" class="img-fluid rounded" alt="Copertina" style="max-height: 120px; object-fit: cover;">
+                                </div>
+                                <div class="col-9 col-md-10">
+                                    <div class="card-body py-2">
+                                        <h6 class="card-title mb-1">${book.title}</h6>
+                                        <p class="card-text text-muted small mb-2">
+                                            Autore: ${book.author} <br> 
+                                            ISBN: ${book.isbn} <br>
+                                            ${book.class_name ? `Classe: <span class="badge bg-secondary">${book.class_name}</span>` : ''}
+                                        </p>
+                                        
+                                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="selectBook(${book.id_book}, this)">
+                                            Seleziona questo libro
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                // Se non ci sono risultati, mostriamo l'avviso (che contiene anche il link per aggiungere il libro)
+                noResultsDiv.style.display = 'block';
+            }
+        })
+        .catch(error => console.error("Errore nella ricerca:", error));
+});
 
-        <br>
+function selectBook(idBook, buttonElement) {
+    document.getElementById('id_book_selezionato').value = idBook;
+    document.getElementById('submitBtn').disabled = false;
+    document.getElementById('selectedBookMessage').style.display = 'block';
 
-        <div>
-            <button type="submit">Pubblica Offerta</button>
-            <button type="reset">Svuota Campi</button>
-        </div>
+    document.querySelectorAll('.book-result-card').forEach(card => card.classList.remove('book-card-selected'));
+    buttonElement.closest('.card').classList.add('book-card-selected');
+}
 
-    </form>
-
-    <br>
-    <a href="index.php">Annulla e torna alla home</a>
-
-    <script>
-        
-    </script>
+document.getElementById('offerForm').addEventListener('submit', function(e) {
+    if(!document.getElementById('id_book_selezionato').value) {
+        e.preventDefault();
+        alert("Attenzione: devi prima cercare e selezionare un libro dal catalogo!");
+    }
+});
+</script>
 
 </body>
 </html>
