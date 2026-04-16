@@ -41,7 +41,7 @@ https://github.com/kiperilyaas/bookswap
         - [x] Schermata Carello
     - [ ] Creazione delle pagine web
         - [ ] Home
-        - [ ] Login
+        - [x] Login
         - [ ] Vendita
         - [ ] Info personali
         - [ ] Carello
@@ -57,8 +57,11 @@ https://github.com/kiperilyaas/bookswap
             - [x] Funzionamento generale
             - [x] Gestione dei errori
             - [x] Verifica dei dati personali (solo studenti della scuola)
+        - [ ] Offerte
+            - [x] creare una offerta di vendita
+            - [ ] eliminazione di una offerta
+            - [ ] creazione del libro
         - [ ] User
-            - [ ] creare un ordine di vendita
             - [ ] aggiungere/eliminare i libri dal carrello
             - [ ] acquistare un libro
 - [ ] Test 

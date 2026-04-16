@@ -58,6 +58,14 @@ class ListingsModel{
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function deleteListing($param = []){
+        $sql = "DELETE FROM listings  where id_listing = ?";
+        $stm = $this->pdo->prepare($sql);
+        $stm->execute($param);
+
+        return $stm->rowCount() !== 0; 
+    }
 }
 
 ?>

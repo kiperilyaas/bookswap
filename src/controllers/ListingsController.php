@@ -27,17 +27,56 @@ class ListingsController{
     }
 
     public function addListing(){
-        $price = $_POST['prezzo'];
-        $condition = $_POST['condizioni'];
-        $description = $_POST['descrizione'];
-        $book = $_POST['id_book'];
-        $seller = $_SESSION['id_user'];
+        $price = $_POST['prezzo'] ?? -1;
+        if($price == -1){
+            $_SESSION['error'][] = "prezzo della offerta non e' valido";
+            header("location: index.php?table=error&action=errorview");
+            exit;
+        }
+        
+        $condition = $_POST['condizioni'] ?? "";
+        if($condition == ""){
+            $_SESSION['error'][] = "Condizioni della offerta non e' valida";
+            header("location: index.php?table=error&action=errorview");
+            exit;
+        }
+
+        $book = $_POST['id_book'] ?? -1;
+        if($book == -1){
+            $_SESSION['error'][] = "Id del libro nella offerta non e' valida";
+            header("location: index.php?table=error&action=errorview");
+            exit;
+        }
+
+        $seller = $_SESSION['id_user'] ?? -1;
+        if($seller == -1){
+            $_SESSION['error'][] = "Vendtore non esiste";
+            header("location: index.php?table=error&action=errorview");
+            exit;
+        }
+        $description = $_POST['descrizione'] ?? "";
+
+        
 
         $param = [$book, $seller, $price, $condition, $description, 1];
         $this->model->insertRecord($param);
         header("location: index.php");
         exit;
     }
+
+    public function deleteListing(){
+        $id = $_GET['id'] ?? -1;
+        if($id == -1) {
+            $_SESSION['error'][] = "ID della offerta non e' valido";
+            header("location: index.php?table=error&action=errorview");
+            exit;
+        }
+
+        $this->model->deleteListing([$id]);
+        header("location: index.php?table=User&action=account");
+        exit;
+    }
+
 }
 
 ?>
