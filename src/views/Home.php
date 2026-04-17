@@ -10,6 +10,7 @@ defined("APP") or die("ACCESSO NEGATO");
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BookSwap | Compra e Vendi Libri</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         :root {
             --amazon-orange: #ff9900;
@@ -206,13 +207,22 @@ defined("APP") or die("ACCESSO NEGATO");
                     <?php
                             if(!isset($_SESSION['id_user'])){
                                 echo '<li class="nav-item mx-2">';
-                                echo '<a class="btn btn-login" href="index.php?table=login&action=login">Accedi</a>';
-                                echo "</li>";
+                                echo '  <a class="btn btn-login d-flex align-items-center gap-2" href="index.php?table=login&action=login">';
+                                echo 'Accedi';
+                                echo '</a>';
+                                echo '</li>';
                             }
                             else{
                                 echo '<li class="nav-item mx-2">';
-                                echo '<a class="btn btn-login" href="index.php?table=login&action=logout">Logout</a>';
-                                echo "</li>";
+                                echo '  <a class="btn btn-login d-flex align-items-center gap-2" href="index.php?table=User&action=account">';
+                                // Icona Uscita (Logout)
+                                echo '      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                                                <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                                            </svg>';
+                                echo '      Il tuo Account';
+                                echo '  </a>';
+                                echo '</li>';
                             }
                         ?>
                     <li class="nav-item">
