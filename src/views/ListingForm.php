@@ -49,14 +49,14 @@ if (!isset($_SESSION['id_user'])) {
                                 </div>
 
                                 <div id="quickAddBook" class="text-end mb-3">
-                                    <a href="index.php?table=books&action=create" class="btn btn-sm btn-success">+ Aggiungi un nuovo libro al catalogo</a>
+                                    <a href="index.php?table=Listings&action=addBookForm" class="btn btn-sm btn-success">+ Aggiungi un nuovo libro al catalogo</a>
                                 </div>
 
                                 <div id="searchResults"></div>
 
                                 <div id="noResults" class="alert alert-warning mt-3" style="display: none;">
                                     Nessun libro trovato. 
-                                    <a href="index.php?table=books&action=create" class="alert-link">Aggiungilo al catalogo</a>.
+                                    <a href="index.php?table=Listings&action=addBookForm" class="alert-link">Aggiungilo al catalogo</a>.
                                 </div>
                             </div>
 

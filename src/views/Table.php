@@ -10,33 +10,30 @@ if (!empty($table) && is_array($table)) {
     foreach ($table as $record) {
         if (!is_array($record)) continue; 
 
-        $titolo      = $record['title'] ?? 'Titolo Sconosciuto';
+        // Dati di base
+        $titolo      = $record['title'] ?? 'Title Unknown';
         $imagePath   = "../utils/immagini/prova_libro.png";
         $idItem      = $record['id_listing'] ?? ($record['id_book'] ?? ($record['id'] ?? ''));
         
+        // Estrazione dati venditore (tabella users)
+        $nomeVenditore    = $record['Name'] ?? ($record['name'] ?? 'Unknown');
+        $cognomeVenditore = $record['Surname'] ?? ($record['surname'] ?? '');
+        $venditore = trim($nomeVenditore . ' ' . $cognomeVenditore);
+
+        // Disponibilità
         $isAvailable = $record['is_available'] ?? 1;
-        $statusText  = ($isAvailable == 1) ? "Disponibile" : "Non disponibile";
+        $statusText  = ($isAvailable == 1) ? "Available" : "Not Available";
         $statusColor = ($isAvailable == 1) ? "text-success" : "text-danger";
 
         $dettagliExtra = [];
         $prezzoLibro = null;
 
-        // Parole e chiavi da NASCONDERE
+        // Parole e chiavi da NASCONDERE dal ciclo generico
         $daIgnorare = [
-            'id', 'created', 'title', 'titolo', 'is_available', 'disponibilita', 
-            'image', 'img', 'copertina', 
-            'author', 'autore', 'isbn', 'vol', 'volume', 'school_year', 'school year' // <--- Aggiunti qui!
-        ];
-
-        // Piccolo dizionario per TRADURRE in italiano le chiavi del DB
-        $traduzioni = [
-            'Price' => 'Prezzo',
-            'Condition' => 'Condizioni',
-            'Conditions' => 'Condizioni',
-            'Description' => 'Descrizione',
-            'Class' => 'Classe',
-            'Faculty' => 'Indirizzo',
-            'Subject' => 'Materia'
+            'id', 'created', 'title', 'is_available', 
+            'image', 'img', 'cover', 
+            'author', 'isbn', 'vol', 'school_year',
+            'name', 'surname', 'email' // Nascondiamo i dati dell'utente dal ciclo extra
         ];
 
         foreach ($record as $key => $value) {
@@ -52,17 +49,15 @@ if (!empty($table) && is_array($table)) {
             }
             if ($saltaCampo) continue;
 
-            // Se troviamo il prezzo, lo isoliamo per stamparlo grande con lo stile Amazon
-            if ($keyLower === 'price' || $keyLower === 'prezzo') {
+            // Se troviamo il prezzo, lo isoliamo
+            if ($keyLower === 'price') {
                 $prezzoLibro = $value;
                 continue;
             }
 
-            // Pulisce e traduce l'etichetta
-            $labelOriginale = ucfirst(str_replace('_', ' ', $key));
-            $labelItaliano = $traduzioni[$labelOriginale] ?? $labelOriginale;
-            
-            $dettagliExtra[$labelItaliano] = $value;
+            // Pulisce l'etichetta rimuovendo gli underscore (es. 'book_condition' -> 'Book condition')
+            $label = ucfirst(str_replace('_', ' ', $key));
+            $dettagliExtra[$label] = $value;
         }
 
         $annunciPreparati[] = [
@@ -72,6 +67,7 @@ if (!empty($table) && is_array($table)) {
             'statusText'    => $statusText,
             'statusColor'   => $statusColor,
             'prezzo'        => $prezzoLibro,
+            'venditore'     => $venditore,
             'dettagliExtra' => $dettagliExtra
         ];
     }
@@ -85,7 +81,7 @@ if (!empty($table) && is_array($table)) {
         <div class="col">
             <div class="card book-card">
                 
-                <img src="<?= htmlspecialchars($annuncio['immagine']) ?>" class="card-img-top book-img" alt="Copertina">
+                <img src="<?= htmlspecialchars($annuncio['immagine']) ?>" class="card-img-top book-img" alt="Cover">
 
                 <div class="card-body d-flex flex-column p-3">
                     
@@ -93,11 +89,15 @@ if (!empty($table) && is_array($table)) {
                         <?= htmlspecialchars($annuncio['titolo']) ?>
                     </h5>
 
+                    <p class="mb-2 text-muted" style="font-size: 0.85rem;">
+                        👤 Venditore: <strong><?= htmlspecialchars($annuncio['venditore']) ?></strong>
+                    </p>
+
                     <div class="mb-2">
                         <?php if ($annuncio['prezzo'] !== null && $annuncio['prezzo'] > 0): ?>
                             <span class="price">€ <?= number_format((float)$annuncio['prezzo'], 2, ',', '.') ?></span>
                         <?php else: ?>
-                            <span class="price text-success" style="font-size: 1.2rem;">Scambio</span>
+                            <span class="price text-success" style="font-size: 1.2rem;">Exchange</span>
                         <?php endif; ?>
                     </div>
 
@@ -111,7 +111,6 @@ if (!empty($table) && is_array($table)) {
                         <?php 
                         $count = 0;
                         foreach ($annuncio['dettagliExtra'] as $label => $valore): 
-                            // Opzionale: mostriamo solo massimo 3 dettagli per mantenere la card pulita
                             if($count >= 3) break; 
                         ?>
                             <div class="text-truncate">
@@ -125,7 +124,7 @@ if (!empty($table) && is_array($table)) {
 
                     <div class="mt-auto">
                         <a href="index.php?action=add_to_cart&id=<?= urlencode($annuncio['idItem']) ?>" class="btn btn-warning w-100 shadow-sm d-flex justify-content-center align-items-center gap-2">
-                            🛒 Aggiungi
+                            🛒 Add to cart
                         </a>
                     </div>
 
@@ -137,7 +136,7 @@ if (!empty($table) && is_array($table)) {
 
 <?php else: ?>
     <div class="col-12 text-center py-5 w-100">
-        <h4 class="text-muted">Nessun libro disponibile al momento.</h4>
-        <p>Torna più tardi o inserisci un nuovo annuncio!</p>
+        <h4 class="text-muted">No books available at the moment.</h4>
+        <p>Come back later or publish a new listing!</p>
     </div>
 <?php endif; ?>

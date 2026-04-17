@@ -1,13 +1,16 @@
 <?php 
 defined("APP") or die("ACESSO NEGATO");
 require_once 'models/ListingsModel.php' ;
+require_once "models/BookModel.php";
+require_once "../utils/function.php";
 
 class ListingsController{
     private $model;
-
+    private $modelBook;
     public function __construct()
     {   
         $this->model = new ListingsModel();
+        $this->modelBook = new BookModel();
     }
 
     public function createListings(){
@@ -75,6 +78,61 @@ class ListingsController{
         $this->model->deleteListing([$id]);
         header("location: index.php?table=User&action=account");
         exit;
+    }
+
+    public function addBookForm(){
+        include "views/AddBook.php";
+    }
+
+    public function addBook(){
+        $title = $_POST['title'] ?? "";
+
+        $isbn = $_POST['isbn'] ?? "";
+        if(!isValidISBN($isbn)){
+            $_SESSION['error'][] = "LUNGHEZZA DEL ISBN NON E' DI 13 CARATTERI";
+            header("index.php?table=error&action=errorview");
+            exit;
+        }
+        $vol = $_POST['vol'] ?? "";
+        if($vol != "U" || $vol > 3 && $vol < 0){
+            $_SESSION['error'][] = "VULUME INNESISTENTE";
+            header("index.php?table=error&action=errorview");
+            exit;
+        }
+        $author = $_POST['author'] ?? "";
+        
+        $class = $_POST['class'] ?? "";
+        if(!classExist($class)){        
+            $_SESSION['error'][] = "classe non esiste";
+            header("location: index.php?table=error&action=errorview");
+            exit;
+        } 
+
+        $subject = $_POST['subject'] ?? ""; 
+        /* if(!subjectExist($subject)){
+            $_SESSION['error'][] = "Materia non esiste";
+            header("location: index.php?table=error&action=errorview");
+            exit;
+        } */
+
+        $faculty = $_POST['faculty'] ?? "";
+        /* if(!facultyExist($faculty)){
+            $_SESSION['error'][] = "Indirizzo non esiste";
+            header("location: index.php?table=error&action=errorview");
+            exit;
+        } */
+
+        $price = $_POST['price'] ?? -1;
+        if($price < 0){
+            $_SESSION['error'][] = "Prezzo non valido";
+            header("location: index.php?table=error&action=errorview");
+            exit;
+        }
+            
+        $publish = $_POST['publish'] ?? "";
+
+        $this->modelBook->getOrCreateBook($title, $isbn, $vol, $author, $class, $subject, $publish, $faculty, $price);
+        header("location:index.php?table=Listings&action=createListings");
     }
 
 }

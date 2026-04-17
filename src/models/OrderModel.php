@@ -38,8 +38,9 @@ class OrderModel
   }
 
   public function selectListings($param = []){
-    $dql = "SELECT *, B.title from listings
-    join books B using(id_book)";
+    $dql = "SELECT *, B.title  from listings
+    join books B using(id_book)
+    join users U on listings.id_seller = U.id_user";
     $stm = $this->pdo->prepare($dql);
     $stm->execute();
 
