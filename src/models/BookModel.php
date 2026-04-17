@@ -48,24 +48,25 @@ class BookModel // Iniziale maiuscola
       $result = $stm->fetchAll(PDO::FETCH_ASSOC);
 
       if($result){
-        $id_class = $result['id_class'];
+        $id_class = $result[0]['id_class'];
       }
-      else{
-        $sql = "INSERT INTO class(class) values(?)";
-        $stm = $this->pdo->prepare($sql);
-        $stm->execute([$class]);
-        $id_class = $this->pdo->lastInsertId();
-      }
+    }catch (Exception $e) {
+        // ERRORE
+        if ($this->pdo->inTransaction()) {
+            $this->pdo->rollBack();
+        }         
+        die("Errore durante il salvataggio: " . $e->getMessage());
+    }
 
       #per materia
-
+    try{
       $sql = "SELECT id_subject from subjects where `name` = ? limit 1";
       $stm = $this->pdo->prepare($sql);
       $stm->execute([$subject]);
       $result = $stm->fetchAll(PDO::FETCH_ASSOC);
 
       if($result){
-        $id_subject = $result['id_subject'];
+        $id_subject = $result[0]['id_subject'];
       }
       else{
         $sql = "INSERT INTO subjects(name) values(?)";
@@ -73,16 +74,23 @@ class BookModel // Iniziale maiuscola
         $stm->execute([$subject]);
         $id_subject = $this->pdo->lastInsertId();
       }
+    }catch (Exception $e) {
+        // ERRORE
+        if ($this->pdo->inTransaction()) {
+            $this->pdo->rollBack();
+        }         
+        die("Errore durante il salvataggio: " . $e->getMessage());
+    }
 
       #per casa edittrice
-
+    try{
       $sql = "SELECT id_publish_house from publishing_house where name = ? limit 1";
       $stm = $this->pdo->prepare($sql);
       $stm->execute([$publish]);
       $result = $stm->fetchAll(PDO::FETCH_ASSOC);
 
       if($result){
-        $id_publish = $result['id_publish_house'];
+        $id_publish = $result[0]['id_publish_house'];
       }
       else{
         $sql = "INSERT INTO publishing_house(name) values(?)";
@@ -90,16 +98,23 @@ class BookModel // Iniziale maiuscola
         $stm->execute([$publish]);
         $id_publish = $this->pdo->lastInsertId();
       }
+    }catch (Exception $e) {
+        // ERRORE
+        if ($this->pdo->inTransaction()) {
+            $this->pdo->rollBack();
+        }         
+        die("Errore durante il salvataggio: " . $e->getMessage());
+    }
 
       #per indirizzo
-
+    try{
       $sql = "SELECT id_faculty from faculty where name = ? limit 1";
       $stm = $this->pdo->prepare($sql);
       $stm->execute([$faculty]);
       $result = $stm->fetchAll(PDO::FETCH_ASSOC);
 
       if($result){
-        $id_faculty = $result['id_faculty'];
+        $id_faculty = $result[0]['id_faculty'];
       }
       else{
         $sql = "INSERT INTO faculty(name) values(?)";
@@ -107,11 +122,17 @@ class BookModel // Iniziale maiuscola
         $stm->execute([$faculty]);
         $id_faculty  = $this->pdo->lastInsertId();
       }
+    }catch (Exception $e) {
+        // ERRORE
+        if ($this->pdo->inTransaction()) {
+            $this->pdo->rollBack();
+        }         
+        die("Errore durante il salvataggio: " . $e->getMessage());
+    }
 
+    try{
       $param = [$title, $isbn, $vol, $author, $id_class, $id_subject, $id_publish, $id_faculty, $price];
-
       $this->insertRecord($param);
-
       $this->pdo->commit();
     }catch (Exception $e) {
         // ERRORE
