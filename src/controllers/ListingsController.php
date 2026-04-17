@@ -1,13 +1,15 @@
 <?php 
 defined("APP") or die("ACESSO NEGATO");
 require_once 'models/ListingsModel.php' ;
+require_once "models/BookModel.php";
 
 class ListingsController{
     private $model;
-
+    private $modelBook;
     public function __construct()
     {   
         $this->model = new ListingsModel();
+        $this->modelBook = new BookModel();
     }
 
     public function createListings(){
@@ -75,6 +77,22 @@ class ListingsController{
         $this->model->deleteListing([$id]);
         header("location: index.php?table=User&action=account");
         exit;
+    }
+
+    public function addBookForm(){
+        include "views/AddBook.php";
+    }
+
+    public function addBook(){
+        $title = $_POST['title'] ?? "";
+        $isbn = $_POST['isbn'] ?? "";
+        $vol = $_POST['vol'] ?? "";
+        $author = $_POST['author'] ?? "";
+        $class = $_POST['class'] ?? "";
+        $subject = $_POST['subject'] ?? "";
+        $publish = $_POST['publish'] ?? "";
+        $faculty = $_POST['faculty'] ?? "";
+        $price = $_POST['price'] ?? -1;
     }
 
 }
