@@ -102,6 +102,7 @@ class ListingsController{
         $author = $_POST['author'] ?? "";
         
         $class = $_POST['class'] ?? "";
+        $class = strtoupper($class);
         if(!classExist($class)){        
             $_SESSION['error'][] = "classe non esiste";
             header("location: index.php?table=error&action=errorview");

@@ -51,11 +51,11 @@ https://github.com/kiperilyaas/bookswap
         - [ ] Error
 - [ ] Back-End
     - [ ] Models
-        - [x] CRUD per users
-        - [x] CRUD per books
-        - [x] CRUD per orders
-        - [x] gestione del login
-        - [x] select Model #tutti select utili
+        - [x] users
+        - [x] books
+        - [x] orders
+        - [x] Utils
+        - [ ] Listings
     - [ ] Controller
         - [x] Login
             - [x] Funzionamento generale
