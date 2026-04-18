@@ -103,4 +103,27 @@ class UserModel // Iniziale maiuscola
 
     return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
+
+  public function getListingsOfUser($param = []){
+    $sql = "SELECT L.id_listing, L.price, L.is_available, B.title, B.isbn from listings L
+            join books B using(id_book)
+            where L.id_seller = ?";
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute($param);
+
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function getOrdersOfUser($param = []){
+    $sql = "SELECT * from orders O where O.id_seller = ? ";
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute($param);
+
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+
+
+
+
 }

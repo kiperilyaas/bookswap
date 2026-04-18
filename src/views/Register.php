@@ -122,15 +122,15 @@
             <form action="index.php?table=login&action=insert" method="post">
 
                 <div class="mb-3">
-                    <input type="text" name="nome" class="form-control" placeholder="Inserisci Nome" required>
+                    <input type="text" name="name" class="form-control" placeholder="Inserisci Nome" required>
                 </div>
 
                 <div class="mb-3">
-                    <input type="text" name="cognome" class="form-control" placeholder="Inserisci Cognome" required>
+                    <input type="text" name="surname" class="form-control" placeholder="Inserisci Cognome" required>
                 </div>
 
                 <div class="mb-3">
-                    <input type="text" name="classesezione" class="form-control" placeholder="Inserisci Classe/Sezione" required>
+                    <input type="text" name="class" class="form-control" placeholder="Inserisci Classe/Sezione" required>
                 </div>
 
                 <div class="mb-3">

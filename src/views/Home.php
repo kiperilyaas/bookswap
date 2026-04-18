@@ -10,6 +10,7 @@ defined("APP") or die("ACCESSO NEGATO");
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BookSwap | Compra e Vendi Libri</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         :root {
             --amazon-orange: #ff9900;
@@ -193,11 +194,37 @@ defined("APP") or die("ACCESSO NEGATO");
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center me-3">
-                    <li class="nav-item"><a class="nav-link" href="#">Vendi i tuoi libri</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Ordini</a></li>
-                    <li class="nav-item mx-2">
-                        <a class="btn btn-login" href="index.php?table=login&action=login">Accedi</a>
+                    <li class="nav-item">
+                        <?php if(isset($_SESSION['id_user'])): ?>
+                            <a class="nav-link" href="index.php?table=Listings&action=createListings">Crea Annuncio</a>
+                        <?php else: ?>
+                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                Crea Annuncio
+                            </a>
+                        <?php endif; ?>
                     </li>
+                    <li class="nav-item"><a class="nav-link" href="#">Ordini</a></li>
+                    <?php
+                            if(!isset($_SESSION['id_user'])){
+                                echo '<li class="nav-item mx-2">';
+                                echo '  <a class="btn btn-login d-flex align-items-center gap-2" href="index.php?table=login&action=login">';
+                                echo 'Accedi';
+                                echo '</a>';
+                                echo '</li>';
+                            }
+                            else{
+                                echo '<li class="nav-item mx-2">';
+                                echo '  <a class="btn btn-login d-flex align-items-center gap-2" href="index.php?table=User&action=account">';
+                                // Icona Uscita (Logout)
+                                echo '      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                                                <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                                            </svg>';
+                                echo '      Il tuo Account';
+                                echo '  </a>';
+                                echo '</li>';
+                            }
+                        ?>
                     <li class="nav-item">
                         <a class="nav-link position-relative" href="#">
                             🛒 Carrello
@@ -243,6 +270,24 @@ defined("APP") or die("ACCESSO NEGATO");
 
         </div>
     </main>
+
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Accesso richiesto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Per pubblicare un annuncio su <strong>BookSwap</strong> e vendere i tuoi libri, devi prima autenticarti.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                <a href="index.php?table=login&action=login" class="btn btn-warning">Accedi ora</a>
+            </div>
+            </div>
+        </div>
+    </div>
 
     <footer class="text-center py-4 mt-auto">
         <div class="container">
