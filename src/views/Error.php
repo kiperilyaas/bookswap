@@ -1,299 +1,282 @@
 <?php
 defined("APP") or die("ACCESSO NEGATO");
+
+// Assicurati che session_start() sia chiamato nel file principale (index.php)
+// Se non lo è, aggiungilo qui:
+// if (session_status() === PHP_SESSION_NONE) { session_start(); }
 ?>
 
 <!DOCTYPE html>
 <html lang="it">
-
 <head>
     <meta charset="UTF-8">
+<<<<<<< HEAD
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BookSwap | Compra e Vendi Libri</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <title>Visualizzazione Libri</title>
     <style>
         :root {
-            --amazon-orange: #ff9900;
-            --amazon-dark: #131921;
-            --amazon-light: #232f3e;
-            --light-bg: #eaeded;
+            --primary-blue: #004085; 
+            --secondary-blue: #007bff; 
+            --light-blue: #e7f1ff; 
+            --white: #ffffff;
+            --text-color: #333333;
+            --border-color: #b8daff; 
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
         }
 
         body {
-            background-color: var(--light-bg);
+            margin: 0;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            font-family: 'Amazon Ember', Arial, sans-serif;
+            background-color: var(--white);
+            color: var(--text-color);
         }
 
-        /* Navbar stile Amazon */
-        .navbar {
-            background-color: var(--amazon-dark) !important;
-            padding: 0.5rem 0;
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background-color: var(--primary-blue);
+            color: var(--white);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        .navbar-brand {
-            color: white !important;
-            font-weight: 700;
-            font-size: 1.5rem;
-            letter-spacing: -0.5px;
+        .logo {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 25px;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav a {
             text-decoration: none;
+            color: var(--white);
+            text-transform: uppercase;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
         }
 
-        .navbar-brand:hover {
-            color: var(--amazon-orange) !important;
+        nav a:hover {
+            color: var(--light-blue);
         }
 
-        .nav-link {
-            color: white !important;
-            font-size: 0.9rem;
-            padding: 0.5rem 1rem !important;
-        }
-
-        .nav-link:hover {
-            color: var(--amazon-orange) !important;
-        }
-
-        .btn-login {
-            background-color: var(--amazon-orange);
-            border: none;
-            color: var(--amazon-dark);
-            font-weight: 600;
-            padding: 0.4rem 1.5rem;
-        }
-
-        .btn-login:hover {
-            background-color: #ec8b00;
-            color: var(--amazon-dark);
-        }
-
-        /* Search Bar stile Amazon */
+        
         .search-container {
-            background-color: var(--amazon-light);
-            padding: 15px 0;
+            display: flex;
+            gap: 15px;
+            padding: 25px 30px;
+            background-color: var(--light-blue);
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .search-container .input-group {
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-        }
-
-        .search-container input {
-            border: none;
-            padding: 0.7rem;
-        }
-
-        .search-container input:focus {
-            box-shadow: none;
-            border: 2px solid var(--amazon-orange);
-        }
-
-        .btn-search {
-            background-color: var(--amazon-orange);
-            border: none;
-            color: var(--amazon-dark);
-            font-weight: 600;
-            padding: 0 1.5rem;
-        }
-
-        .btn-search:hover {
-            background-color: #ec8b00;
-        }
-
-        .dropdown-toggle {
-            background-color: #f3f3f3;
-            border: none;
-            border-radius: 4px 0 0 4px;
-        }
-
-        /* Card Libri stile Amazon */
-        .book-card {
-            transition: all 0.2s ease;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background: white;
-            height: 100%;
+        .btn-filter, .btn-search {
+            border: 1px solid var(--secondary-blue);
+            background-color: var(--secondary-blue);
+            color: var(--white);
+            padding: 8px 20px;
             cursor: pointer;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-size: 12px;
+            font-weight: bold;
+            transition: background-color 0.3s;
         }
 
-        .book-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            border-color: #bbb;
+        .btn-filter:hover, .btn-search:hover {
+            background-color: var(--primary-blue);
+            border-color: var(--primary-blue);
         }
 
-        .book-img {
-            height: 280px;
-            object-fit: contain;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px 8px 0 0;
+        .search-input {
+            flex-grow: 1;
+            border: 1px solid var(--border-color);
+            padding: 8px 15px;
+            max-width: 600px;
+            border-radius: 4px;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--secondary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
         }
 
-        .card-title {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #0066c0;
-            line-height: 1.3;
-            min-height: 2.6rem;
+        
+        main {
+            flex-grow: 1;
+            padding: 30px;
+            background-color: var(--white);
         }
 
-        .card-title:hover {
-            color: #c45500;
-            text-decoration: underline;
+        .content-box {
+            border: 1px solid #b8daff;
+            border-radius: 8px;
+            width: 100%;
+            height: 500px; /* Altezza fissa: regola questo valore secondo le tue esigenze */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Impedisce al contenuto di uscire dai bordi arrotondati */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
-        .price {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #B12704;
+        .table-row {
+            border-bottom: 1px solid var(--border-color);
+            height: 45px;
+            background-color: #fafcfd; 
+        }
+        
+        .table-row:nth-child(even) {
+            background-color: var(--white);
         }
 
-        .btn-warning {
-            background-color: var(--amazon-orange);
-            border: none;
-            color: var(--amazon-dark);
-            font-weight: 600;
-            border-radius: 20px;
-            padding: 0.5rem;
-            font-size: 0.9rem;
+        .display-area {
+            flex-grow: 1;
+            overflow-y: auto; /* Attiva lo scroll verticale se la tabella è troppo lunga */
+            overflow-x: hidden; /* Evita lo scroll orizzontale se non necessario */
+            background-color: #ffffff;
+            padding: 10px;
         }
 
-        .btn-warning:hover {
-            background-color: #ec8b00;
-            color: var(--amazon-dark);
+        /* Personalizzazione della barra di scorrimento (Scrollbar) */
+        .display-area::-webkit-scrollbar {
+            width: 10px; /* Larghezza della barra a destra */
         }
 
-        .badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
+        .display-area::-webkit-scrollbar-track {
+            background: #f1f7ff; /* Colore della traccia (sfondo barra) */
+            border-radius: 0 8px 8px 0;
         }
 
+        .display-area::-webkit-scrollbar-thumb {
+            background: #007bff; /* Colore della parte scorrevole (blu) */
+            border: 2px solid #f1f7ff; /* Crea un piccolo distacco visivo */
+            border-radius: 10px;
+        }
+
+        .display-area::-webkit-scrollbar-thumb:hover {
+            background: #0056b3; /* Blu più scuro al passaggio del mouse */
+        }
+
+        
         footer {
-            background-color: var(--amazon-dark);
-            color: white;
+            padding: 20px 30px;
+            font-size: 12px;
+            text-transform: uppercase;
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            border-top: 1px solid var(--border-color);
             margin-top: auto;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--amazon-dark);
-            margin-bottom: 1.5rem;
         }
     </style>
 </head>
-
 <body>
+<<<<<<< HEAD:src/views/homePage.php
 
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand ms-3" href="../index.php">📚 BookSwap</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center me-3">
-                    <li class="nav-item">
-                        <?php if(isset($_SESSION['id_user'])): ?>
-                            <a class="nav-link" href="../index.php?table=Listings&action=createListings">Crea Annuncio</a>
-                        <?php else: ?>
-                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
-                                Crea Annuncio
-                            </a>
-                        <?php endif; ?>
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="#">Ordini</a></li>
-                    <?php
-                            if(!isset($_SESSION['id_user'])){
-                                echo '<li class="nav-item mx-2">';
-                                echo '  <a class="btn btn-login d-flex align-items-center gap-2" href="../index.php?table=login&action=login">';
-                                echo 'Accedi';
-                                echo '</a>';
-                                echo '</li>';
-                            }
-                            else{
-                                echo '<li class="nav-item mx-2">';
-                                echo '  <a class="btn btn-login d-flex align-items-center gap-2" href="../index.php?table=User&action=account">';
-                                echo '      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
-                                                <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
-                                            </svg>';
-                                echo '      Il tuo Account';
-                                echo '  </a>';
-                                echo '</li>';
-                            }
-                        ?>
-                    <li class="nav-item">
-                        <a class="nav-link position-relative" href="Cart.php">
-                            🛒 Carrello
-                            <span class="badge rounded-pill bg-danger">0</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <header>
+        <div class="logo">BookSwap</div>
+        <nav>
+            <ul>
+                <li><a href="#">vendi</a></li>
+                <li><a href="views/login.php">LOGIN</a></li>
+                <li><a href="views/carrello.php">carrello</a></li>
+            </ul>
+        </nav>
+    </header>
 
     <div class="search-container">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-10 offset-lg-1">
-                    <div class="input-group">
-                        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            Tutte le categorie
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Tutti i libri</a></li>
-                            <li><a class="dropdown-item" href="#">Narrativa</a></li>
-                            <li><a class="dropdown-item" href="#">Saggistica</a></li>
-                            <li><a class="dropdown-item" href="#">Scolastica</a></li>
-                        </ul>
-                        <input type="text" class="form-control" placeholder="Cerca libri per titolo, autore o ISBN...">
-                        <button class="btn btn-search" type="button">
-                            🔍 Cerca
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <button class="btn-filter">filtro</button>
+        <input type="text" class="search-input" placeholder="Cerca libri, autori, generi...">
+        <button class="btn-search">cerca</button>
     </div>
 
-    <main class="container my-5">
-        <h2 class="section-title">Libri disponibili</h2>
-
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
-                <?php include 'Table.php'; ?>
+    <main>
+        <div class="content-box">
+            <div class="display-area">
+                <?php
+                include 'table.php';
+                ?>
+            </div>
         </div>
     </main>
 
-    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Accesso richiesto</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Per pubblicare un annuncio su <strong>BookSwap</strong> e vendere i tuoi libri, devi prima autenticarti.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
-                <a href="../index.php?table=login&action=login" class="btn btn-warning">Accedi ora</a>
-            </div>
-            </div>
-        </div>
-    </div>
-
-    <footer class="text-center py-4 mt-auto">
-        <div class="container">
-            <p class="mb-1">© 2026 BookSwap Team</p>
-            <small class="text-muted">Kiper Illia, Melega Leonardo, Trevisani Martina, Bertolani Leo</small>
-        </div>
+    <footer>
+        © Kiper Illia, Melega Leonardo, Trevisani Martina, Bertolani Leo
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+=======
+    <?php 
+    print_r($errors)
+    ?>
+>>>>>>> 212b98673b1fee717b98c0af78581f66a4ceddca:src/views/Error.php
+=======
+    <title>Notifiche di Errore</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
 
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            
+            <?php
+            // 1. Controlliamo se ci sono errori nella sessione
+            if (isset($_SESSION['error']) && !empty($_SESSION['error'])) {
+                
+                echo '<div class="alert alert-danger shadow-sm" role="alert">';
+                echo '    <h4 class="alert-heading">⚠️ Si sono verificati dei problemi:</h4>';
+                echo '    <hr>';
+                echo '    <ul class="mb-0">';
+                
+                // Se error è un array, lo cicliamo
+                if (is_array($_SESSION['error'])) {
+                    foreach ($_SESSION['error'] as $errore) {
+                        echo '<li>' . htmlspecialchars($errore) . '</li>';
+                    }
+                } else {
+                    // Se è una stringa singola
+                    echo '<li>' . htmlspecialchars($_SESSION['error']) . '</li>';
+                }
+                
+                echo '    </ul>';
+                echo '</div>';
+
+                // 2. IMPORTANTE: Puliamo la sessione dopo aver visualizzato gli errori
+                // così non appariranno più al prossimo refresh
+                unset($_SESSION['error']);
+                
+            } else {
+                // Messaggio opzionale se non ci sono errori
+                echo '<div class="alert alert-info text-center shadow-sm">';
+                echo '    Nessun errore da segnalare.';
+                echo '</div>';
+            }
+            ?>
+
+            <div class="text-center mt-3">
+                <a href="index.php" class="btn btn-primary">Torna alla Home</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+>>>>>>> 957e3da1af34a92676a50dd23f9ce9b5e4fe6c13
+</body>
 </html>
