@@ -27,6 +27,45 @@ class ListingsModel{
 
         return $stm->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function selectAllBooks($param = []){
+        $dql = "SELECT * from books";
+        $stm = $this->pdo->prepare($dql);
+        $stm->execute($param);
+
+        return $stm->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function searchBooks($query, $filter) {
+        $allowedFilters = ['title', 'author', 'isbn', 'class'];
+        if (!in_array($filter, $allowedFilters)) {
+            $filter = 'title';
+        }
+        $sql = "SELECT MIN(b.id_book) AS id_book, b.title, b.author, b.isbn, c.class AS class_name, b.price
+                FROM books b
+                LEFT JOIN class c ON b.id_class = c.id_class ";
+
+        if ($filter === 'class') {           
+            $sql .= "WHERE c.class LIKE :query "; 
+        } else {
+            $sql .= "WHERE b.$filter LIKE :query ";
+        }
+        $sql .= "GROUP BY b.isbn, b.title, b.author, c.class
+                LIMIT 10";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['query' => '%' . $query . '%']);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function deleteListing($param = []){
+        $sql = "DELETE FROM listings  where id_listing = ?";
+        $stm = $this->pdo->prepare($sql);
+        $stm->execute($param);
+
+        return $stm->rowCount() !== 0; 
+    }
 }
 
 ?>
