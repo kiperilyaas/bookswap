@@ -188,7 +188,7 @@ defined("APP") or die("ACCESSO NEGATO");
 
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand ms-3" href="#">📚 BookSwap</a>
+            <a class="navbar-brand ms-3" href="index.php">📚 BookSwap</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -226,7 +226,7 @@ defined("APP") or die("ACCESSO NEGATO");
                             }
                         ?>
                     <li class="nav-item">
-                        <a class="nav-link position-relative" href="#">
+                        <a class="nav-link position-relative" href="index.php?table=Home&action=cart">
                             🛒 Carrello
                             <span class="badge rounded-pill bg-danger">0</span>
                         </a>
