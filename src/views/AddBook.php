@@ -52,7 +52,13 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="vol" class="form-label fw-semibold">Volume</label>
-                                    <input type="text" class="form-control" id="vol" name="vol" placeholder="Es. 1, 2, Unico">
+                                   <select class="form-control" id="vol" name="vol">
+                                        <option value="">--Seleziona--</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="U">Unico</option>
+                                    </select>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="author" class="form-label fw-semibold">Autore *</label>
@@ -60,7 +66,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label for="isbn" class="form-label fw-semibold">Codice ISBN *</label>
-                                    <input type="text" class="form-control" id="isbn" name="isbn" placeholder="Es. 9788808123456" required>
+                                    <input type="text" class="form-control" id="isbn" name="isbn" placeholder="Es. 9788808123456 -- 9 o 13 caratteri" required>
                                 </div>
                             </div>
 

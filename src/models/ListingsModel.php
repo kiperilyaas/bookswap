@@ -20,6 +20,16 @@ class ListingsModel{
         return $stm->rowCount() !== 0;
     }
 
+    public function selectListings($param = []){
+        $dql = "SELECT *, B.title, L.price as priceOffer from listings L
+        join books B using(id_book)
+        join users U on L.id_seller = U.id_user";
+        $stm = $this->pdo->prepare($dql);
+        $stm->execute();
+
+        return $stm->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function selectAll($param = []){
         $dql = "SELECT * FROM listings";
         $stm = $this->pdo->prepare($dql);
@@ -41,7 +51,7 @@ class ListingsModel{
         if (!in_array($filter, $allowedFilters)) {
             $filter = 'title';
         }
-        $sql = "SELECT MIN(b.id_book) AS id_book, b.title, b.author, b.isbn, c.class AS class_name, b.price
+        $sql = "SELECT MIN(b.id_book) AS id_book, b.title, b.author, b.isbn, c.class AS class_name, b.price 
                 FROM books b
                 LEFT JOIN class c ON b.id_class = c.id_class ";
 
