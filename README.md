@@ -61,9 +61,10 @@ https://github.com/kiperilyaas/bookswap
             - [x] Funzionamento generale
             - [x] Gestione dei errori
             - [x] Verifica dei dati personali (solo studenti della scuola)
+            - [ ] Controllo di logout
         - [ ] Offerte
             - [x] creare una offerta di vendita
-            - [ ] creazione del libro
+            - [x] creazione del libro
         - [ ] User
             - [x] eliminazione di una offerta
             - [x] gestione della offerta/ordine del utente

@@ -97,13 +97,14 @@ class ListingsController
         $isbn = $_POST['isbn'] ?? "";
         if (!isValidISBN($isbn)) {
             $_SESSION['error'][] = "LUNGHEZZA DEL ISBN NON E' DI 13 CARATTERI";
-            header("index.php?table=error&action=errorview");
+            header("location: index.php?table=error&action=errorview");
             exit;
         }
+        
         $vol = $_POST['vol'] ?? "";
-        if ($vol != "U" || $vol > 3 && $vol < 0) {
-            $_SESSION['error'][] = "VULUME INNESISTENTE";
-            header("index.php?table=error&action=errorview");
+        if($vol !== "U" && $vol !== "1" && $vol !== "2" && $vol !== "3"){
+            $_SESSION['error'][] = "Volume non valido";
+            header("Location: index.php?table=error&action=errorview"); // Aggiunto Location:
             exit;
         }
         $author = $_POST['author'] ?? "";
@@ -139,7 +140,9 @@ class ListingsController
         $publish = $_POST['publish'] ?? "";
 
         $this->modelBook->getOrCreateBook($title, $isbn, $vol, $author, $class, $subject, $publish, $faculty, $price);
+        
         header("location:index.php?table=Listings&action=createListings");
+        exit;
         exit;
     }
 

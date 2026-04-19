@@ -120,31 +120,40 @@
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 
-                <div class="form-card">
-                    <h2 class="section-title"> Aggiungi un nuovo libro al catalogo</h2>
-                    <p class="text-muted small">Inserisci i dettagli tecnici del libro. Una volta creato, potrai metterlo in vendita.</p>
+                <div class="card shadow-sm border-0 rounded-4">
+                    <div class="card-header bg-white border-bottom-0 pt-4 pb-0 px-4">
+                        <h3 class="fw-bold mb-0 text-dark">Aggiungi un nuovo libro al catalogo</h3>
+                        <p class="text-muted small mt-1">Inserisci i dettagli del libro. I dati verranno salvati nel database.</p>
+                    </div>
                     
-                    <form action="index.php?table=Listings&action=addBook" method="POST">
-                        
-                        <h5 class="fw-bold text-primary-amazon mb-3"> 1. Dettagli Principali</h5>
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-8">
-                                <label for="title" class="form-label">Titolo del Libro *</label>
-                                <input type="text" class="form-control" id="title" name="title" placeholder="Es. Matematica Blu 2.0" required>
+                    <div class="card-body p-4">
+                        <form action="index.php?table=Listings&action=addBook" method="POST">
+                            
+                            <h5 class="fw-bold text-primary mb-3">1. Dettagli Principali</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-8">
+                                    <label for="title" class="form-label fw-semibold">Titolo del Libro *</label>
+                                    <input type="text" class="form-control" id="title" name="title" placeholder="Es. Matematica Blu 2.0" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="vol" class="form-label fw-semibold">Volume</label>
+                                   <select class="form-control" id="vol" name="vol">
+                                        <option value="">--Seleziona--</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="U">Unico</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="author" class="form-label fw-semibold">Autore *</label>
+                                    <input type="text" class="form-control" id="author" name="author" placeholder="Es. Massimo Bergamini" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="isbn" class="form-label fw-semibold">Codice ISBN *</label>
+                                    <input type="text" class="form-control" id="isbn" name="isbn" placeholder="Es. 9788808123456 -- 9 o 13 caratteri" required>
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                                <label for="vol" class="form-label">Volume</label>
-                                <input type="text" class="form-control" id="vol" name="vol" placeholder="Es. 1, 2, Unico">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="author" class="form-label">Autore *</label>
-                                <input type="text" class="form-control" id="author" name="author" placeholder="Es. Massimo Bergamini" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="isbn" class="form-label">Codice ISBN *</label>
-                                <input type="text" class="form-control" id="isbn" name="isbn" placeholder="Es. 9788808123456" required>
-                            </div>
-                        </div>
 
                         <hr class="text-muted mb-4">
 
