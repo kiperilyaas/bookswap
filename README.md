@@ -42,12 +42,12 @@ https://github.com/kiperilyaas/bookswap
     - [ ] Creazione delle pagine web
         - [ ] Home
         - [x] Login
-        - [ ] Creazione della offerta
-        - [ ] Info personali
+        - [x] Creazione della offerta
+        - [x] Info personali
         - [ ] Carello
-        - [ ] Account (Dati Personali)
+        - [x] Account (Dati Personali)
         - [x] Registrazione
-        - [ ] Inserimento del libro
+        - [x] Inserimento del libro
         - [ ] Error
 - [ ] Back-End
     - [ ] Models
