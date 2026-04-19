@@ -37,16 +37,6 @@ class OrderModel
     return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function selectListings($param = []){
-    $dql = "SELECT *, B.title  from listings
-    join books B using(id_book)
-    join users U on listings.id_seller = U.id_user";
-    $stm = $this->pdo->prepare($dql);
-    $stm->execute();
-
-    return $stm->fetchAll(PDO::FETCH_ASSOC);
-  }
-
   // Metodo DQL per estrarre una colonna
   public function selectIds(): array
   {

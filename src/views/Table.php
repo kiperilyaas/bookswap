@@ -25,15 +25,18 @@ if (!empty($table) && is_array($table)) {
         $statusText  = ($isAvailable == 1) ? "Available" : "Not Available";
         $statusColor = ($isAvailable == 1) ? "text-success" : "text-danger";
 
+        // Estrazione esplicita del prezzo dell'offerta (priceOffer dalla JOIN)
+        $prezzoLibro = $record['priceOffer'] ?? ($record['priceoffer'] ?? ($record['price'] ?? null));
+
         $dettagliExtra = [];
-        $prezzoLibro = null;
 
         // Parole e chiavi da NASCONDERE dal ciclo generico
         $daIgnorare = [
             'id', 'created', 'title', 'is_available', 
             'image', 'img', 'cover', 
             'author', 'isbn', 'vol', 'school_year',
-            'name', 'surname', 'email' // Nascondiamo i dati dell'utente dal ciclo extra
+            'name', 'surname', 'email', 
+            'priceoffer', 'price' // Nascondiamo le chiavi del prezzo dal ciclo dei dettagli extra
         ];
 
         foreach ($record as $key => $value) {
@@ -48,12 +51,6 @@ if (!empty($table) && is_array($table)) {
                 }
             }
             if ($saltaCampo) continue;
-
-            // Se troviamo il prezzo, lo isoliamo
-            if ($keyLower === 'price') {
-                $prezzoLibro = $value;
-                continue;
-            }
 
             // Pulisce l'etichetta rimuovendo gli underscore (es. 'book_condition' -> 'Book condition')
             $label = ucfirst(str_replace('_', ' ', $key));
@@ -90,7 +87,7 @@ if (!empty($table) && is_array($table)) {
                     </h5>
 
                     <p class="mb-2 text-muted" style="font-size: 0.85rem;">
-                        👤 Venditore: <strong><?= htmlspecialchars($annuncio['venditore']) ?></strong>
+                        👤 Seller: <strong><?= htmlspecialchars($annuncio['venditore']) ?></strong>
                     </p>
 
                     <div class="mb-2">
