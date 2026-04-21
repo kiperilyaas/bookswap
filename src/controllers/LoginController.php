@@ -25,13 +25,14 @@ class LoginController{
                 header("location: index.php?table=error&action=errorview");
                 exit;
             }
+        }        
+
+        if(!isEmailExist($email)){
+            $_SESSION["error"][] = "Email non esiste";
+            header("location: index.php?table=error&action=errorview");
+            exit;
         }
 
-        if(isEmailExist($email)){        
-            $_SESSION["error"][] = "email esiste gia'";
-            header("location: index.php?table=error&action=errorview");
-            exit;         
-        }
         //password check
         $password = $_POST['password'] ?? null;
         $credenziali = $this->model->findUserByMail([$email]);
@@ -57,6 +58,13 @@ class LoginController{
         $surname = $_POST['surname'] ?? null;
         $class = $_POST['class'] ?? null;
         $email = $_POST['email'] ?? null;
+
+        if(isEmailExist($email)){        
+            $_SESSION["error"][] = "email esiste gia'";
+            header("location: index.php?table=error&action=errorview");
+            exit;         
+        }
+
         $password = $_POST['password'] ?? null;
 
         //check name and surname

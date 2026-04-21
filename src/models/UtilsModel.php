@@ -34,8 +34,8 @@ class UtilsModel{
         return $stm->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function isExistEmail($param = []){
-        $sql = "SELECT `email` from users where email = ? limit 1";
+    public function selectAllEmail($param = []){
+        $sql = "SELECT `email` from users";
         $stm = $this->pdo->prepare($sql);
         $stm->execute($param);
 
