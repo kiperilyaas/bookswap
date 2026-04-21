@@ -148,6 +148,7 @@ defined("APP") or die("ACCESSO NEGATO");
             color: #B12704;
         }
 
+        /* Ripristino stile bottoni arrotondati come da file originale */
         .btn-warning {
             background-color: var(--amazon-orange);
             border: none;
@@ -192,7 +193,7 @@ defined("APP") or die("ACCESSO NEGATO");
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="collapse navbar-collapse" id=\"navbarNav\">
                 <ul class="navbar-nav ms-auto align-items-center me-3">
                     <li class="nav-item">
                         <?php if(isset($_SESSION['id_user'])): ?>
@@ -215,7 +216,6 @@ defined("APP") or die("ACCESSO NEGATO");
                             else{
                                 echo '<li class="nav-item mx-2">';
                                 echo '  <a class="btn btn-login d-flex align-items-center gap-2" href="index.php?table=User&action=account">';
-                                // Icona Uscita (Logout)
                                 echo '      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
                                                 <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
                                                 <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
@@ -262,14 +262,42 @@ defined("APP") or die("ACCESSO NEGATO");
 
     <main class="container my-5">
         <h2 class="section-title">Libri disponibili</h2>
-
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
-
                 <?php include 'Table.php'; ?>
-
-
         </div>
     </main>
+
+    <div class="modal fade" id="bookDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalBookTitle"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalBookImg" src="" class="img-fluid mb-3" style="max-height: 250px; object-fit: contain;">
+                    
+                    <div class="mb-3">
+                        <p class="mb-1"><strong>Autore:</strong> <span id="modalBookAuthor"></span></p>
+                        <p class="mb-1"><strong>Venditore:</strong> <span id="modalBookSeller"></span> | <strong>Classe:</strong> <span id="modalBookClasse"></span></p>
+                        <p class="mb-1"><strong>ISBN:</strong> <span id="modalBookISBN"></span></p>
+                        <p class="mb-1"><strong>Casa Editrice:</strong> <span id="modalBookPublisher"></span></p>
+                    </div>
+
+                    <div id="modalBookPrice" class="price mb-3" style="font-size: 1.8rem;"></div>
+                    
+                    <div class="text-start p-3 bg-light rounded">
+                        <h6><strong>Descrizione:</strong></h6>
+                        <p id="modalBookDescription" class="mb-0"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 20px; font-weight: 600; padding: 0.5rem 1.5rem;">Chiudi</button>
+                    <button type="button" class="btn btn-warning" style="border-radius: 20px; font-weight: 600; padding: 0.5rem 1.5rem;">Aggiungi al carrello</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
@@ -297,6 +325,25 @@ defined("APP") or die("ACCESSO NEGATO");
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const bookModal = document.getElementById('bookDetailModal');
+            bookModal.addEventListener('show.bs.modal', function (event) {
+                const element = event.relatedTarget;
+                
+                bookModal.querySelector('#modalBookTitle').textContent = element.getAttribute('data-title');
+                bookModal.querySelector('#modalBookImg').src = element.getAttribute('data-img');
+                bookModal.querySelector('#modalBookPrice').textContent = element.getAttribute('data-price');
+                bookModal.querySelector('#modalBookDescription').textContent = element.getAttribute('data-description');
+                
+                bookModal.querySelector('#modalBookAuthor').textContent = element.getAttribute('data-author');
+                bookModal.querySelector('#modalBookSeller').textContent = element.getAttribute('data-seller');
+                bookModal.querySelector('#modalBookISBN').textContent = element.getAttribute('data-isbn');
+                bookModal.querySelector('#modalBookPublisher').textContent = element.getAttribute('data-publisher');
+                // Popolamento del campo classe nel modale
+                bookModal.querySelector('#modalBookClasse').textContent = element.getAttribute('data-classe');
+            });
+        });
+    </script>
 </body>
-
 </html>
