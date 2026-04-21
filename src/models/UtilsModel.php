@@ -33,6 +33,14 @@ class UtilsModel{
 
         return $stm->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function selectAllEmail($param = []){
+        $sql = "SELECT `email` from users";
+        $stm = $this->pdo->prepare($sql);
+        $stm->execute($param);
+
+        return $stm->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 
 

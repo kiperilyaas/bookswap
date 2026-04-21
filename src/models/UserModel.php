@@ -66,7 +66,7 @@ class UserModel // Iniziale maiuscola
     $stm = $this->pdo->prepare($dml);
     $stm->execute($param);
     //-----------------------------------
-    return $stm->rowCount() !== 0;
+    return $stm->rowCount() !== 0;    
   }
 
   // Metodo DML per cancellare un record

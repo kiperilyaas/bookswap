@@ -44,25 +44,25 @@ https://github.com/kiperilyaas/bookswap
         - [x] Login
         - [x] Creazione della offerta
         - [x] Info personali
-        - [ ] Carello
+        - [x] Carello
         - [x] Account (Dati Personali)
         - [x] Registrazione
         - [x] Inserimento del libro
         - [ ] Error
 - [ ] Back-End
-    - [ ] Models
-        - [x] CRUD per users
-        - [x] CRUD per books
-        - [x] CRUD per orders
-        - [x] gestione del login
-        - [x] select Model #tutti select utili
+    - [x] Models
+        - [x] Users
+        - [x] Books
+        - [x] Orders
+        - [x] Listings
+        - [x] Utils 
     - [ ] Controller
         - [x] Login
             - [x] Funzionamento generale
             - [x] Gestione dei errori
             - [x] Verifica dei dati personali (solo studenti della scuola)
-            - [ ] Controllo di logout
-        - [ ] Offerte
+            - [x] Controllo di logout
+        - [x] Offerte
             - [x] creare una offerta di vendita
             - [x] creazione del libro
         - [ ] User
@@ -71,7 +71,7 @@ https://github.com/kiperilyaas/bookswap
             - [ ] aggiungere/eliminare i libri dal carrello
             - [ ] acquistare un libro
         - [x] Error
-            - [x] Gestinoe del Errore
+            - [x] Gestione del Errore
 - [ ] Test 
 - [ ] Pubblicazione
 

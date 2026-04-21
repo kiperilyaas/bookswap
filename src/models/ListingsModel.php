@@ -46,21 +46,29 @@ class ListingsModel{
         return $stm->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function searchBooks($query, $filter) {
+    public function searchBook($query, $filter) {
         $allowedFilters = ['title', 'author', 'isbn', 'class'];
         if (!in_array($filter, $allowedFilters)) {
             $filter = 'title';
         }
-        $sql = "SELECT MIN(b.id_book) AS id_book, b.title, b.author, b.isbn, c.class AS class_name, b.price 
-                FROM books b
-                LEFT JOIN class c ON b.id_class = c.id_class ";
+        
+        // 1. Definisco tutte le tabelle (Aggiunta la JOIN per le classi)
+        // 2. Nota lo SPAZIO VUOTO alla fine della stringa prima delle virgolette!
+        $sql = "SELECT *, B.title, L.price as priceOffer FROM listings L
+                JOIN books B USING(id_book)
+                JOIN users U ON L.id_seller = U.id_user
+                LEFT JOIN class C ON B.id_class = C.id_class "; // <--- SPAZIO FONDAMENTALE
 
-        if ($filter === 'class') {           
-            $sql .= "WHERE c.class LIKE :query "; 
+        if ($filter === 'class') {          
+            // Uso C.name (la colonna corretta della tabella class)
+            $sql .= "WHERE C.class LIKE :query "; 
         } else {
-            $sql .= "WHERE b.$filter LIKE :query ";
+            // Uso la B maiuscola come definita nella query sopra
+            $sql .= "WHERE B.$filter LIKE :query ";
         }
-        $sql .= "GROUP BY b.isbn, b.title, b.author, c.class
+        
+        // Anche qui uso le lettere maiuscole e C.name
+        $sql .= "GROUP BY B.isbn, B.title, B.author, C.class
                 LIMIT 10";
 
         $stmt = $this->pdo->prepare($sql);
