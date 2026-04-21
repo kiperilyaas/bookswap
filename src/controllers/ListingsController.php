@@ -102,15 +102,9 @@ class ListingsController
         }
         
         $vol = $_POST['vol'] ?? "";
-<<<<<<< HEAD
-        if ($vol != "U" || $vol > 3 && $vol < 0) {
-            $_SESSION['error'][] = "VULUME INNESISTENTE";
-            header("index.php?table=error&action=errorview");
-=======
         if($vol !== "U" && $vol !== "1" && $vol !== "2" && $vol !== "3"){
             $_SESSION['error'][] = "Volume non valido";
             header("Location: index.php?table=error&action=errorview"); // Aggiunto Location:
->>>>>>> 19f8773144a52c13e2f29f30f7bff9bc4bb06e72
             exit;
         }
         $author = $_POST['author'] ?? "";
