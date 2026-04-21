@@ -18,12 +18,23 @@
             --light-bg: #eaeded;
         }
 
+        /* FIX PER FOOTER AL FONDO */
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
         body {
             background-color: var(--light-bg);
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            min-height: 100vh; /* Forza il body a coprire l'intera altezza dello schermo */
             font-family: 'Amazon Ember', Arial, sans-serif;
+        }
+
+        /* La navbar e il container principale rimangono nella parte alta */
+        .content {
+            flex: 1 0 auto; /* Questo elemento si espande spingendo il footer in basso */
         }
 
         /* Navbar stile Amazon */
@@ -86,7 +97,7 @@
         }
 
         .btn-amazon-light {
-            background-color: #ffda9e; /* Arancione più tenue per il reset */
+            background-color: #ffda9e;
             border: 1px solid #e0c28d;
             color: #947a4d;
             font-weight: 600;
@@ -101,136 +112,139 @@
         }
 
         .text-primary-amazon {
-            color: #0066c0 !important; /* Blu link Amazon per sottotitoli */
+            color: #0066c0 !important;
+        }
+
+        /* Footer non collassabile */
+        footer {
+            flex-shrink: 0;
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
-        <div class="container-fluid">
-            <a class="navbar-brand ms-3" href="index.php">📚 BookSwap</a>
-            <div class="ms-auto me-3">
-                <a href="index.php" class="btn btn-outline-light btn-sm rounded-pill"> Annulla e Torna alla Home</a>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                
-                <div class="card shadow-sm border-0 rounded-4">
-                    <div class="card-header bg-white border-bottom-0 pt-4 pb-0 px-4">
-                        <h3 class="fw-bold mb-0 text-dark">Aggiungi un nuovo libro al catalogo</h3>
-                        <p class="text-muted small mt-1">Inserisci i dettagli del libro. I dati verranno salvati nel database.</p>
-                    </div>
-                    
-                    <div class="card-body p-4">
-                        <form action="index.php?table=Listings&action=addBook" method="POST">
-                            
-                            <h5 class="fw-bold text-primary mb-3">1. Dettagli Principali</h5>
-                            <div class="row g-3 mb-4">
-                                <div class="col-md-8">
-                                    <label for="title" class="form-label fw-semibold">Titolo del Libro *</label>
-                                    <input type="text" class="form-control" id="title" name="title" placeholder="Es. Matematica Blu 2.0" required>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="vol" class="form-label fw-semibold">Volume</label>
-                                   <select class="form-control" id="vol" name="vol">
-                                        <option value="">--Seleziona--</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="U">Unico</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="author" class="form-label fw-semibold">Autore *</label>
-                                    <input type="text" class="form-control" id="author" name="author" placeholder="Es. Massimo Bergamini" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="isbn" class="form-label fw-semibold">Codice ISBN *</label>
-                                    <input type="text" class="form-control" id="isbn" name="isbn" placeholder="Es. 9788808123456 -- 9 o 13 caratteri" required>
-                                </div>
-                            </div>
-
-                        <hr class="text-muted mb-4">
-
-                        <h5 class="fw-bold text-primary-amazon mb-3">2. Classificazione scolastica</h5>
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-6">
-                                <label for="publish" class="form-label">Casa Editrice</label>
-                                <input list="publishList" class="form-control" id="publish" name="publish" placeholder="Cerca o scrivi editore...">
-                                <datalist id="publishList">
-                                    <option value="Zanichelli">
-                                    <option value="Mondadori">
-                                    <option value="Pearson">
-                                    <option value="De Agostini">
-                                </datalist>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="subject" class="form-label">Materia</label>
-                                <input list="subjectList" class="form-control" id="subject" name="subject" placeholder="Cerca o scrivi materia...">
-                                <datalist id="subjectList">
-                                    <option value="Matematica">
-                                    <option value="Italiano">
-                                    <option value="Informatica">
-                                    <option value="Sistemi e Reti">
-                                </datalist>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="faculty" class="form-label">Indirizzo di Studio</label>
-                                <input list="facultyList" class="form-control" id="faculty" name="faculty" placeholder="Es. Informatica, Liceo Classico...">
-                                <datalist id="facultyList">
-                                    <option value="Informatica e Telecomunicazioni">
-                                    <option value="Liceo Scientifico">
-                                    <option value="Meccanica e Meccatronica">
-                                </datalist>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="class" class="form-label">Classe</label>
-                                <input list="classList" class="form-control" id="class" name="class" placeholder="Es. 5N, 3A...">
-                                <datalist id="classList">
-                                    <option value="1A">
-                                    <option value="2A">
-                                    <option value="3N">
-                                    <option value="4N">
-                                    <option value="5N">
-                                </datalist>
-                            </div>
-                        </div>
-
-                        <hr class="text-muted mb-4">
-
-                        <h5 class="fw-bold text-primary-amazon mb-3"> 3. Prezzo di Copertina</h5>
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-6">
-                                <label for="price" class="form-label">Prezzo Originale (Nuovo)</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light">€</span>
-                                    <input type="number" step="0.01" min="0" class="form-control" id="price" name="price" placeholder="0.00" required>
-                                </div>
-                                <div class="form-text">Il prezzo di listino ufficiale.</div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-end gap-3 mt-5 border-top pt-4">
-                            <button type="reset" class="btn btn-amazon-light"> Svuota campi</button>
-                            <button type="submit" class="btn btn-amazon"> Salva nel Catalogo</button>
-                        </div>
-
-                    </form>
+    <div class="content">
+        <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+            <div class="container-fluid">
+                <a class="navbar-brand ms-3" href="index.php">📚 BookSwap</a>
+                <div class="ms-auto me-3">
+                    <a href="index.php" class="btn btn-outline-light btn-sm rounded-pill"> Annulla e Torna alla Home</a>
                 </div>
+            </div>
+        </nav>
 
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    
+                    <div class="form-card">
+                        <h2 class="section-title"> Aggiungi un nuovo libro al catalogo</h2>
+                        <p class="text-muted small">Inserisci i dettagli tecnici del libro. Una volta creato, potrai metterlo in vendita.</p>
+                        
+                        <div class="card-body p-4">
+                            <form action="index.php?table=Listings&action=addBook" method="POST">
+                                
+                                <h5 class="fw-bold text-primary mb-3">1. Dettagli Principali</h5>
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-8">
+                                        <label for="title" class="form-label fw-semibold">Titolo del Libro *</label>
+                                        <input type="text" class="form-control" id="title" name="title" placeholder="Es. Matematica Blu 2.0" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="vol" class="form-label fw-semibold">Volume</label>
+                                       <select class="form-control" id="vol" name="vol">
+                                            <option value="">--Seleziona--</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="U">Unico</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="author" class="form-label fw-semibold">Autore *</label>
+                                        <input type="text" class="form-control" id="author" name="author" placeholder="Es. Massimo Bergamini" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="isbn" class="form-label fw-semibold">Codice ISBN *</label>
+                                        <input type="text" class="form-control" id="isbn" name="isbn" placeholder="Es. 9788808123456 -- 9 o 13 caratteri" required>
+                                    </div>
+                                </div>
+
+                            <hr class="text-muted mb-4">
+
+                            <h5 class="fw-bold text-primary-amazon mb-3">2. Classificazione scolastica</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label for="publish" class="form-label">Casa Editrice</label>
+                                    <input list="publishList" class="form-control" id="publish" name="publish" placeholder="Cerca o scrivi editore...">
+                                    <datalist id="publishList">
+                                        <option value="Zanichelli">
+                                        <option value="Mondadori">
+                                        <option value="Pearson">
+                                        <option value="De Agostini">
+                                    </datalist>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="subject" class="form-label">Materia</label>
+                                    <input list="subjectList" class="form-control" id="subject" name="subject" placeholder="Cerca o scrivi materia...">
+                                    <datalist id="subjectList">
+                                        <option value="Matematica">
+                                        <option value="Italiano">
+                                        <option value="Informatica">
+                                        <option value="Sistemi e Reti">
+                                    </datalist>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="faculty" class="form-label">Indirizzo di Studio</label>
+                                    <input list="facultyList" class="form-control" id="faculty" name="faculty" placeholder="Es. Informatica, Liceo Classico...">
+                                    <datalist id="facultyList">
+                                        <option value="Informatica e Telecomunicazioni">
+                                        <option value="Liceo Scientifico">
+                                        <option value="Meccanica e Meccatronica">
+                                    </datalist>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="class" class="form-label">Classe</label>
+                                    <input list="classList" class="form-control" id="class" name="class" placeholder="Es. 5N, 3A...">
+                                    <datalist id="classList">
+                                        <option value="1A">
+                                        <option value="2A">
+                                        <option value="3N">
+                                        <option value="4N">
+                                        <option value="5N">
+                                    </datalist>
+                                </div>
+                            </div>
+
+                            <hr class="text-muted mb-4">
+
+                            <h5 class="fw-bold text-primary-amazon mb-3"> 3. Prezzo di Copertina</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label for="price" class="form-label">Prezzo Originale (Nuovo)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light">€</span>
+                                        <input type="number" step="0.01" min="0" class="form-control" id="price" name="price" placeholder="0.00" required>
+                                    </div>
+                                    <div class="form-text">Il prezzo di listino ufficiale.</div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-3 mt-5 border-top pt-4">
+                                <button type="reset" class="btn btn-amazon-light"> Svuota campi</button>
+                                <button type="submit" class="btn btn-amazon"> Salva nel Catalogo</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
-    <footer class="text-center py-4 mt-auto" style="background-color: var(--amazon-dark); color: white;">
+    </div> <footer class="text-center py-4 mt-auto" style="background-color: var(--amazon-dark); color: white;">
         <div class="container">
             <p class="mb-1 text-white">© 2026 BookSwap Team</p>
         </div>
