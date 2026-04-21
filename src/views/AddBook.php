@@ -124,6 +124,7 @@
                     <h2 class="section-title"> Aggiungi un nuovo libro al catalogo</h2>
                     <p class="text-muted small">Inserisci i dettagli tecnici del libro. Una volta creato, potrai metterlo in vendita.</p>
                     
+<<<<<<< HEAD
                     <form action="index.php?table=Listings&action=addBook" method="POST">
                         
                         <h5 class="fw-bold text-primary-amazon mb-3"> 1. Dettagli Principali</h5>
@@ -169,10 +170,75 @@
                                     <option value="Italiano">
                                     <option value="Informatica">
                                     <option value="Sistemi e Reti">
+=======
+                    <div class="card-body p-4">
+                        <form action="index.php?table=Listings&action=addBook" method="POST">
+                            
+                            <h5 class="fw-bold text-primary mb-3">1. Dettagli Principali</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-8">
+                                    <label for="title" class="form-label fw-semibold">Titolo del Libro *</label>
+                                    <input type="text" class="form-control" id="title" name="title" placeholder="Es. Matematica Blu 2.0" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="vol" class="form-label fw-semibold">Volume</label>
+                                   <select class="form-control" id="vol" name="vol">
+                                        <option value="">--Seleziona--</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="U">Unico</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="author" class="form-label fw-semibold">Autore *</label>
+                                    <input type="text" class="form-control" id="author" name="author" placeholder="Es. Massimo Bergamini" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="isbn" class="form-label fw-semibold">Codice ISBN *</label>
+                                    <input type="text" class="form-control" id="isbn" name="isbn" placeholder="Es. 9788808123456 -- 9 o 13 caratteri" required>
+                                </div>
+                            </div>
+
+                        <hr class="text-muted mb-4">
+
+                        <h5 class="fw-bold text-primary-amazon mb-3">2. Classificazione scolastica</h5>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="publish" class="form-label">Casa Editrice</label>
+                                <input list="publishList" class="form-control" id="publish" name="publish" placeholder="Cerca o scrivi editore...">
+                                <datalist id="publishList">
+                                    <option value="Zanichelli">
+                                    <option value="Mondadori">
+                                    <option value="Pearson">
+                                    <option value="De Agostini">
+>>>>>>> 19f8773144a52c13e2f29f30f7bff9bc4bb06e72
                                 </datalist>
                             </div>
 
                             <div class="col-md-6">
+<<<<<<< HEAD
+                                <label for="faculty" class="form-label">Indirizzo di Studio</label>
+                                <input list="facultyList" class="form-control" id="faculty" name="faculty" placeholder="Es. Informatica, Liceo Classico...">
+                                <datalist id="facultyList">
+                                    <option value="Informatica e Telecomunicazioni">
+                                    <option value="Liceo Scientifico">
+                                    <option value="Meccanica e Meccatronica">
+=======
+                                <label for="subject" class="form-label">Materia</label>
+                                <input list="subjectList" class="form-control" id="subject" name="subject" placeholder="Cerca o scrivi materia...">
+                                <datalist id="subjectList">
+                                    <option value="Matematica">
+                                    <option value="Italiano">
+                                    <option value="Informatica">
+                                    <option value="Sistemi e Reti">
+>>>>>>> 19f8773144a52c13e2f29f30f7bff9bc4bb06e72
+                                </datalist>
+                            </div>
+
+                            <div class="col-md-6">
+<<<<<<< HEAD
+=======
                                 <label for="faculty" class="form-label">Indirizzo di Studio</label>
                                 <input list="facultyList" class="form-control" id="faculty" name="faculty" placeholder="Es. Informatica, Liceo Classico...">
                                 <datalist id="facultyList">
@@ -183,6 +249,7 @@
                             </div>
 
                             <div class="col-md-6">
+>>>>>>> 19f8773144a52c13e2f29f30f7bff9bc4bb06e72
                                 <label for="class" class="form-label">Classe</label>
                                 <input list="classList" class="form-control" id="class" name="class" placeholder="Es. 5N, 3A...">
                                 <datalist id="classList">
