@@ -149,6 +149,7 @@ defined("APP") or die("ACCESSO NEGATO");
             color: #B12704;
         }
 
+        /* Ripristino stile bottoni arrotondati come da file originale */
         .btn-warning {
             background-color: var(--amazon-orange);
             border: none;
@@ -193,7 +194,7 @@ defined("APP") or die("ACCESSO NEGATO");
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="collapse navbar-collapse" id=\"navbarNav\">
                 <ul class="navbar-nav ms-auto align-items-center me-3">
                     <li class="nav-item">
                         <?php if(isset($_SESSION['id_user'])): ?>
