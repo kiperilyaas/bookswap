@@ -30,16 +30,41 @@ class ListingsModel{
         return $stm->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function searchOnlyBooks($query, $filter) {
+    try {
+        $allowedFilters = ['title', 'author', 'isbn', 'class'];
+        if (!in_array($filter, $allowedFilters)) {
+            $filter = 'title';
+        }
+        
+        // Cerchiamo SOLO nei libri
+        $sql = "SELECT B.*, C.class AS class_name 
+                FROM books B
+                LEFT JOIN class C ON B.id_class = C.id_class ";
+
+        if ($filter === 'class') {          
+            $sql .= "WHERE C.class LIKE :query "; 
+        } else {
+            $sql .= "WHERE B.$filter LIKE :query ";
+        }
+        $sql .= " LIMIT 8"; // Spazio iniziale fondamentale
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['query' => '%' . $query . '%']);
+
+        $risultati = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        if ($risultati === false) return [];
+        return $risultati;
+
+    } catch (PDOException $e) {
+        // Se c'è un errore, lo spariamo nel JSON così lo vedi subito a video!
+        return [['title' => 'ERRORE DATABASE: ' . $e->getMessage()]];
+    }
+}
+
     public function selectAll($param = []){
         $dql = "SELECT * FROM listings";
-        $stm = $this->pdo->prepare($dql);
-        $stm->execute($param);
-
-        return $stm->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function selectAllBooks($param = []){
-        $dql = "SELECT * from books";
         $stm = $this->pdo->prepare($dql);
         $stm->execute($param);
 
@@ -78,7 +103,7 @@ class ListingsModel{
     }
 
     public function deleteListing($param = []){
-        $sql = "DELETE FROM listings  where id_listing = ?";
+        $sql = "DELETE FROM listings where id_listing = ?";
         $stm = $this->pdo->prepare($sql);
         $stm->execute($param);
 

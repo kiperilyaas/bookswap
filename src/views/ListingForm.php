@@ -85,33 +85,22 @@ if (!isset($_SESSION['id_user'])) {
             color: var(--amazon-dark);
             font-weight: 600;
             border-radius: 20px;
-            /* Arrotondato */
             padding: 0.5rem 1.5rem;
             transition: background-color 0.2s;
         }
 
-        /* Bottoni Arancioni - Tutti gli stati */
-
-        /* Stato Passaggio Mouse (Arancione più scuro) */
         .btn-amazon:hover {
             background-color: var(--amazon-orange-hover);
-            
             color: var(--amazon-dark);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        /* Stato Disabilitato (Arancione pallido) */
         .btn-amazon:disabled {
             background-color: #ffda9e;
-            /* Arancione desaturato */
-            
             color: #947a4d;
             cursor: not-allowed;
         }
 
-        /* Pulsante Secondario (Grigio/Lieve) */
-        /* Entrambi i bottoni ora seguono il tema arancione */
-        .btn-amazon,
         .btn-amazon-light {
             background-color: var(--amazon-orange);
             border: 1px solid #a88734;
@@ -122,10 +111,8 @@ if (!isset($_SESSION['id_user'])) {
             transition: all 0.2s ease;
         }
 
-        .btn-amazon:hover,
         .btn-amazon-light:hover {
             background-color: var(--amazon-orange-hover);
-            
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
         }
 
@@ -210,11 +197,13 @@ if (!isset($_SESSION['id_user'])) {
                             </div>
 
                             <div id="selectedBlock" style="display: none;">
-                                <div
-                                    class="selected-book-alert p-3 d-flex justify-content-between align-items-center shadow-sm">
+                                <div class="selected-book-alert p-3 d-flex justify-content-between align-items-center shadow-sm">
                                     <div>
                                         <span class="text-muted small d-block"> Libro selezionato:</span>
                                         <strong id="selectedBookTitle" class="fs-5" style="color: #0066c0;"></strong>
+                                        <div class="small mt-1 text-secondary">
+                                            Prezzo di riferimento: <strong id="selectedBookPrice" class="text-dark"></strong>
+                                        </div>
                                     </div>
                                     <button type="button" class="btn btn-sm btn-amazon-light"
                                         onclick="resetSelection()"> Cambia</button>
@@ -275,20 +264,25 @@ if (!isset($_SESSION['id_user'])) {
     </footer>
 
     <script>
-        // Logica Ricerca Live
-        document.getElementById('searchInput').addEventListener('input', function () {
-            let query = this.value;
-            let filter = document.getElementById('searchFilter').value;
-            let resultsDiv = document.getElementById('searchResults');
-            let noResultsDiv = document.getElementById('noResults');
+    let searchTimeout;
 
-            if (query.length < 2) {
-                resultsDiv.innerHTML = '';
-                noResultsDiv.style.display = 'none';
-                return;
-            }
+    // Logica Ricerca Live per il CATALOGO
+    document.getElementById('searchInput').addEventListener('input', function () {
+        clearTimeout(searchTimeout);
 
-            let url = `index.php?table=Listings&action=liveSearch&query=${encodeURIComponent(query)}&filter=${filter}`;
+        let query = this.value.trim();
+        let filter = document.getElementById('searchFilter').value;
+        let resultsDiv = document.getElementById('searchResults');
+        let noResultsDiv = document.getElementById('noResults');
+
+        if (query.length < 2) {
+            resultsDiv.innerHTML = '';
+            noResultsDiv.style.display = 'none';
+            return;
+        }
+
+        searchTimeout = setTimeout(() => {
+            let url = `index.php?table=Listings&action=liveSearchBooks&query=${encodeURIComponent(query)}&filter=${filter}`;
 
             fetch(url)
                 .then(response => response.json())
@@ -298,14 +292,26 @@ if (!isset($_SESSION['id_user'])) {
                     if (data.length > 0) {
                         noResultsDiv.style.display = 'none';
                         data.forEach(book => {
+                            if(book.title && book.title.includes('ERRORE DATABASE')) {
+                                resultsDiv.innerHTML += `<div class="alert alert-danger">${book.title}</div>`;
+                                return;
+                            }
+
+                            let author = book.author ? book.author : 'Autore sconosciuto';
+                            let isbn = book.isbn ? book.isbn : 'N/D';
+                            
+                            // Gestione di priceOffer o price
+                            let rawPrice = book.priceOffer !== undefined ? book.priceOffer : (book.price !== undefined ? book.price : '0.00');
+                            let formattedPrice = parseFloat(rawPrice).toFixed(2).replace('.', ',');
+                            
                             resultsDiv.innerHTML += `
                                 <div class="book-result-item p-3 mb-2 bg-white d-flex align-items-center justify-content-between shadow-sm">
                                     <div>
                                         <div class="fw-bold fs-6" style="color: #0066c0;"> ${book.title}</div>
-                                        <div class="small text-muted"> ${book.author} |  ISBN: ${book.isbn}</div>
-                                        <b><div class="small text-muted"> PREZZO: ${book.price}€</div></b>
+                                        <div class="small text-muted"> ${author} |  ISBN: ${isbn}</div>
+                                        <b><div class="small text-muted"> Prezzo di Copertina: ${formattedPrice}€</div></b>
                                     </div>
-                                    <button type="button" class="btn btn-sm btn-amazon" onclick="selectBook(${book.id_book}, '${book.title.replace(/'/g, "\\'")}')">
+                                    <button type="button" class="btn btn-sm btn-amazon" onclick="selectBook(${book.id_book}, '${book.title.replace(/'/g, "\\'")}', '${formattedPrice}')">
                                          Seleziona
                                     </button>
                                 </div>
@@ -316,31 +322,38 @@ if (!isset($_SESSION['id_user'])) {
                     }
                 })
                 .catch(error => console.error("Errore ricerca:", error));
-        });
+        }, 250);
+    });
 
-        function selectBook(idBook, title) {
-            document.getElementById('id_book_selezionato').value = idBook;
-            document.getElementById('submitBtn').disabled = false;
-            document.getElementById('selectedBookTitle').innerText = title;
-            document.getElementById('searchBlock').style.display = 'none';
-            document.getElementById('selectedBlock').style.display = 'block';
+    // AGGIUNTO: Il parametro 'price' viene ricevuto dalla funzione e stampato a schermo
+    function selectBook(idBook, title, price) {
+        document.getElementById('id_book_selezionato').value = idBook;
+        document.getElementById('submitBtn').disabled = false;
+        document.getElementById('selectedBookTitle').innerText = title;
+        
+        // Stampa il prezzo nel riquadro
+        document.getElementById('selectedBookPrice').innerText = price + '€';
+        
+        document.getElementById('searchBlock').style.display = 'none';
+        document.getElementById('selectedBlock').style.display = 'block';
+    }
+
+    function resetSelection() {
+        document.getElementById('id_book_selezionato').value = '';
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('searchInput').value = '';
+        document.getElementById('searchResults').innerHTML = '';
+        document.getElementById('searchBlock').style.display = 'block';
+        document.getElementById('selectedBlock').style.display = 'none';
+        document.getElementById('selectedBookPrice').innerText = ''; // Puliamo il prezzo
+    }
+
+    document.getElementById('offerForm').addEventListener('submit', function (e) {
+        if (!document.getElementById('id_book_selezionato').value) {
+            e.preventDefault();
+            alert("⚠️ Errore: Seleziona un libro dal catalogo prima di pubblicare l'annuncio.");
         }
-
-        function resetSelection() {
-            document.getElementById('id_book_selezionato').value = '';
-            document.getElementById('submitBtn').disabled = true;
-            document.getElementById('searchInput').value = '';
-            document.getElementById('searchResults').innerHTML = '';
-            document.getElementById('searchBlock').style.display = 'block';
-            document.getElementById('selectedBlock').style.display = 'none';
-        }
-
-        document.getElementById('offerForm').addEventListener('submit', function (e) {
-            if (!document.getElementById('id_book_selezionato').value) {
-                e.preventDefault();
-                alert("⚠️ Errore: Seleziona un libro dal catalogo prima di pubblicare l'annuncio.");
-            }
-        });
+    });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
