@@ -67,7 +67,7 @@ defined("APP") or die("ACCESSO NEGATO");
             color: var(--amazon-dark);
         }
 
-        /* Search Bar Super Pulita */
+        /* Search Bar Super Pulita (Dal file 2) */
         .search-container {
             background-color: var(--amazon-light);
             padding: 20px 0;
@@ -75,7 +75,7 @@ defined("APP") or die("ACCESSO NEGATO");
 
         .search-wrapper {
             background-color: white;
-            border-radius: 50px; /* Arrotondata a pillola */
+            border-radius: 50px;
             overflow: hidden;
             border: 2px solid transparent;
             transition: border-color 0.2s;
@@ -226,7 +226,7 @@ defined("APP") or die("ACCESSO NEGATO");
                             }
                         ?>
                     <li class="nav-item">
-                        <a class="nav-link position-relative" href="#">
+                        <a class="nav-link position-relative" href="index.php?table=Home&action=cart">
                             🛒 Carrello
                             <span class="badge rounded-pill bg-danger">0</span>
                         </a>
@@ -284,6 +284,38 @@ defined("APP") or die("ACCESSO NEGATO");
 
     </main>
 
+    <div class="modal fade" id="bookDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalBookTitle"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalBookImg" src="" class="img-fluid mb-3" style="max-height: 250px; object-fit: contain;">
+                    
+                    <div class="mb-3">
+                        <p class="mb-1"><strong>Autore:</strong> <span id="modalBookAuthor"></span></p>
+                        <p class="mb-1"><strong>Venditore:</strong> <span id="modalBookSeller"></span> | <strong>Classe:</strong> <span id="modalBookClasse"></span></p>
+                        <p class="mb-1"><strong>ISBN:</strong> <span id="modalBookISBN"></span></p>
+                        <p class="mb-1"><strong>Casa Editrice:</strong> <span id="modalBookPublisher"></span></p>
+                    </div>
+
+                    <div id="modalBookPrice" class="price mb-3" style="font-size: 1.8rem;"></div>
+                    
+                    <div class="text-start p-3 bg-light rounded">
+                        <h6><strong>Descrizione:</strong></h6>
+                        <p id="modalBookDescription" class="mb-0"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 20px; font-weight: 600; padding: 0.5rem 1.5rem;">Chiudi</button>
+                    <a href="#" id="modalBookCartBtn" class="btn btn-warning" style="border-radius: 20px; font-weight: 600; padding: 0.5rem 1.5rem;">Aggiungi al carrello</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -312,10 +344,40 @@ defined("APP") or die("ACCESSO NEGATO");
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-    let searchTimeout; // Variabile globale per il Debouncing
+    // -----------------------------------------
+    // LOGICA MODALE (Dal file 1)
+    // -----------------------------------------
+    document.addEventListener('DOMContentLoaded', function () {
+        const bookModal = document.getElementById('bookDetailModal');
+        bookModal.addEventListener('show.bs.modal', function (event) {
+            const element = event.relatedTarget;
+            
+            bookModal.querySelector('#modalBookTitle').textContent = element.getAttribute('data-title') || 'N/D';
+            bookModal.querySelector('#modalBookImg').src = element.getAttribute('data-img') || '../utils/immagini/prova_libro.png';
+            bookModal.querySelector('#modalBookPrice').textContent = element.getAttribute('data-price') || '';
+            bookModal.querySelector('#modalBookDescription').textContent = element.getAttribute('data-description') || 'Nessuna descrizione disponibile.';
+            
+            bookModal.querySelector('#modalBookAuthor').textContent = element.getAttribute('data-author') || 'N/D';
+            bookModal.querySelector('#modalBookSeller').textContent = element.getAttribute('data-seller') || 'N/D';
+            bookModal.querySelector('#modalBookISBN').textContent = element.getAttribute('data-isbn') || 'N/D';
+            bookModal.querySelector('#modalBookPublisher').textContent = element.getAttribute('data-publisher') || 'N/D';
+            bookModal.querySelector('#modalBookClasse').textContent = element.getAttribute('data-classe') || 'N/D';
+            
+            // Opzionale: Aggiorna il link del bottone carrello nel modale per usare l'ID corretto
+            let cartLink = element.getAttribute('data-id');
+            if(cartLink) {
+                bookModal.querySelector('#modalBookCartBtn').href = "index.php?action=add_to_cart&id=" + cartLink;
+            }
+        });
+    });
+
+    // -----------------------------------------
+    // LOGICA RICERCA LIVE (Dal file 2)
+    // -----------------------------------------
+    let searchTimeout;
 
     document.getElementById('searchInput').addEventListener('input', function () {
-        clearTimeout(searchTimeout); // Annulla la ricerca precedente se sta ancora digitando
+        clearTimeout(searchTimeout);
 
         let query = this.value.trim();
         let filter = document.getElementById('searchFilter').value;
@@ -325,7 +387,6 @@ defined("APP") or die("ACCESSO NEGATO");
         let searchIcon = document.getElementById('searchIcon');
         let loadingSpinner = document.getElementById('loadingSpinner');
 
-        // Se cancella, rimettiamo la lista default istantaneamente
         if (query.length < 2) {
             resultsDiv.innerHTML = '';
             resultsDiv.classList.add('d-none');
@@ -336,18 +397,16 @@ defined("APP") or die("ACCESSO NEGATO");
             return;
         }
 
-        // Mostriamo lo spinner al posto della lente
         searchIcon.classList.add('d-none');
         loadingSpinner.classList.remove('d-none');
 
-        // Impostiamo il ritardo intelligente (Debounce: 250ms)
+        // Debounce impostato a 50ms come richiesto
         searchTimeout = setTimeout(() => {
             let url = `index.php?table=Listings&action=liveSearch&query=${encodeURIComponent(query)}&filter=${filter}`;
 
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    // Nascondiamo lo spinner e rimettiamo la lente
                     searchIcon.classList.remove('d-none');
                     loadingSpinner.classList.add('d-none');
 
@@ -368,11 +427,15 @@ defined("APP") or die("ACCESSO NEGATO");
                             
                             let rawPrice = book.priceOffer !== undefined ? book.priceOffer : book.price;
                             let priceHTML = '';
+                            let cleanPriceTesto = ''; // Serve per il modale!
+                            
                             if (rawPrice !== null && parseFloat(rawPrice) > 0) {
                                 let formattedPrice = parseFloat(rawPrice).toFixed(2).replace('.', ',');
                                 priceHTML = `<span class="price">€ ${formattedPrice}</span>`;
+                                cleanPriceTesto = `€ ${formattedPrice}`;
                             } else {
                                 priceHTML = `<span class="price text-success" style="font-size: 1.2rem;">Exchange</span>`;
+                                cleanPriceTesto = 'Scambio';
                             }
 
                             let isAvailable = book.is_available !== undefined ? book.is_available : 1;
@@ -399,10 +462,31 @@ defined("APP") or die("ACCESSO NEGATO");
                             });
 
                             let idItem = book.id_listing || book.id_book || '';
+                            
+                            // Estraiamo i dati per il modale in modo pulito prevenendo stringhe "undefined"
+                            let safeDescription = (book.description || book.descrizione || '').replace(/"/g, '&quot;');
+                            let safeAuthor = (book.author || '').replace(/"/g, '&quot;');
+                            let safePublisher = (book.publishing_house || book.publish || '').replace(/"/g, '&quot;');
+                            let safeClass = (book.class || book.classe || '').replace(/"/g, '&quot;');
+                            let safeIsbn = (book.isbn || '').replace(/"/g, '&quot;');
 
+                            // Abbiamo aggiunto data-bs-toggle e tutti i data-* richiesti per aprire il modale!
                             let cardHTML = `
                                 <div class="col">
-                                    <div class="card book-card h-100">
+                                    <div class="card book-card h-100" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#bookDetailModal"
+                                        data-id="${encodeURIComponent(idItem)}"
+                                        data-title="${title.replace(/"/g, '&quot;')}"
+                                        data-img="${imgSrc}"
+                                        data-price="${cleanPriceTesto}"
+                                        data-description="${safeDescription}"
+                                        data-author="${safeAuthor}"
+                                        data-seller="${seller.replace(/"/g, '&quot;')}"
+                                        data-isbn="${safeIsbn}"
+                                        data-publisher="${safePublisher}"
+                                        data-classe="${safeClass}">
+                                        
                                         <img src="${imgSrc}" class="card-img-top book-img" alt="Cover">
                                         <div class="card-body d-flex flex-column p-3">
                                             <h5 class="card-title text-truncate-2" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
@@ -423,7 +507,7 @@ defined("APP") or die("ACCESSO NEGATO");
                                                 ${extraHTML}
                                             </div>
                                             <div class="mt-auto">
-                                                <a href="index.php?action=add_to_cart&id=${encodeURIComponent(idItem)}" class="btn btn-warning w-100 shadow-sm d-flex justify-content-center align-items-center gap-2">
+                                                <a href="index.php?action=add_to_cart&id=${encodeURIComponent(idItem)}" onclick="event.stopPropagation()" class="btn btn-warning w-100 shadow-sm d-flex justify-content-center align-items-center gap-2">
                                                     🛒 Add to cart
                                                 </a>
                                             </div>
@@ -444,7 +528,7 @@ defined("APP") or die("ACCESSO NEGATO");
                     searchIcon.classList.remove('d-none');
                     loadingSpinner.classList.add('d-none');
                 });
-        }, 50); // Esegue la chiamata solo 250ms dopo che l'utente ha smesso di scrivere
+        }, 50); // Esegue la chiamata solo 50ms dopo che l'utente ha smesso di scrivere
     });
     </script>
 </body>
