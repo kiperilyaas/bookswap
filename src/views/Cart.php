@@ -1,5 +1,9 @@
 <?php 
+<<<<<<< HEAD
 #defined("APP") or die("ACCESSO NEGATO");
+=======
+defined("APP") or die("ACCESSO NEGATO");
+>>>>>>> 19f8773144a52c13e2f29f30f7bff9bc4bb06e72
 ?>
 
 <!DOCTYPE html>
