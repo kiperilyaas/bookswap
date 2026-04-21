@@ -143,10 +143,6 @@ class ListingsController
         
         header("location:index.php?table=Listings&action=createListings");
         exit;
-<<<<<<< HEAD
-=======
-        exit;
->>>>>>> 19f8773144a52c13e2f29f30f7bff9bc4bb06e72
     }
 
 }
