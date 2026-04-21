@@ -76,5 +76,12 @@ function isValidISBN($isbn) {
     return false;
 }
 
+function isEmailExist($email){
+    $emailDB = $GLOBALS['model']->isExistEmail([$email]);
+    if($emailDB == $email){
+        return true;
+    }
+    else {return false;}
+}
 
 ?>

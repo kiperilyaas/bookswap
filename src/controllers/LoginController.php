@@ -1,7 +1,7 @@
 <?php 
 defined("APP") or die("ACCESSO NEGATO");
 require_once("models/UserModel.php");
-
+require_once "../utils/function.php";
 class LoginController{
     private $model;
 
@@ -26,7 +26,12 @@ class LoginController{
                 exit;
             }
         }
-        
+
+        if(isEmailExist($email)){        
+            $_SESSION["error"][] = "email esiste gia'";
+            header("location: index.php?table=error&action=errorview");
+            exit;         
+        }
         //password check
         $password = $_POST['password'] ?? null;
         $credenziali = $this->model->findUserByMail([$email]);
