@@ -16,13 +16,12 @@ class ListingsController
 
     public function createListings()
     {
-        $books = $this->model->selectAllBooks();
+        $books = $this->modelBook->selectAll();
         include "views/ListingForm.php";
     }
 
     public function liveSearch()
     {
-
         $query = isset($_GET['query']) ? $_GET['query'] : '';
         $filter = isset($_GET['filter']) ? $_GET['filter'] : 'title';
         $results = $this->model->searchBook($query, $filter);
@@ -31,6 +30,18 @@ class ListingsController
         echo json_encode($results);
         exit;
     }
+
+    public function liveSearchBooks() {
+    $query = $_GET['query'] ?? '';
+    $filter = $_GET['filter'] ?? 'title';
+    
+    // Chiamiamo un nuovo metodo del Model specifico per il catalogo
+    $risultati = $this->model->searchOnlyBooks($query, $filter);
+    
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($risultati);
+    exit;
+}
 
     public function addListing()
     {

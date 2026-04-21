@@ -1,6 +1,10 @@
 <?php
 // 1. CONFIGURAZIONE DEL DATABASE
-
+$host = 'lab.isit100.fe.it';
+$db   = 'info5n2526__team1'; 
+$user = 'info5n2526';              // Cambia con il tuo utente
+$pass = 'Desmond!=5';                  // Cambia con la tua password
+$charset = 'utf8mb4';
 
 // 2. OPZIONI DI SICUREZZA PDO
 $options = [
@@ -34,7 +38,7 @@ try {
     $pdo = new PDO($dsn, $user, $pass, $options);
 
     // 4. LETTURA DEL FILE JSON
-    $jsonFile = './libriv2.json';
+    $jsonFile = './libri_merged.json';
     if (!file_exists($jsonFile)) {
         die("Errore di sicurezza: Il file JSON non trovato.");
     }
@@ -81,7 +85,7 @@ try {
                     $stmtBook->execute([
                         ':title'           => $libro['titolo'],
                         ':isbn'             => $libro['isbn'],
-                        ':vol'              => '', 
+                        ':vol'              => $libro['volume'], 
                         ':author'           => $libro['autore'],
                         ':school_year'      => $annoScolastico,
                         ':price'            => $prezzoFinale, // Inserimento del prezzo formattato

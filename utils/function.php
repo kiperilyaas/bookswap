@@ -5,7 +5,7 @@ require_once "../src/models/UtilsModel.php";
 $model = new UtilsModel();
 function classExist($class){
     $clases = $GLOBALS['model']->getNameFromClass();
-
+    
     foreach($clases as $item){
         if($item['class'] == $class){
             return true;
@@ -79,7 +79,7 @@ function isValidISBN($isbn) {
 function isEmailExist($email){
     $emailDB = $GLOBALS['model']->selectAllEmail();
     foreach($emailDB as $item){
-        if($item == $email){
+        if($item['email'] == $email){
             return true;
         }
     }
