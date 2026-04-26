@@ -107,7 +107,34 @@ class ListingsModel{
         $stm = $this->pdo->prepare($sql);
         $stm->execute($param);
 
-        return $stm->rowCount() !== 0; 
+        return $stm->rowCount() !== 0;
+    }
+
+    public function getListingsByIds($ids = []){
+        if(empty($ids)){
+            return [];
+        }
+
+        // Crea placeholders per la query (?, ?, ?)
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+
+        $sql = "SELECT *, B.title, L.price as priceOffer, L.id_listing
+                FROM listings L
+                JOIN books B USING(id_book)
+                JOIN users U ON L.id_seller = U.id_user
+                WHERE L.id_listing IN ($placeholders)";
+
+        $stm = $this->pdo->prepare($sql);
+        $stm->execute($ids);
+
+        return $stm->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function updateAvailability($id_listing, $is_available){
+        $sql = "UPDATE listings SET is_available = ? WHERE id_listing = ?";
+        $stm = $this->pdo->prepare($sql);
+        $stm->execute([$is_available, $id_listing]);
+        return $stm->rowCount() !== 0;
     }
 }
 

@@ -10,6 +10,7 @@
     <title>Login - Nome Azienda</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
     <style>
         :root {
@@ -124,7 +125,7 @@
 
     <nav class="navbar navbar-custom">
         <div class="container-fluid">
-            <a href="#" class="navbar-brand">📚 BookSwap</a>
+            <a href="index.php" class="navbar-brand">📚 BookSwap</a>
         </div>
     </nav>
 
@@ -159,5 +160,87 @@
         </div>
     </footer>
 
+    <?php include 'views/ToastNotification.php'; ?>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // Validazione form login
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const emailInput = document.querySelector('input[name="email"]');
+        const passwordInput = document.querySelector('input[name="password"]');
+
+        // Validazione email in tempo reale
+        emailInput.addEventListener('blur', function() {
+            const email = this.value.trim();
+            if (email && !email.endsWith('@isit100.fe.it')) {
+                this.classList.add('is-invalid');
+                showFieldError(this, 'Usa un\'email @isit100.fe.it');
+            } else {
+                this.classList.remove('is-invalid');
+                removeFieldError(this);
+            }
+        });
+
+        // Rimuovi errore quando l'utente inizia a digitare
+        emailInput.addEventListener('input', function() {
+            this.classList.remove('is-invalid');
+            removeFieldError(this);
+        });
+
+        passwordInput.addEventListener('input', function() {
+            this.classList.remove('is-invalid');
+            removeFieldError(this);
+        });
+
+        // Validazione al submit
+        form.addEventListener('submit', function(e) {
+            let isValid = true;
+
+            // Valida email
+            const email = emailInput.value.trim();
+            if (!email) {
+                e.preventDefault();
+                emailInput.classList.add('is-invalid');
+                showFieldError(emailInput, 'Email obbligatoria');
+                isValid = false;
+            } else if (!email.endsWith('@isit100.fe.it')) {
+                e.preventDefault();
+                emailInput.classList.add('is-invalid');
+                showFieldError(emailInput, 'Usa un\'email @isit100.fe.it');
+                isValid = false;
+            }
+
+            // Valida password
+            const password = passwordInput.value;
+            if (!password) {
+                e.preventDefault();
+                passwordInput.classList.add('is-invalid');
+                showFieldError(passwordInput, 'Password obbligatoria');
+                isValid = false;
+            } else if (password.length < 3) {
+                e.preventDefault();
+                passwordInput.classList.add('is-invalid');
+                showFieldError(passwordInput, 'Password troppo corta (min 6 caratteri)');
+                isValid = false;
+            }
+        });
+
+        function showFieldError(input, message) {
+            removeFieldError(input);
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'invalid-feedback d-block';
+            errorDiv.textContent = message;
+            input.parentNode.appendChild(errorDiv);
+        }
+
+        function removeFieldError(input) {
+            const errorDiv = input.parentNode.querySelector('.invalid-feedback');
+            if (errorDiv) {
+                errorDiv.remove();
+            }
+        }
+    });
+    </script>
 </body>
 </html>

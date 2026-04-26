@@ -47,29 +47,29 @@ class ListingsController
     {
         $price = $_POST['prezzo'] ?? -1;
         if ($price == -1) {
-            $_SESSION['error'][] = "prezzo della offerta non e' valido";
-            header("location: index.php?table=error&action=errorview");
+            $_SESSION['error'][] = "Prezzo dell'offerta non valido";
+            header("location: index.php?table=Listings&action=createListings");
             exit;
         }
 
         $condition = $_POST['condizioni'] ?? "";
         if ($condition == "") {
-            $_SESSION['error'][] = "Condizioni della offerta non e' valida";
-            header("location: index.php?table=error&action=errorview");
+            $_SESSION['error'][] = "Condizioni dell'offerta non valide";
+            header("location: index.php?table=Listings&action=createListings");
             exit;
         }
 
         $book = $_POST['id_book'] ?? -1;
         if ($book == -1) {
-            $_SESSION['error'][] = "Id del libro nella offerta non e' valida";
-            header("location: index.php?table=error&action=errorview");
+            $_SESSION['error'][] = "Libro non selezionato";
+            header("location: index.php?table=Listings&action=createListings");
             exit;
         }
 
         $seller = $_SESSION['id_user'] ?? -1;
         if ($seller == -1) {
-            $_SESSION['error'][] = "Vendtore non esiste";
-            header("location: index.php?table=error&action=errorview");
+            $_SESSION['error'][] = "Devi effettuare il login";
+            header("location: index.php?table=login&action=login");
             exit;
         }
         $description = $_POST['descrizione'] ?? "";
@@ -78,6 +78,7 @@ class ListingsController
 
         $param = [$book, $seller, $price, $condition, $description, 1];
         $this->model->insertRecord($param);
+        $_SESSION['success'][] = "Annuncio creato con successo!";
         header("location: index.php");
         exit;
     }
@@ -86,12 +87,13 @@ class ListingsController
     {
         $id = $_GET['id'] ?? -1;
         if ($id == -1) {
-            $_SESSION['error'][] = "ID della offerta non e' valido";
-            header("location: index.php?table=error&action=errorview");
+            $_SESSION['error'][] = "ID dell'offerta non valido";
+            header("location: index.php?table=User&action=account");
             exit;
         }
 
         $this->model->deleteListing([$id]);
+        $_SESSION['success'][] = "Annuncio eliminato con successo";
         header("location: index.php?table=User&action=account");
         exit;
     }
@@ -107,51 +109,52 @@ class ListingsController
 
         $isbn = $_POST['isbn'] ?? "";
         if (!isValidISBN($isbn)) {
-            $_SESSION['error'][] = "LUNGHEZZA DEL ISBN NON E' DI 13 CARATTERI";
-            header("location: index.php?table=error&action=errorview");
+            $_SESSION['error'][] = "ISBN non valido (deve essere di 13 caratteri)";
+            header("location: index.php?table=Listings&action=addBookForm");
             exit;
         }
-        
+
         $vol = $_POST['vol'] ?? "";
         if($vol !== "U" && $vol !== "1" && $vol !== "2" && $vol !== "3"){
-            $_SESSION['error'][] = "Volume non valido";
-            header("Location: index.php?table=error&action=errorview"); // Aggiunto Location:
+            $_SESSION['error'][] = "Volume non valido (U, 1, 2 o 3)";
+            header("Location: index.php?table=Listings&action=addBookForm");
             exit;
         }
         $author = $_POST['author'] ?? "";
 
         $class = $_POST['class'] ?? "";
         if (!classExist($class)) {
-            $_SESSION['error'][] = "classe non esiste";
-            header("location: index.php?table=error&action=errorview");
+            $_SESSION['error'][] = "Classe non esistente";
+            header("location: index.php?table=Listings&action=addBookForm");
             exit;
         }
 
         $subject = $_POST['subject'] ?? "";
         /* if(!subjectExist($subject)){
             $_SESSION['error'][] = "Materia non esiste";
-            header("location: index.php?table=error&action=errorview");
+            header("location: index.php?table=Listings&action=addBookForm");
             exit;
         } */
 
         $faculty = $_POST['faculty'] ?? "";
         /* if(!facultyExist($faculty)){
             $_SESSION['error'][] = "Indirizzo non esiste";
-            header("location: index.php?table=error&action=errorview");
+            header("location: index.php?table=Listings&action=addBookForm");
             exit;
         } */
 
         $price = $_POST['price'] ?? -1;
         if ($price < 0) {
             $_SESSION['error'][] = "Prezzo non valido";
-            header("location: index.php?table=error&action=errorview");
+            header("location: index.php?table=Listings&action=addBookForm");
             exit;
         }
 
         $publish = $_POST['publish'] ?? "";
 
         $this->modelBook->getOrCreateBook($title, $isbn, $vol, $author, $class, $subject, $publish, $faculty, $price);
-        
+
+        $_SESSION['success'][] = "Libro aggiunto al catalogo!";
         header("location:index.php?table=Listings&action=createListings");
         exit;
     }

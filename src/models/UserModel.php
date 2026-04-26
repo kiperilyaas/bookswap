@@ -115,15 +115,18 @@ class UserModel // Iniziale maiuscola
   }
 
   public function getOrdersOfUser($param = []){
-    $sql = "SELECT * from orders O where O.id_seller = ? ";
+    $sql = "SELECT * from orders O join listings L using(id_listing) join books B using(id_book) where O.id_seller = ?";
     $stm = $this->pdo->prepare($sql);
     $stm->execute($param);
 
     return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  public function getUserById($param = []){
+    $sql = "SELECT id_user, name, surname, class, email, password FROM users WHERE id_user = ? LIMIT 1";
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute($param);
 
-
-
-
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
 }

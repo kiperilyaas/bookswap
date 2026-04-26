@@ -11,14 +11,13 @@ class OrderModel
   {
     $this->pdo = DB::connect();
   }
-  
-  // Metodo DQL per estrarre una tabella
+
   public function selectAll(): array
   {
-    // Ho aggiunto una JOIN per permetterti di recuperare anche il titolo del libro associato all'annuncio
+    
     $dql = "SELECT o.id_order AS id_order,
                    o.date_order AS date_order,
-                   o.status AS state, -- ho usato 'status' come definito nel nuovo DB
+                   o.status AS state, 
                    o.time_meet AS time_meet,
                    o.place_meet AS place_meet,
                    o.description_meet AS description_meet,
@@ -26,7 +25,7 @@ class OrderModel
                    o.id_seller AS id_seller,
                    o.id_listing AS id_listing,
                    o.final_price AS final_price,
-                   b.title AS book_title -- Info utile dal catalogo
+                   b.title AS book_title 
             FROM orders o
             JOIN listings l ON o.id_listing = l.id_listing
             JOIN books b ON l.id_book = b.id_book";
@@ -62,11 +61,10 @@ class OrderModel
   // Metodo DML per inserire un record
   public function insertRecord(array $param): bool
   {
-    // Aggiunto final_price e id_listing (al posto di id_book)
-    // L'ordine dei parametri deve essere: state, time_meet, place_meet, description_meet, id_customer, id_seller, id_listing, final_price
-    $dml = "INSERT INTO orders (id_order, id_listing, id_customer, id_seller, final_price, date_order, status, time_meet, place_meet, description_meet, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    
+    // Ordine parametri: id_listing, id_customer, id_seller, final_price, date_order, state, time_meet, place_meet, description_meet
+    $dml = "INSERT INTO orders (id_listing, id_customer, id_seller, final_price, date_order, state, time_meet, place_meet, description_meet)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
     $stm = $this->pdo->prepare($dml);
     $stm->execute($param);
     return $stm->rowCount() !== 0;
@@ -81,17 +79,19 @@ class OrderModel
     return $stm->rowCount() !== 0;
   }
 
-  // Metodo DML per modificare un record
-  /* public function updateRecord(array $param): bool
-  {
-    // Aggiornato con i nuovi nomi dei campi
-    // Parametri attesi: status, time_meet, place_meet, description_meet, id_customer, id_seller, id_listing, final_price, id_order
-    $dml = "UPDATE orders 
-              SET `status` = ?, `time_meet` = ?, `place_meet` = ?, `description_meet` = ?, `id_customer` = ?, `id_seller` = ?, `id_listing` = ?, `final_price` = ?
-              WHERE id_order = ?";
-    
-    $stm = $this->pdo->prepare($dml);
+  public function changeOrderState($param = []){
+    $sql = "UPDATE orders set `state` = ? where id_order = ?";
+    $stm = $this->pdo->prepare($sql);
     $stm->execute($param);
+
     return $stm->rowCount() !== 0;
-  } */
+  }
+
+  public function findMyOrders($param = []){
+    $sql = "SELECT * from orders join listings using(id_listing) join books using(id_book) where id_customer = ?";
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute($param);
+
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
 }

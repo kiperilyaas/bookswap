@@ -19,17 +19,17 @@ class LoginController{
         $email = $_POST['email'] ?? null;
         $domain = substr($email, strpos($email, '@') + 1);
 
-        if($email != null){  
+        if($email != null){
             if($domain != "isit100.fe.it"){
-                $_SESSION["error"][] = "dominio di email non verificato";
-                header("location: index.php?table=error&action=errorview");
+                $_SESSION["error"][] = "Dominio email non verificato. Usa un'email @isit100.fe.it";
+                header("location: index.php?table=login&action=login");
                 exit;
             }
-        }        
+        }
 
         if(!isEmailExist($email)){
-            $_SESSION["error"][] = "Email non esiste";
-            header("location: index.php?table=error&action=errorview");
+            $_SESSION["error"][] = "Email non registrata nel sistema";
+            header("location: index.php?table=login&action=login");
             exit;
         }
 
@@ -39,12 +39,13 @@ class LoginController{
 
         if(password_verify($password, $credenziali[0]['password'])){
             $_SESSION['id_user'] = $credenziali[0]['id_user'];
+            $_SESSION['success'][] = "Login effettuato con successo!";
             header("location: index.php");
             exit;
         }
         else{
-            $_SESSION['error'][] = "La password non e' valida";
-            header("location: index.php?table=error&action=errorview");
+            $_SESSION['error'][] = "Password non corretta";
+            header("location: index.php?table=login&action=login");
             exit;
         }
     }
@@ -55,14 +56,18 @@ class LoginController{
 
     public function insert(){
         $name = $_POST['name'] ?? null;
+        $name = strtoupper($name);
+        
         $surname = $_POST['surname'] ?? null;
+        $surname = strtoupper($surname);
+
         $class = $_POST['class'] ?? null;
         $email = $_POST['email'] ?? null;
 
-        if(isEmailExist($email)){        
-            $_SESSION["error"][] = "email esiste gia'";
-            header("location: index.php?table=error&action=errorview");
-            exit;         
+        if(isEmailExist($email)){
+            $_SESSION["error"][] = "Email già registrata";
+            header("location: index.php?table=login&action=register");
+            exit;
         }
 
         $password = $_POST['password'] ?? null;
@@ -81,15 +86,15 @@ class LoginController{
             else $isGood = false;
         }
         if(!$isGood){
-            $_SESSION['error'][] = "classe non esistente";
-            header("location: index.php?table=error&action=errorview");
+            $_SESSION['error'][] = "Classe non esistente. Verifica il formato (es: 5N)";
+            header("location: index.php?table=login&action=register");
             exit;
         }
-        
+
         $domain = substr($email, strpos($email, '@') + 1);
         if($domain != "isit100.fe.it"){
-            $_SESSION['error'][] = "dominio del email non verificato";
-            header("location: index.php?table=error&action=errorview");
+            $_SESSION['error'][] = "Dominio email non verificato. Usa un'email @isit100.fe.it";
+            header("location: index.php?table=login&action=register");
             exit;
         }
 
@@ -98,6 +103,7 @@ class LoginController{
         $param = [$name, $surname, $class, $email, $password_hash];
         $this->model->insertRecord($param);
 
+        $_SESSION['success'][] = "Registrazione completata! Ora puoi effettuare il login";
         header("location: index.php?table=login&action=login");
         exit;
     }

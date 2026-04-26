@@ -39,8 +39,8 @@ https://github.com/kiperilyaas/bookswap
         - [x] Schermata Login
         - [x] Schermata Personali
         - [x] Schermata Carello
-    - [ ] Creazione delle pagine web
-        - [ ] Home
+    - [x] Creazione delle pagine web
+        - [x] Home
         - [x] Login
         - [x] Creazione della offerta
         - [x] Info personali
@@ -48,7 +48,7 @@ https://github.com/kiperilyaas/bookswap
         - [x] Account (Dati Personali)
         - [x] Registrazione
         - [x] Inserimento del libro
-        - [ ] Error
+        - [x] Error
 - [ ] Back-End
     - [x] Models
         - [x] Users
@@ -66,10 +66,12 @@ https://github.com/kiperilyaas/bookswap
             - [x] creare una offerta di vendita
             - [x] creazione del libro
         - [ ] User
+            - [ ] modificare anagrafe/email/password
+            - [ ] eliminare utente
             - [x] eliminazione di una offerta
             - [x] gestione della offerta/ordine del utente
-            - [ ] aggiungere/eliminare i libri dal carrello
             - [ ] acquistare un libro
+            - [ ] verifica di chiusura del ordine
         - [x] Error
             - [x] Gestione del Errore
 - [ ] Test 
