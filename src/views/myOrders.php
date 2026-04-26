@@ -197,11 +197,34 @@ defined("APP") or die("ACCESSO NEGATO");
                 $orderId = $order['id_order'] ?? 'N/D';
                 $bookTitle = $order['title'] ?? 'Libro sconosciuto';
                 $dateOrder = $order['date_order'] ?? 'Data sconosciuta';
+
+                // Formatta data in modo più leggibile
+                if($dateOrder != 'Data sconosciuta') {
+                    $timestamp = strtotime($dateOrder);
+                    $dateOrderFormatted = date('d/m/Y', $timestamp) . ' alle ' . date('H:i', $timestamp);
+                } else {
+                    $dateOrderFormatted = 'Data sconosciuta';
+                }
+
                 $state = $order['state'] ?? 'pending';
                 $finalPrice = $order['final_price'] ?? 0;
                 $timeMeet = $order['time_meet'] ?? 'N/D';
+
+                // Formatta orario incontro
+                if($timeMeet != 'N/D') {
+                    $timeMeetTimestamp = strtotime($timeMeet);
+                    $timeMeetFormatted = date('d/m/Y', $timeMeetTimestamp) . ' alle ' . date('H:i', $timeMeetTimestamp);
+                } else {
+                    $timeMeetFormatted = 'N/D';
+                }
+
                 $placeMeet = $order['place_meet'] ?? 'N/D';
                 $descriptionMeet = $order['description_meet'] ?? 'Nessuna nota';
+
+                // Dati venditore
+                $sellerName = $order['seller_name'] ?? ($order['name'] ?? 'N/D');
+                $sellerSurname = $order['seller_surname'] ?? ($order['surname'] ?? '');
+                $sellerFullName = trim($sellerName . ' ' . $sellerSurname);
 
                 // Determina classe badge stato
                 $badgeClass = 'state-pending';
@@ -224,16 +247,30 @@ defined("APP") or die("ACCESSO NEGATO");
                                 <i class="bi bi-hash"></i> Ordine: <?= htmlspecialchars($orderId) ?>
                             </div>
                             <div class="order-date">
-                                <i class="bi bi-calendar3"></i> <?= htmlspecialchars($dateOrder) ?>
+                                <i class="bi bi-calendar3"></i> <?= htmlspecialchars($dateOrderFormatted) ?>
                             </div>
                         </div>
-                        <span class="badge-state <?= $badgeClass ?>">
-                            <?= $stateText ?>
-                        </span>
+                        <div class="d-flex gap-2 align-items-center">
+                            <span class="badge-state <?= $badgeClass ?>">
+                                <?= $stateText ?>
+                            </span>
+                            <button class="btn btn-sm btn-outline-warning change-order-state-btn"
+                                    data-order-id="<?= htmlspecialchars($orderId) ?>"
+                                    data-book-title="<?= htmlspecialchars($bookTitle) ?>"
+                                    data-current-state="<?= htmlspecialchars($state) ?>">
+                                <i class="bi bi-arrow-repeat"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="book-title">
                         <i class="bi bi-book"></i> <?= htmlspecialchars($bookTitle) ?>
+                    </div>
+
+                    <div class="mb-3">
+                        <span class="badge bg-secondary">
+                            <i class="bi bi-person-fill"></i> Venditore: <?= htmlspecialchars($sellerFullName) ?>
+                        </span>
                     </div>
 
                     <div class="order-details">
@@ -251,7 +288,7 @@ defined("APP") or die("ACCESSO NEGATO");
                                 <i class="bi bi-clock"></i> Orario Incontro
                             </div>
                             <div class="detail-value">
-                                <?= htmlspecialchars($timeMeet) ?>
+                                <?= htmlspecialchars($timeMeetFormatted) ?>
                             </div>
                         </div>
 
@@ -301,6 +338,89 @@ defined("APP") or die("ACCESSO NEGATO");
 
     <?php include 'views/ToastNotification.php'; ?>
 
+    <!-- Modal cambia stato ordine -->
+    <div class="modal fade" id="changeOrderStateModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title text-dark fw-bold">
+                        <i class="bi bi-arrow-repeat me-2"></i>Cambia Stato Ordine
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="index.php?table=Order&action=changeOrderStateCustomer" method="post">
+                        <div class="mb-3">
+                            <label class="fw-bold text-muted small">Ordine ID</label>
+                            <input type="hidden" name="currentOrderId" id="currentOrderId">
+                            <p class="mb-0 fw-bold" id="modalOrderId"></p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="fw-bold text-muted small">Libro</label>
+                            <p class="mb-0" id="modalBookTitle"></p>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <label class="fw-bold text-muted small">Stato Attuale</label>
+                            <p class="mb-0"><span class="badge bg-secondary" id="modalCurrentState"></span></p>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modalNewState" class="form-label fw-bold">Nuovo Stato</label>
+                            <select class="form-select" id="modalNewState" name="newState">
+                                <option value="pending" selected>In attesa</option>
+                                <option value="confirmed">Consegnato</option>
+                                <option value="cancelled">Annullato</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                    <button type="button" class="btn btn-warning" id="confirmOrderStateChange">
+                        <i class="bi bi-check-circle"></i> Conferma Cambio
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const changeStateButtons = document.querySelectorAll('.change-order-state-btn');
+        const changeStateModal = new bootstrap.Modal(document.getElementById('changeOrderStateModal'));
+        let currentOrderId = null;
+
+        changeStateButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                currentOrderId = this.dataset.orderId;
+                const bookTitle = this.dataset.bookTitle;
+                const currentState = this.dataset.currentState;
+
+                document.getElementById('currentOrderId').value = currentOrderId;
+                document.getElementById('modalOrderId').textContent = currentOrderId;
+                document.getElementById('modalBookTitle').textContent = bookTitle;
+                document.getElementById('modalCurrentState').textContent = currentState;
+                document.getElementById('modalNewState').value = currentState;
+
+                changeStateModal.show();
+            });
+        });
+
+        // Conferma cambio stato (da implementare backend)
+        document.getElementById('confirmOrderStateChange').addEventListener('click', function() {
+            const newState = document.getElementById('modalNewState').value;
+
+            // TODO: Implementare chiamata AJAX o form submit per aggiornare lo stato
+            console.log('Cambio stato ordine:', currentOrderId, 'a:', newState);
+
+            // Per ora chiudi il modale
+            changeStateModal.hide();
+
+            // Mostra alert temporaneo
+            alert('Funzionalità da implementare!\nOrdine ID: ' + currentOrderId + '\nNuovo stato: ' + newState);
+        });
+    });
+    </script>
 </body>
 </html>

@@ -54,7 +54,14 @@ defined("APP") or die("ACCESSO NEGATO");
                     <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
                     <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
                 </svg>
-                <h2 class="mb-0">Area Personale</h2>
+                <div>
+                    <h2 class="mb-0">Area Personale</h2>
+                    <?php if(!empty($userData)): ?>
+                        <p class="text-muted mb-0 fs-5">
+                            <strong><?= htmlspecialchars(($userData[0]['name'] ?? '') . ' ' . ($userData[0]['surname'] ?? '')) ?></strong>
+                        </p>
+                    <?php endif; ?>
+                </div>
             </div>
             <button class="btn btn-outline-primary d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#editProfileModal">
                 <i class="bi bi-pencil-square"></i> Modifica Profilo
@@ -233,7 +240,7 @@ defined("APP") or die("ACCESSO NEGATO");
                         <div class="mb-3">
                             <label class="form-label fw-bold">Nuova Password</label>
                             <input type="password" name="new_password" id="newPassword" class="form-control" required>
-                            <small class="text-muted">Minimo 8 caratteri</small>
+                            <small class="text-muted">Minimo 6 caratteri</small>
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-bold">Conferma Nuova Password</label>
@@ -331,7 +338,7 @@ defined("APP") or die("ACCESSO NEGATO");
     </div>
 
     <!-- Modal cambia stato ordine -->
-    <form action="index.php?table=Order&action=changeState" method="post">
+    <form action="index.php?table=Order&action=changeStateSeller" method="post">
         <div class="modal fade" id="changeStateModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -494,9 +501,9 @@ defined("APP") or die("ACCESSO NEGATO");
                     return false;
                 }
 
-                if (newPassword.value.length < 8) {
+                if (newPassword.value.length < 6) {
                     e.preventDefault();
-                    passwordError.textContent = 'La password deve essere di almeno 8 caratteri!';
+                    passwordError.textContent = 'La password deve essere di almeno 6 caratteri!';
                     passwordError.classList.remove('d-none');
                     newPassword.focus();
                     return false;

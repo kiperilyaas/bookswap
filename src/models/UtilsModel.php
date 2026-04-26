@@ -41,6 +41,38 @@ class UtilsModel{
 
         return $stm->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function selectAllFromClass($param = []){
+    $dql = "SELECT * from class";
+    $stm = $this->pdo->prepare($dql);
+    $stm->execute($param);
+
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function selectAllFromSubject($param = []){
+    $dql = "SELECT * from subject";
+    $stm = $this->pdo->prepare($dql);
+    $stm->execute($param);
+
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function selectAllFromPublishHouse($param = []){
+    $dql = "SELECT * from publishing_house";
+    $stm = $this->pdo->prepare($dql);
+    $stm->execute($param);
+
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function selectAllFromFaculty($param = []){
+    $dql = "SELECT * from faculty";
+    $stm = $this->pdo->prepare($dql);
+    $stm->execute($param);
+
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
 }
 
 

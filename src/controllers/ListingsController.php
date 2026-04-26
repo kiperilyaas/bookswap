@@ -20,28 +20,29 @@ class ListingsController
         include "views/ListingForm.php";
     }
 
-    public function liveSearch()
-    {
-        $query = isset($_GET['query']) ? $_GET['query'] : '';
-        $filter = isset($_GET['filter']) ? $_GET['filter'] : 'title';
-        $results = $this->model->searchBook($query, $filter);
 
+    public function liveSearchListings()
+    {
+        $query =  $_GET['query'] ?? '';
+        $filter = $_GET['filter'] ?? 'title';
+        $results = $this->model->searchBookOnly($query, $filter);
+
+        //serve per mandare il risultato sulla pagina  
         header('Content-Type: application/json');
         echo json_encode($results);
         exit;
     }
 
     public function liveSearchBooks() {
-    $query = $_GET['query'] ?? '';
-    $filter = $_GET['filter'] ?? 'title';
-    
-    // Chiamiamo un nuovo metodo del Model specifico per il catalogo
-    $risultati = $this->model->searchOnlyBooks($query, $filter);
-    
-    header('Content-Type: application/json; charset=utf-8');
-    echo json_encode($risultati);
-    exit;
-}
+        $query = $_GET['query'] ?? '';
+        $filter = $_GET['filter'] ?? 'title';
+        
+        $results = $this->model->searchBooksListings($query, $filter);
+        
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($results);
+        exit;
+    }
 
     public function addListing()
     {
@@ -106,6 +107,11 @@ class ListingsController
     public function addBook()
     {
         $title = $_POST['title'] ?? "";
+        if($title == ""){
+            $_SESSION['error'][] = "Titolo del libro non valido ";
+            header("location: index.php?table=Listings&action=addBookForm");
+            exit;
+        }
 
         $isbn = $_POST['isbn'] ?? "";
         if (!isValidISBN($isbn)) {
@@ -116,25 +122,31 @@ class ListingsController
 
         $vol = $_POST['vol'] ?? "";
         if($vol !== "U" && $vol !== "1" && $vol !== "2" && $vol !== "3"){
-            $_SESSION['error'][] = "Volume non valido (U, 1, 2 o 3)";
+            $_SESSION['error'][] = "Volume non valido solo (U, 1, 2 o 3)";
             header("Location: index.php?table=Listings&action=addBookForm");
             exit;
         }
+
         $author = $_POST['author'] ?? "";
+        if($author == ""){
+            $_SESSION['error'][] = "Nome di Autore non valido";
+            header("location: index.php?table=Listings&action=addBookForm");
+            exit;
+        }
 
         $class = $_POST['class'] ?? "";
         if (!classExist($class)) {
-            $_SESSION['error'][] = "Classe non esistente";
+            $_SESSION['error'][] = "Classe non esistente, scelgi una classe presente nel elenco delle classi del ISIT";
             header("location: index.php?table=Listings&action=addBookForm");
             exit;
         }
 
         $subject = $_POST['subject'] ?? "";
-        /* if(!subjectExist($subject)){
+        /*if(!subjectExist($subject)){
             $_SESSION['error'][] = "Materia non esiste";
             header("location: index.php?table=Listings&action=addBookForm");
             exit;
-        } */
+        }*/
 
         $faculty = $_POST['faculty'] ?? "";
         /* if(!facultyExist($faculty)){
@@ -144,13 +156,18 @@ class ListingsController
         } */
 
         $price = $_POST['price'] ?? -1;
-        if ($price < 0) {
+        if ($price == -1 || $price < 0) {
             $_SESSION['error'][] = "Prezzo non valido";
             header("location: index.php?table=Listings&action=addBookForm");
             exit;
         }
 
         $publish = $_POST['publish'] ?? "";
+        if($publish == ""){
+            $_SESSION['error'][] = "Casa editrice non valida";
+            header("location: index.php?table=Listings&action=addBookForm");
+            exit;
+        }
 
         $this->modelBook->getOrCreateBook($title, $isbn, $vol, $author, $class, $subject, $publish, $faculty, $price);
 

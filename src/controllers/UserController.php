@@ -89,7 +89,7 @@ class UserController{
       exit;
     }
 
-    if(strlen($newPassword) < 8){
+    if(strlen($newPassword) < 6){
       $_SESSION['error'][] = "La nuova password deve essere di almeno 8 caratteri";
       header("location: index.php?table=User&action=account");
       exit;

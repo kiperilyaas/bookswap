@@ -14,27 +14,25 @@ class OrderController {
     }
 
     public function viewMyOrders(){
-        $myOrders = $this->orderModel->findMyOrders([$_SESSION['id_user']]);
+        $myOrders = $this->orderModel->findMyOrders($_SESSION['id_user']);
         include "views/myOrders.php";
     }
 
     public function checkout() {
-        // Verifica login
         if(!isset($_SESSION['id_user'])) {
             $_SESSION['error'][] = "Devi effettuare il login per acquistare";
-            header("location: index.php?table=login&action=login");
+            header("location: index.php");
             exit;
         }
 
         $id_listing = $_GET['id'] ?? -1;
         if($id_listing == -1) {
-            $_SESSION['error'][] = "ID listing non valido";
+            $_SESSION['error'][] = "Annuncio non valido";
             header("location: index.php");
             exit;
         }
 
-        // Recupera i dettagli del listing
-        $listings = $this->listingsModel->getListingsByIds([$id_listing]);
+        $listings = $this->listingsModel->getListingsById([$id_listing]);
 
         if(empty($listings)) {
             $_SESSION['error'][] = "Libro non trovato";
@@ -105,9 +103,9 @@ class OrderController {
         if($result) {
             // Aggiorna il listing come non disponibile
             $this->markListingAsUnavailable($id_listing);
-
             $_SESSION['success'][] = "Ordine creato con successo! Il venditore è stato notificato.";
-            header("location: index.php?table=User&action=account");
+            header("location: index.php");
+
         } else {
             $_SESSION['error'][] = "Errore durante la creazione dell'ordine";
             header("location: index.php?table=Order&action=checkout&id=$id_listing");
@@ -119,7 +117,7 @@ class OrderController {
         $this->listingsModel->updateAvailability($id_listing, 0);
     }
 
-    public function changeState(){
+    public function changeStateSeller(){
         $newState = $_POST['newState'] ?? null;
         if(!$newState){
             $_SESSION['error'][] = "Stato del libro non esiste";
@@ -129,7 +127,7 @@ class OrderController {
 
         $orderId = $_POST['currentOrderId'] ?? -1;
         if($orderId == -1){
-            $_SESSION['error'][] = "Id del ordine non esiste";
+            $_SESSION['error'][] = "Ordine non esiste";
             header("location: index.php?table=User&acton=account");
             exit;
         }
@@ -144,5 +142,9 @@ class OrderController {
         $_SESSION['success'][] = "Stato del ordine e' stato cambiato";
         header("location: index.php?table=User&action=account");
         exit;
+    }
+
+    public function changeStateCustomer(){
+        #todo
     }
 }

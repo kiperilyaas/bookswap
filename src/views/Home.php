@@ -272,7 +272,7 @@ defined("APP") or die("ACCESSO NEGATO");
                     <?php
                             if(!isset($_SESSION['id_user'])){
                                 echo '<li class="nav-item mx-2">';
-                                echo '  <a class="btn btn-login d-flex align-items-center gap-2" href="index.php?table=login&action=login">';
+                                echo '  <a class="btn btn-login d-flex align-items-center gap-2" href="index.php?table=login&action=loginView">';
                                 echo 'Accedi';
                                 echo '</a>';
                                 echo '</li>';
@@ -472,7 +472,7 @@ defined("APP") or die("ACCESSO NEGATO");
 
         // Debounce impostato a 50ms come richiesto
         searchTimeout = setTimeout(() => {
-            let url = `index.php?table=Listings&action=liveSearch&query=${encodeURIComponent(query)}&filter=${filter}`;
+            let url = `index.php?table=Listings&action=liveSearchListings&query=${encodeURIComponent(query)}&filter=${filter}`;
 
             fetch(url)
                 .then(response => response.json())

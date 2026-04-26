@@ -138,8 +138,11 @@
                     <input type="email" name="email" class="form-control" placeholder="Inserisci Email" required>
                 </div>
 
-                <div class="mb-4">
-                    <input type="password" name="password" class="form-control" placeholder="Inserisci Password" required>
+                <div class="mb-4 position-relative">
+                    <input type="password" name="password" id="passwordField" class="form-control" placeholder="Inserisci Password" required>
+                    <button type="button" id="togglePassword" class="btn btn-link position-absolute end-0 top-50 translate-middle-y" style="text-decoration: none; z-index: 10;">
+                        <i class="bi bi-eye" id="eyeIcon"></i>
+                    </button>
                 </div>
 
                 <div class="d-flex">
@@ -147,7 +150,7 @@
                 </div>
             </form>
 
-            <a href="index.php?table=login&action=register" class="register-link">
+            <a href="index.php?table=login&action=registerView" class="register-link">
                 Non hai un account? Registrati
             </a>
         </div>
@@ -164,11 +167,30 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    // Validazione form login
+    // Toggle password visibility
     document.addEventListener('DOMContentLoaded', function() {
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('passwordField');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        togglePassword.addEventListener('click', function() {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+
+            // Cambia icona
+            if (type === 'text') {
+                eyeIcon.classList.remove('bi-eye');
+                eyeIcon.classList.add('bi-eye-slash');
+            } else {
+                eyeIcon.classList.remove('bi-eye-slash');
+                eyeIcon.classList.add('bi-eye');
+            }
+        });
+
+        // Validazione form login
         const form = document.querySelector('form');
         const emailInput = document.querySelector('input[name="email"]');
-        const passwordInput = document.querySelector('input[name="password"]');
+        const passwordInput = document.getElementById('passwordField');
 
         // Validazione email in tempo reale
         emailInput.addEventListener('blur', function() {
