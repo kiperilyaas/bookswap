@@ -29,8 +29,20 @@ class OrderModel
     return $stm->rowCount() !== 0;
   }
 
-  public function changeOrderState($param = []){
-    $sql = "UPDATE orders set `state` = ? where id_order = ?";
+  public function changeOrderStateSeller($param = []){
+    $availabelState = ['pending', 'confirmed', 'cancelled'];
+    if(!in_array($param[0], $availabelState)) return 0;
+    $sql = "UPDATE orders set `state_seller` = ? where id_order = ?";
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute($param);
+
+    return $stm->rowCount() !== 0;
+  }
+
+  public function changeOrderStateCustomer($param = []){
+    $availabelState = ['pending', 'confirmed', 'cancelled'];
+    if(!in_array($param[0], $availabelState)) return 0;
+    $sql = "UPDATE orders set `state_customer` = ? where id_order = ?";
     $stm = $this->pdo->prepare($sql);
     $stm->execute($param);
 

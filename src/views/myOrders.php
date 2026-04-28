@@ -1,5 +1,24 @@
 <?php
 defined("APP") or die("ACCESSO NEGATO");
+
+// --- LOGICA DI SEPARAZIONE DEGLI ORDINI ---
+$ordiniAttivi = [];
+$ordiniChiusi = [];
+
+if (!empty($myOrders)) {
+    foreach ($myOrders as $order) {
+        $generalState = $order['state'] ?? 'open';
+        $stateCustomer = $order['state_customer'] ?? 'pending';
+        $stateSeller = $order['state_seller'] ?? 'pending';
+        
+        // Se lo stato generale è "closed", o se entrambi hanno confermato, o se è annullato -> è CHIUSO
+        if ($generalState === 'closed' || ($stateCustomer === 'confirmed' && $stateSeller === 'confirmed') || $stateCustomer === 'cancelled') {
+            $ordiniChiusi[] = $order;
+        } else {
+            $ordiniAttivi[] = $order;
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -60,6 +79,16 @@ defined("APP") or die("ACCESSO NEGATO");
         .order-card:hover {
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             transform: translateY(-2px);
+        }
+
+        /* Stile per le card nello storico (più compatte) */
+        .order-card-history {
+            background: #fdfdfd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 1rem;
+            border: 1px solid #e0e0e0;
+            box-shadow: none;
         }
 
         .order-header {
@@ -183,133 +212,89 @@ defined("APP") or die("ACCESSO NEGATO");
     </nav>
 
     <div class="page-header">
-        <div class="container">
-            <h1 class="page-title">
-                <i class="bi bi-box-seam me-3"></i>I Miei Ordini
-            </h1>
-            <p class="text-dark mb-0">Visualizza e gestisci tutti i tuoi acquisti</p>
+        <div class="container d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h1 class="page-title">
+                    <i class="bi bi-box-seam me-3"></i>I Miei Ordini
+                </h1>
+                <p class="text-dark mb-0">Visualizza e gestisci tutti i tuoi acquisti in corso</p>
+            </div>
+            
+            <?php if(count($ordiniChiusi) > 0): ?>
+            <button class="btn btn-dark shadow-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#storicoOrdini" aria-controls="storicoOrdini">
+                <i class="bi bi-clock-history"></i> Visualizza Storico (<?= count($ordiniChiusi) ?>)
+            </button>
+            <?php endif; ?>
         </div>
     </div>
 
     <div class="container pb-5">
-        <?php if (!empty($myOrders)): ?>
-            <?php foreach($myOrders as $order):
+        <?php if (!empty($ordiniAttivi)): ?>
+            <?php foreach($ordiniAttivi as $order):
+                // Estrazione Dati (Identica a prima)
                 $orderId = $order['id_order'] ?? 'N/D';
                 $bookTitle = $order['title'] ?? 'Libro sconosciuto';
                 $dateOrder = $order['date_order'] ?? 'Data sconosciuta';
-
-                // Formatta data in modo più leggibile
-                if($dateOrder != 'Data sconosciuta') {
-                    $timestamp = strtotime($dateOrder);
-                    $dateOrderFormatted = date('d/m/Y', $timestamp) . ' alle ' . date('H:i', $timestamp);
-                } else {
-                    $dateOrderFormatted = 'Data sconosciuta';
-                }
-
-                $state = $order['state'] ?? 'pending';
+                $dateOrderFormatted = ($dateOrder != 'Data sconosciuta') ? date('d/m/Y', strtotime($dateOrder)) . ' alle ' . date('H:i', strtotime($dateOrder)) : 'Data sconosciuta';
+                $stateCustomer = $order['state_customer'] ?? 'pending';
                 $finalPrice = $order['final_price'] ?? 0;
                 $timeMeet = $order['time_meet'] ?? 'N/D';
-
-                // Formatta orario incontro
-                if($timeMeet != 'N/D') {
-                    $timeMeetTimestamp = strtotime($timeMeet);
-                    $timeMeetFormatted = date('d/m/Y', $timeMeetTimestamp) . ' alle ' . date('H:i', $timeMeetTimestamp);
-                } else {
-                    $timeMeetFormatted = 'N/D';
-                }
-
+                $timeMeetFormatted = ($timeMeet != 'N/D') ? date('d/m/Y', strtotime($timeMeet)) . ' alle ' . date('H:i', strtotime($timeMeet)) : 'N/D';
                 $placeMeet = $order['place_meet'] ?? 'N/D';
                 $descriptionMeet = $order['description_meet'] ?? 'Nessuna nota';
-
-                // Dati venditore
+                
                 $sellerName = $order['seller_name'] ?? ($order['name'] ?? 'N/D');
                 $sellerSurname = $order['seller_surname'] ?? ($order['surname'] ?? '');
                 $sellerFullName = trim($sellerName . ' ' . $sellerSurname);
 
-                // Determina classe badge stato
                 $badgeClass = 'state-pending';
                 $stateText = 'In attesa';
-                if($state == 'confirmed' || $state == 'Consegnato') {
-                    $badgeClass = 'state-confirmed';
-                    $stateText = 'Consegnato';
-                } elseif($state == 'cancelled' || $state == 'Annullato') {
-                    $badgeClass = 'state-cancelled';
-                    $stateText = 'Annullato';
-                }
+                if($stateCustomer == 'confirmed') { $badgeClass = 'state-confirmed'; $stateText = 'Confermato'; } 
+                elseif($stateCustomer == 'cancelled') { $badgeClass = 'state-cancelled'; $stateText = 'Annullato'; }
 
-                // Formatta prezzo
                 $priceFormatted = ($finalPrice > 0) ? '€ ' . number_format($finalPrice, 2, ',', '.') : 'Scambio';
             ?>
                 <div class="order-card">
                     <div class="order-header">
                         <div>
-                            <div class="order-id">
-                                <i class="bi bi-hash"></i> Ordine: <?= htmlspecialchars($orderId) ?>
-                            </div>
-                            <div class="order-date">
-                                <i class="bi bi-calendar3"></i> <?= htmlspecialchars($dateOrderFormatted) ?>
-                            </div>
+                            <div class="order-id"><i class="bi bi-hash"></i> Ordine: <?= htmlspecialchars($orderId) ?></div>
+                            <div class="order-date"><i class="bi bi-calendar3"></i> <?= htmlspecialchars($dateOrderFormatted) ?></div>
                         </div>
                         <div class="d-flex gap-2 align-items-center">
-                            <span class="badge-state <?= $badgeClass ?>">
-                                <?= $stateText ?>
-                            </span>
+                            <span class="badge-state <?= $badgeClass ?>"><?= $stateText ?></span>
                             <button class="btn btn-sm btn-outline-warning change-order-state-btn"
                                     data-order-id="<?= htmlspecialchars($orderId) ?>"
                                     data-book-title="<?= htmlspecialchars($bookTitle) ?>"
-                                    data-current-state="<?= htmlspecialchars($state) ?>">
+                                    data-current-state="<?= htmlspecialchars($stateCustomer) ?>">
                                 <i class="bi bi-arrow-repeat"></i>
                             </button>
                         </div>
                     </div>
 
-                    <div class="book-title">
-                        <i class="bi bi-book"></i> <?= htmlspecialchars($bookTitle) ?>
-                    </div>
-
+                    <div class="book-title"><i class="bi bi-book"></i> <?= htmlspecialchars($bookTitle) ?></div>
                     <div class="mb-3">
-                        <span class="badge bg-secondary">
-                            <i class="bi bi-person-fill"></i> Venditore: <?= htmlspecialchars($sellerFullName) ?>
-                        </span>
+                        <span class="badge bg-secondary"><i class="bi bi-person-fill"></i> Venditore: <?= htmlspecialchars($sellerFullName) ?></span>
                     </div>
 
                     <div class="order-details">
                         <div class="detail-item">
-                            <div class="detail-label">
-                                <i class="bi bi-cash-coin"></i> Prezzo
-                            </div>
-                            <div class="detail-value text-success">
-                                <?= $priceFormatted ?>
-                            </div>
+                            <div class="detail-label"><i class="bi bi-cash-coin"></i> Prezzo</div>
+                            <div class="detail-value text-success"><?= $priceFormatted ?></div>
                         </div>
-
                         <div class="detail-item">
-                            <div class="detail-label">
-                                <i class="bi bi-clock"></i> Orario Incontro
-                            </div>
-                            <div class="detail-value">
-                                <?= htmlspecialchars($timeMeetFormatted) ?>
-                            </div>
+                            <div class="detail-label"><i class="bi bi-clock"></i> Orario Incontro</div>
+                            <div class="detail-value"><?= htmlspecialchars($timeMeetFormatted) ?></div>
                         </div>
-
                         <div class="detail-item">
-                            <div class="detail-label">
-                                <i class="bi bi-geo-alt"></i> Luogo Incontro
-                            </div>
-                            <div class="detail-value">
-                                <?= htmlspecialchars($placeMeet) ?>
-                            </div>
+                            <div class="detail-label"><i class="bi bi-geo-alt"></i> Luogo Incontro</div>
+                            <div class="detail-value"><?= htmlspecialchars($placeMeet) ?></div>
                         </div>
                     </div>
 
                     <?php if($descriptionMeet && $descriptionMeet != 'Nessuna nota'): ?>
                         <div class="mt-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
-                            <div class="detail-label mb-2">
-                                <i class="bi bi-chat-left-text"></i> Note
-                            </div>
-                            <p class="mb-0 text-muted">
-                                <?= htmlspecialchars($descriptionMeet) ?>
-                            </p>
+                            <div class="detail-label mb-2"><i class="bi bi-chat-left-text"></i> Note</div>
+                            <p class="mb-0 text-muted"><?= htmlspecialchars($descriptionMeet) ?></p>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -317,16 +302,64 @@ defined("APP") or die("ACCESSO NEGATO");
 
         <?php else: ?>
             <div class="empty-state">
-                <div class="empty-icon">
-                    <i class="bi bi-inbox"></i>
-                </div>
-                <h3 class="text-muted mb-3">Nessun ordine trovato</h3>
-                <p class="text-muted mb-4">Non hai ancora effettuato nessun acquisto su BookSwap.</p>
+                <div class="empty-icon"><i class="bi bi-inbox"></i></div>
+                <h3 class="text-muted mb-3">Nessun ordine in corso</h3>
+                <?php if(count($ordiniChiusi) == 0): ?>
+                    <p class="text-muted mb-4">Non hai ancora effettuato nessun acquisto su BookSwap.</p>
+                <?php else: ?>
+                    <p class="text-muted mb-4">Tutti i tuoi acquisti passati sono nello storico.</p>
+                <?php endif; ?>
                 <a href="index.php" class="btn btn-lg" style="background-color: var(--bs-orange); color: var(--bs-dark); font-weight: 700; border-radius: 20px; padding: 12px 30px;">
                     <i class="bi bi-search"></i> Scopri i Libri
                 </a>
             </div>
         <?php endif; ?>
+    </div>
+
+    <div class="offcanvas offcanvas-end shadow" tabindex="-1" id="storicoOrdini" aria-labelledby="storicoOrdiniLabel" style="width: 400px;">
+        <div class="offcanvas-header bg-light border-bottom">
+            <h5 class="offcanvas-title fw-bold" id="storicoOrdiniLabel"><i class="bi bi-archive-fill text-secondary me-2"></i> Storico Ordini</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body" style="background-color: var(--bs-bg);">
+            <?php if (!empty($ordiniChiusi)): ?>
+                <?php foreach($ordiniChiusi as $order): 
+                    $orderId = $order['id_order'] ?? 'N/D';
+                    $bookTitle = $order['title'] ?? 'Libro sconosciuto';
+                    $finalPrice = $order['final_price'] ?? 0;
+                    $priceFormatted = ($finalPrice > 0) ? '€ ' . number_format($finalPrice, 2, ',', '.') : 'Scambio';
+                    $stateCustomer = $order['state_customer'] ?? 'pending';
+
+                    $sellerName = $order['seller_name'] ?? ($order['name'] ?? 'N/D');
+                    $sellerSurname = $order['seller_surname'] ?? ($order['surname'] ?? '');
+                    $sellerFullName = trim($sellerName . ' ' . $sellerSurname);
+                    
+                    // Se entrambi hanno confermato o lo state è chiuso lo consideriamo Completato
+                    if($stateCustomer == 'cancelled') {
+                        $badgeClass = 'state-cancelled'; $stateText = 'Annullato';
+                    } else {
+                        $badgeClass = 'state-confirmed'; $stateText = 'Completato';
+                    }
+                ?>
+                    <div class="order-card-history">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="order-id small"><i class="bi bi-hash"></i> <?= htmlspecialchars($sellerFullName) ?></span>
+                            <span class="badge-state <?= $badgeClass ?> px-2 py-1" style="font-size: 0.75rem;"><?= $stateText ?></span>
+                        </div>
+                        <h6 class="fw-bold mb-1" style="color: var(--bs-dark);"><?= htmlspecialchars($bookTitle) ?></h6>
+                        <div class="d-flex justify-content-between align-items-end mt-3">
+                            <span class="small text-muted">Prezzo:</span>
+                            <span class="fw-bold <?= ($stateCustomer == 'cancelled') ? 'text-muted text-decoration-line-through' : 'text-success' ?>"><?= $priceFormatted ?></span>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="text-center mt-5 text-muted">
+                    <i class="bi bi-clock-history fs-1 mb-2 d-block"></i>
+                    Nessun ordine passato.
+                </div>
+            <?php endif; ?>
+        </div>
     </div>
 
     <footer class="text-center">
@@ -338,7 +371,6 @@ defined("APP") or die("ACCESSO NEGATO");
 
     <?php include 'views/ToastNotification.php'; ?>
 
-    <!-- Modal cambia stato ordine -->
     <div class="modal fade" id="changeOrderStateModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -348,38 +380,40 @@ defined("APP") or die("ACCESSO NEGATO");
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    <form action="index.php?table=Order&action=changeOrderStateCustomer" method="post">
-                        <div class="mb-3">
-                            <label class="fw-bold text-muted small">Ordine ID</label>
-                            <input type="hidden" name="currentOrderId" id="currentOrderId">
-                            <p class="mb-0 fw-bold" id="modalOrderId"></p>
-                        </div>
-                        <div class="mb-3">
-                            <label class="fw-bold text-muted small">Libro</label>
-                            <p class="mb-0" id="modalBookTitle"></p>
-                        </div>
-                        <hr>
-                        <div class="mb-3">
-                            <label class="fw-bold text-muted small">Stato Attuale</label>
-                            <p class="mb-0"><span class="badge bg-secondary" id="modalCurrentState"></span></p>
-                        </div>
-                        <div class="mb-3">
-                            <label for="modalNewState" class="form-label fw-bold">Nuovo Stato</label>
-                            <select class="form-select" id="modalNewState" name="newState">
-                                <option value="pending" selected>In attesa</option>
-                                <option value="confirmed">Consegnato</option>
-                                <option value="cancelled">Annullato</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-                    <button type="button" class="btn btn-warning" id="confirmOrderStateChange">
-                        <i class="bi bi-check-circle"></i> Conferma Cambio
-                    </button>
-                </div>
+                <form action="index.php?table=Order&action=changeStateCustomer" method="post">
+                    <div class="modal-body">
+                        
+                            <div class="mb-3">
+                                <label class="fw-bold text-muted small">Ordine ID</label>
+                                <input type="hidden" name="currentOrderId" id="currentOrderId">
+                                <p class="mb-0 fw-bold" id="modalOrderId"></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="fw-bold text-muted small">Libro</label>
+                                <p class="mb-0" id="modalBookTitle"></p>
+                            </div>
+                            <hr>
+                            <div class="mb-3">
+                                <label class="fw-bold text-muted small">Stato Attuale</label>
+                                <p class="mb-0"><span class="badge bg-secondary" id="modalCurrentState"></span></p>
+                            </div>
+                            <div class="mb-3">
+                                <label for="modalNewState" class="form-label fw-bold">Nuovo Stato</label>
+                                <select class="form-select" id="modalNewState" name="newState">
+                                    <option value="pending" selected>In attesa</option>
+                                    <option value="confirmed">Consegnato</option>
+                                    <option value="cancelled">Annullato</option>
+                                </select>
+                            </div>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                        <button type="submit" class="btn btn-warning" id="confirmOrderStateChange">
+                            <i class="bi bi-check-circle"></i> Conferma Cambio
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -405,20 +439,6 @@ defined("APP") or die("ACCESSO NEGATO");
 
                 changeStateModal.show();
             });
-        });
-
-        // Conferma cambio stato (da implementare backend)
-        document.getElementById('confirmOrderStateChange').addEventListener('click', function() {
-            const newState = document.getElementById('modalNewState').value;
-
-            // TODO: Implementare chiamata AJAX o form submit per aggiornare lo stato
-            console.log('Cambio stato ordine:', currentOrderId, 'a:', newState);
-
-            // Per ora chiudi il modale
-            changeStateModal.hide();
-
-            // Mostra alert temporaneo
-            alert('Funzionalità da implementare!\nOrdine ID: ' + currentOrderId + '\nNuovo stato: ' + newState);
         });
     });
     </script>

@@ -86,4 +86,15 @@ function isEmailExist($email){
     return false;
 }
 
+function checkStateIsEqual($id){
+    $result = $GLOBALS['model']->selectStateCustomerSellerFromOrder([$id]);
+    if($result[0]['state_customer'] == $result[0]['state_seller']){
+        $result = $GLOBALS['model']->changeGlobalStateOrder([$id]);
+    }
+    else return -1;
+
+    if($result) return 1;
+    else return -1;
+}
+
 ?>

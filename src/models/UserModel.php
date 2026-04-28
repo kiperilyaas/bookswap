@@ -76,7 +76,9 @@ class UserModel // Iniziale maiuscola
   public function getListingsOfUser($param = []){
     $sql = "SELECT L.id_listing, L.price, L.is_available, B.title, B.isbn from listings L
             join books B using(id_book)
-            where L.id_seller = ?";
+            join users U on L.id_seller = U.id_user
+            where L.id_seller = ?
+            order by L.is_available DESC";
     $stm = $this->pdo->prepare($sql);
     $stm->execute($param);
 
@@ -84,7 +86,15 @@ class UserModel // Iniziale maiuscola
   }
 
   public function getOrdersOfUser($param = []){
-    $sql = "SELECT * from orders O join listings L using(id_listing) join books B using(id_book) where O.id_seller = ?";
+    $sql = "SELECT L.*, B.*, O.*, 
+    U.name as customerName, U.surname as customerSurname, U.email as customerEmail,
+    US.name as sellerName, US.surname as sellerSurname, US.email as sellerEmail
+    from orders O 
+    join listings L using(id_listing) 
+    join books B using(id_book)
+    left join users U on O.id_customer = U.id_user
+    left join users US on O.id_seller = US.id_user
+    where O.id_seller = ?";
     $stm = $this->pdo->prepare($sql);
     $stm->execute($param);
 

@@ -3,6 +3,7 @@ if(!defined('APP')) die('Accesso negato');
 
 require_once 'models/OrderModel.php';
 require_once 'models/ListingsModel.php';
+require_once '../utils/function.php';
 
 class OrderController {
     private $orderModel;
@@ -83,7 +84,7 @@ class OrderController {
         }
 
         $date_order = date('Y-m-d H:i:s');
-        $state = 'Aperto';
+        $state = 'pending';
 
         // Parametri per insertRecord: id_listing, id_customer, id_seller, final_price, date_order, state, time_meet, place_meet, description_meet
         $param = [
@@ -132,12 +133,14 @@ class OrderController {
             exit;
         }
 
-        $result = $this->orderModel->changeOrderState([$newState, $orderId]);
+        $result = $this->orderModel->changeOrderStateSeller([$newState, $orderId]);
         if(!$result){
             $_SESSION['error'][] = "Non e' stato possibile aggiornare lo stato del ordine";
             header("location: index.php?table=User&action=account");
             exit;
         }
+
+        if(checkStateIsEqual($orderId));
 
         $_SESSION['success'][] = "Stato del ordine e' stato cambiato";
         header("location: index.php?table=User&action=account");
@@ -145,6 +148,33 @@ class OrderController {
     }
 
     public function changeStateCustomer(){
-        #todo
+        $orderId = $_POST['currentOrderId'] ?? -1;
+        if($orderId == -1){
+            $_SESSION['error'][] = "Ordine non esiste";
+            header("location: index.php?table=Order&table=viewMyOrders");
+            exit;
+        }
+
+        $newState = $_POST['newState'] ?? null;
+        if(!$newState){
+            $_SESSION['error'][] = "Stato del libro non esiste";
+            header("location: index.php?table=User&action=account");
+            exit;
+        }
+        
+        $result = $this->orderModel->changeOrderStateCustomer([$newState, $orderId]);
+
+        if(!$result){
+            $_SESSION['error'][] = "Non e' stato possibile aggiornare lo stato del ordine";
+            header("location: index.php?table=Order&action=viewMyOrders");
+            exit;
+        }
+
+        if(checkStateIsEqual($orderId));
+
+        $_SESSION['success'][] = "Stato del ordine e' stato cambiato";
+        header("location: index.php?table=Order&action=viewMyOrders");
+        exit;
+
     }
 }

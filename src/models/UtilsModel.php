@@ -73,6 +73,24 @@ class UtilsModel{
 
     return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
+
+  public function selectStateCustomerSellerFromOrder($param){
+    $sql = "SELECT O.state_seller, O.state_customer from orders O where O.id_order = ? limit 1";
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute($param);
+
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function changeGlobalStateOrder($param = []){
+    $sql = "UPDATE orders set `state` = 'cancelled' where orders.id_order = ?";
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute($param);
+
+    return $stm->rowCount() !== 0;
+  }
+
+
 }
 
 
