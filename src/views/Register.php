@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Nome Azienda</title>
+    <title>Register - Nome Azienda</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -46,7 +46,7 @@
         }
 
         /* Container centrato */
-        .login-container {
+        .register-container {
             flex-grow: 1;
             display: flex;
             justify-content: center;
@@ -55,7 +55,7 @@
         }
 
         /* Card stile Amazon */
-        .login-card {
+        .register-card {
             background: white;
             padding: 2.5rem;
             border-radius: 8px;
@@ -65,7 +65,7 @@
             border: 1px solid #ddd;
         }
 
-        .login-title {
+        .register-title {
             color: var(--amazon-dark);
             font-weight: 700;
             margin-bottom: 2rem;
@@ -84,7 +84,7 @@
         }
 
         /* Bottone stile Amazon */
-        .btn-login {
+        .btn-register {
             background-color: var(--amazon-orange);
             border: none;
             color: var(--amazon-dark);
@@ -93,23 +93,9 @@
             padding: 0.6rem;
         }
 
-        .btn-login:hover {
+        .btn-register:hover {
             background-color: #ec8b00;
             color: var(--amazon-dark);
-        }
-
-        .register-link {
-            display: block;
-            text-align: center;
-            margin-top: 1.5rem;
-            color: #0066c0;
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-
-        .register-link:hover {
-            color: #c45500;
-            text-decoration: underline;
         }
 
         footer {
@@ -128,11 +114,25 @@
         </div>
     </nav>
 
-    <div class="login-container">
-        <div class="login-card">
-            <h2 class="login-title">Login</h2>
-            
-            <form method="post" action="index.php?action=check&table=Login">
+    <div class="register-container">
+        <div class="register-card">
+
+            <h2 class="register-title">Registrati</h2>
+
+            <form action="index.php?table=login&action=insert" method="post">
+
+                <div class="mb-3">
+                    <input type="text" name="name" class="form-control" placeholder="Inserisci Nome" required>
+                </div>
+
+                <div class="mb-3">
+                    <input type="text" name="surname" class="form-control" placeholder="Inserisci Cognome" required>
+                </div>
+
+                <div class="mb-3">
+                    <input type="text" name="class" class="form-control" placeholder="Inserisci Classe/Sezione" required>
+                </div>
+
                 <div class="mb-3">
                     <input type="email" name="email" class="form-control" placeholder="Inserisci Email" required>
                 </div>
@@ -142,13 +142,11 @@
                 </div>
 
                 <div class="d-flex">
-                    <button type="submit" class="btn-login w-100">Login</button>
+                    <button type="submit" class="btn-register w-100">Registrati</button>
                 </div>
+
             </form>
 
-            <a href="index.php?table=login&action=register" class="register-link">
-                Non hai un account? Registrati
-            </a>
         </div>
     </div>
 

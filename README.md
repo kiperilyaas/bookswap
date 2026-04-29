@@ -29,10 +29,10 @@ https://github.com/kiperilyaas/bookswap
 
 
 # to do
-1. [x] Progettazione del Database
+- [x] Progettazione del Database
     - [x] Diagramma ER
     - [x] Progettazione Fisica
-2. [ ] Front-End
+- [ ] Front-End
     - [x] Idea visiva
         - [x] Schermata Home
         - [x] Schermata Vendi
@@ -41,26 +41,37 @@ https://github.com/kiperilyaas/bookswap
         - [x] Schermata Carello
     - [ ] Creazione delle pagine web
         - [ ] Home
-        - [ ] Login
-        - [ ] Vendita
-        - [ ] Info personali
-        - [ ] Carello
+        - [x] Login
+        - [x] Creazione della offerta
+        - [x] Info personali
+        - [x] Carello
+        - [x] Account (Dati Personali)
+        - [x] Registrazione
+        - [x] Inserimento del libro
+        - [ ] Error
 - [ ] Back-End
-    - [ ] Crezione dei Models
-        - [x] CRUD per users
-        - [x] CRUD per books
-        - [x] CRUD per orders
-        - [x] gestione del login
-        - [x] select Model #tutti select utili
-    - [ ] Creazione dei Controller
-        - [ ] Login
+    - [x] Models
+        - [x] Users
+        - [x] Books
+        - [x] Orders
+        - [x] Listings
+        - [x] Utils 
+    - [ ] Controller
+        - [x] Login
             - [x] Funzionamento generale
-            - [ ] Gestione dei errori
-            - [ ] Verifica dei dati personali (solo studenti della scuola)
+            - [x] Gestione dei errori
+            - [x] Verifica dei dati personali (solo studenti della scuola)
+            - [x] Controllo di logout
+        - [x] Offerte
+            - [x] creare una offerta di vendita
+            - [x] creazione del libro
         - [ ] User
-            - [ ] creare un ordine di vendita
+            - [x] eliminazione di una offerta
+            - [x] gestione della offerta/ordine del utente
             - [ ] aggiungere/eliminare i libri dal carrello
             - [ ] acquistare un libro
+        - [x] Error
+            - [x] Gestione del Errore
 - [ ] Test 
 - [ ] Pubblicazione
 

@@ -2,7 +2,11 @@
 define("APP", true);
 session_start();
 
-if(isset($_GET['action'])){
+if(!isset($_SESSION['error'])){
+    $_SESSION['error'] = [];
+}
+
+if(isset($_GET['action']) || isset($_GET['table'])){
 
     if($_GET['action'] == "login"){
         if(isset($_SESSION['id_user'])){
