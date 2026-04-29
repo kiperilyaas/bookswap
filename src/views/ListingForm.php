@@ -17,6 +17,7 @@ if (!isset($_SESSION['id_user'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crea Annuncio | BookSwap</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
     <style>
         :root {
@@ -177,6 +178,7 @@ if (!isset($_SESSION['id_user'])) {
                                         <option value="title">Titolo</option>
                                         <option value="author">Autore</option>
                                         <option value="isbn">ISBN</option>
+                                        <option value="class">Classe</option>
                                     </select>
                                     <input type="text" class="form-control" id="searchInput"
                                         placeholder="Inserisci titolo, autore o codice ISBN..."
@@ -355,6 +357,8 @@ if (!isset($_SESSION['id_user'])) {
         }
     });
     </script>
+
+    <?php include 'views/ToastNotification.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

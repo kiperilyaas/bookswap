@@ -10,6 +10,7 @@
     <title>Login - Nome Azienda</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
     <style>
         :root {
@@ -124,7 +125,7 @@
 
     <nav class="navbar navbar-custom">
         <div class="container-fluid">
-            <a href="#" class="navbar-brand">📚 BookSwap</a>
+            <a href="index.php" class="navbar-brand">📚 BookSwap</a>
         </div>
     </nav>
 
@@ -137,8 +138,11 @@
                     <input type="email" name="email" class="form-control" placeholder="Inserisci Email" required>
                 </div>
 
-                <div class="mb-4">
-                    <input type="password" name="password" class="form-control" placeholder="Inserisci Password" required>
+                <div class="mb-4 position-relative">
+                    <input type="password" name="password" id="passwordField" class="form-control" placeholder="Inserisci Password" required>
+                    <button type="button" id="togglePassword" class="btn btn-link position-absolute end-0 top-50 translate-middle-y" style="text-decoration: none; z-index: 10;">
+                        <i class="bi bi-eye" id="eyeIcon"></i>
+                    </button>
                 </div>
 
                 <div class="d-flex">
@@ -146,7 +150,7 @@
                 </div>
             </form>
 
-            <a href="index.php?table=login&action=register" class="register-link">
+            <a href="index.php?table=login&action=registerView" class="register-link">
                 Non hai un account? Registrati
             </a>
         </div>
@@ -159,5 +163,106 @@
         </div>
     </footer>
 
+    <?php include 'views/ToastNotification.php'; ?>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // Toggle password visibility
+    document.addEventListener('DOMContentLoaded', function() {
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('passwordField');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        togglePassword.addEventListener('click', function() {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+
+            // Cambia icona
+            if (type === 'text') {
+                eyeIcon.classList.remove('bi-eye');
+                eyeIcon.classList.add('bi-eye-slash');
+            } else {
+                eyeIcon.classList.remove('bi-eye-slash');
+                eyeIcon.classList.add('bi-eye');
+            }
+        });
+
+        // Validazione form login
+        const form = document.querySelector('form');
+        const emailInput = document.querySelector('input[name="email"]');
+        const passwordInput = document.getElementById('passwordField');
+
+        // Validazione email in tempo reale
+        emailInput.addEventListener('blur', function() {
+            const email = this.value.trim();
+            if (email && !email.endsWith('@isit100.fe.it')) {
+                this.classList.add('is-invalid');
+                showFieldError(this, 'Usa un\'email @isit100.fe.it');
+            } else {
+                this.classList.remove('is-invalid');
+                removeFieldError(this);
+            }
+        });
+
+        // Rimuovi errore quando l'utente inizia a digitare
+        emailInput.addEventListener('input', function() {
+            this.classList.remove('is-invalid');
+            removeFieldError(this);
+        });
+
+        passwordInput.addEventListener('input', function() {
+            this.classList.remove('is-invalid');
+            removeFieldError(this);
+        });
+
+        // Validazione al submit
+        form.addEventListener('submit', function(e) {
+            let isValid = true;
+
+            // Valida email
+            const email = emailInput.value.trim();
+            if (!email) {
+                e.preventDefault();
+                emailInput.classList.add('is-invalid');
+                showFieldError(emailInput, 'Email obbligatoria');
+                isValid = false;
+            } else if (!email.endsWith('@isit100.fe.it')) {
+                e.preventDefault();
+                emailInput.classList.add('is-invalid');
+                showFieldError(emailInput, 'Usa un\'email @isit100.fe.it');
+                isValid = false;
+            }
+
+            // Valida password
+            const password = passwordInput.value;
+            if (!password) {
+                e.preventDefault();
+                passwordInput.classList.add('is-invalid');
+                showFieldError(passwordInput, 'Password obbligatoria');
+                isValid = false;
+            } else if (password.length < 3) {
+                e.preventDefault();
+                passwordInput.classList.add('is-invalid');
+                showFieldError(passwordInput, 'Password troppo corta (min 6 caratteri)');
+                isValid = false;
+            }
+        });
+
+        function showFieldError(input, message) {
+            removeFieldError(input);
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'invalid-feedback d-block';
+            errorDiv.textContent = message;
+            input.parentNode.appendChild(errorDiv);
+        }
+
+        function removeFieldError(input) {
+            const errorDiv = input.parentNode.querySelector('.invalid-feedback');
+            if (errorDiv) {
+                errorDiv.remove();
+            }
+        }
+    });
+    </script>
 </body>
 </html>
