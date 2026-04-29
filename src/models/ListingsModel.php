@@ -38,7 +38,6 @@ class ListingsModel{
         return $stm->fetchAll(PDO::FETCH_ASSOC);
     }
 
-<<<<<<< HEAD
     public function searchOnlyBooks($query, $filter) {
     try {
         $allowedFilters = ['title', 'author', 'isbn', 'class'];
@@ -76,18 +75,6 @@ class ListingsModel{
         $dql = "SELECT * FROM listings";
         $stm = $this->pdo->prepare($dql);
         $stm->execute($param);
-=======
-    public function searchBooksListings($query, $filter) {
-        try{
-            $allowedFilters = ['title', 'author', 'isbn', 'class'];
-            if (!in_array($filter, $allowedFilters)) {
-                $filter = 'title';
-            }
-            
-            $sql = "SELECT B.*, C.class AS class_name 
-                    FROM books B
-                    LEFT JOIN class C ON B.id_class = C.id_class ";
->>>>>>> 06c78161276cf3b4c66cecf7d838d924a3eccd2c
 
             if ($filter === 'class') {          
                 $sql .= "WHERE C.class LIKE :query "; 
@@ -110,12 +97,8 @@ class ListingsModel{
             exit;
         }
     }
-<<<<<<< HEAD
 
     public function searchBook($query, $filter) {
-=======
-    public function searchBookOnly($query, $filter) {
->>>>>>> 06c78161276cf3b4c66cecf7d838d924a3eccd2c
         $allowedFilters = ['title', 'author', 'isbn', 'class'];
         if (!in_array($filter, $allowedFilters)) {
             $filter = 'title';
