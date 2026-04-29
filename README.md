@@ -72,8 +72,14 @@ https://github.com/kiperilyaas/bookswap
             - [x] gestione della offerta/ordine del utente
             - [ ] acquistare un libro
             - [ ] verifica di chiusura del ordine
+            - [ ] Quando nella mia vetrina clicco sul libro, di devono vedere le informazioni
         - [x] Error
             - [x] Gestione del Errore
 - [ ] Test 
+    - [ ] Quando un numero è troppo alto da errore (es. 1milione di euro)
+    - [ ] Quando la scheda è a meta schermo, il menu per accedere non si apre
+    - [ ] Quando fai la ricerca dei libri disponibili, ti escono tutti i libri anche se non 
+      sono disponibili
+    - [ ] convertire prezzi in float
 - [ ] Pubblicazione
 

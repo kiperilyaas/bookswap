@@ -3,7 +3,7 @@ defined("APP") or die("ACCESSO NEGATO");
 
 // Controllo di sicurezza: solo gli utenti loggati possono accedere
 if (!isset($_SESSION['id_user'])) {
-    $_SESSION['errors'] = ["📢 Devi effettuare il login per aggiungere un'offerta."];
+    $_SESSION['errors'] = ["Devi effettuare il login per aggiungere un'offerta."];
     header("Location: index.php?table=login&action=login");
     exit();
 }
@@ -79,10 +79,10 @@ if (!isset($_SESSION['id_user'])) {
             box-shadow: 0 0 3px rgba(255, 153, 0, 0.5);
         }
 
-        /* Pulsante Arancione Uniformato (Stile Amazon) */
+        /* Pulsante Arancione Uniformato - BORDI RIMOSSI */
         .btn-amazon {
             background-color: var(--amazon-orange);
-            border: 1px solid #a88734;
+            border: none; /* Rimosso bordo */
             color: var(--amazon-dark);
             font-weight: 600;
             border-radius: 20px;
@@ -104,7 +104,7 @@ if (!isset($_SESSION['id_user'])) {
 
         .btn-amazon-light {
             background-color: var(--amazon-orange);
-            border: 1px solid #a88734;
+            border: none; /* Rimosso bordo */
             color: var(--amazon-dark);
             font-weight: 600;
             border-radius: 20px;
@@ -327,15 +327,11 @@ if (!isset($_SESSION['id_user'])) {
         }, 250);
     });
 
-    // AGGIUNTO: Il parametro 'price' viene ricevuto dalla funzione e stampato a schermo
     function selectBook(idBook, title, price) {
         document.getElementById('id_book_selezionato').value = idBook;
         document.getElementById('submitBtn').disabled = false;
         document.getElementById('selectedBookTitle').innerText = title;
-        
-        // Stampa il prezzo nel riquadro
         document.getElementById('selectedBookPrice').innerText = price + '€';
-        
         document.getElementById('searchBlock').style.display = 'none';
         document.getElementById('selectedBlock').style.display = 'block';
     }
@@ -347,7 +343,7 @@ if (!isset($_SESSION['id_user'])) {
         document.getElementById('searchResults').innerHTML = '';
         document.getElementById('searchBlock').style.display = 'block';
         document.getElementById('selectedBlock').style.display = 'none';
-        document.getElementById('selectedBookPrice').innerText = ''; // Puliamo il prezzo
+        document.getElementById('selectedBookPrice').innerText = ''; 
     }
 
     document.getElementById('offerForm').addEventListener('submit', function (e) {
