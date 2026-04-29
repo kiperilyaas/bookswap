@@ -321,29 +321,10 @@ defined("APP") or die("ACCESSO NEGATO");
     </div>
 
     <main class="container my-5">
-<<<<<<< HEAD
-<<<<<<< HEAD
-        <h3 class="mb-4">Risultati della ricerca</h3>
-        
-        <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
-            
-                <?php include 'table.php'; ?>
-            
-
-=======
         <h2 class="section-title">Libri disponibili</h2>
 
         <div id="defaultResults" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
             <?php include 'Table.php'; ?>
-=======
-        <h2 class="section-title">Libri disponibili</h2>
-
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
-
-                <?php include 'Table.php'; ?>
-
-
->>>>>>> dd1e30f238e295615cfb1d5455a0243ec9079874
         </div>
 
         <div id="searchResults" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4 d-none">
@@ -389,7 +370,6 @@ defined("APP") or die("ACCESSO NEGATO");
                     <a href="#" id="modalBookCartBtn" class="btn btn-warning" style="border-radius: 20px; font-weight: 600; padding: 0.5rem 1.5rem;"><i class="bi bi-bag-check-fill"></i> Compra!</a>
                 </div>
             </div>
->>>>>>> 3ed6f5f15393b98bf1c0c4d688652b8c4fada444
         </div>
     </div>
 
