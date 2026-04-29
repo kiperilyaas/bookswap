@@ -55,20 +55,25 @@ defined("APP") or die("ACCESSO NEGATO");
             color: var(--amazon-orange) !important;
         }
 
+        /* BOTTONE ACCEDI TONDO */
         .btn-login {
             background-color: var(--amazon-orange);
             border: none;
             color: var(--amazon-dark);
             font-weight: 600;
             padding: 0.4rem 1.5rem;
+            border-radius: 20px; /* Rende il bottone tondo */
+            transition: all 0.2s ease;
         }
 
         .btn-login:hover {
             background-color: #ec8b00;
             color: var(--amazon-dark);
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(255, 153, 0, 0.3);
         }
 
-        /* Search Bar Super Pulita (Dal file 2) */
+        /* Search Bar Super Pulita */
         .search-container {
             background-color: var(--amazon-light);
             padding: 20px 0;
@@ -107,7 +112,7 @@ defined("APP") or die("ACCESSO NEGATO");
             background-color: white;
         }
 
-        /* Card Libri stile Amazon - MIGLIORATO */
+        /* Card Libri stile Amazon */
         .book-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid #ddd;
@@ -175,37 +180,6 @@ defined("APP") or die("ACCESSO NEGATO");
             text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .status-available {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .status-unavailable {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .seller-info {
-            background-color: #f8f9fa;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            margin-bottom: 12px;
-        }
-
-        /* Ripristino stile bottoni arrotondati come da file originale */
         .btn-warning {
             background-color: var(--amazon-orange);
             border: none;
@@ -222,16 +196,6 @@ defined("APP") or die("ACCESSO NEGATO");
             color: var(--amazon-dark);
             transform: scale(1.02);
             box-shadow: 0 4px 8px rgba(255, 153, 0, 0.3);
-        }
-
-        .btn-warning:active {
-            transform: scale(0.98);
-        }
-
-        .badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
         }
 
         footer {
@@ -257,7 +221,7 @@ defined("APP") or die("ACCESSO NEGATO");
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id=\"navbarNav\">
+            <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center me-3">
                     <li class="nav-item">
                         <?php if(isset($_SESSION['id_user'])): ?>
@@ -270,25 +234,25 @@ defined("APP") or die("ACCESSO NEGATO");
                     </li>
                     <li class="nav-item"><a class="nav-link" href="index.php?table=Order&action=viewMyOrders">Ordini</a></li>
                     <?php
-                            if(!isset($_SESSION['id_user'])){
-                                echo '<li class="nav-item mx-2">';
-                                echo '  <a class="btn btn-login d-flex align-items-center gap-2" href="index.php?table=login&action=loginView">';
-                                echo 'Accedi';
-                                echo '</a>';
-                                echo '</li>';
-                            }
-                            else{
-                                echo '<li class="nav-item mx-2">';
-                                echo '  <a class="btn btn-login d-flex align-items-center gap-2" href="index.php?table=User&action=account">';
-                                echo '      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                        if(!isset($_SESSION['id_user'])){
+                            echo '<li class="nav-item mx-2">';
+                            echo '  <a class="btn btn-login d-flex align-items-center gap-2" href="index.php?table=login&action=loginView">';
+                            echo 'Accedi';
+                            echo '</a>';
+                            echo '</li>';
+                        }
+                        else{
+                            echo '<li class="nav-item mx-2">';
+                            echo '  <a class="btn btn-login d-flex align-items-center gap-2" href="index.php?table=User&action=account">';
+                            echo '      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
                                                 <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
                                                 <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
                                             </svg>';
-                                echo '      Area Personale';
-                                echo '  </a>';
-                                echo '</li>';
-                            }
-                        ?>
+                            echo '      Area Personale';
+                            echo '  </a>';
+                            echo '</li>';
+                        }
+                    ?>
                 </ul>
             </div>
         </div>
@@ -350,16 +314,13 @@ defined("APP") or die("ACCESSO NEGATO");
                 </div>
                 <div class="modal-body text-center">
                     <img id="modalBookImg" src="" class="img-fluid mb-3" style="max-height: 250px; object-fit: contain;">
-                    
                     <div class="mb-3">
                         <p class="mb-1"><strong>Autore:</strong> <span id="modalBookAuthor"></span></p>
                         <p class="mb-1"><strong>Venditore:</strong> <span id="modalBookSeller"></span> | <strong>Classe:</strong> <span id="modalBookClasse"></span></p>
                         <p class="mb-1"><strong>ISBN:</strong> <span id="modalBookISBN"></span></p>
                         <p class="mb-1"><strong>Casa Editrice:</strong> <span id="modalBookPublisher"></span></p>
                     </div>
-
                     <div id="modalBookPrice" class="price mb-3" style="font-size: 1.8rem;"></div>
-                    
                     <div class="text-start p-3 bg-light rounded">
                         <h6><strong>Descrizione:</strong></h6>
                         <p id="modalBookDescription" class="mb-0"></p>
@@ -401,7 +362,6 @@ defined("APP") or die("ACCESSO NEGATO");
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-    // Funzione conferma acquisto
     function confirmPurchase(event, bookTitle) {
         event.stopPropagation();
         event.preventDefault();
@@ -428,7 +388,6 @@ defined("APP") or die("ACCESSO NEGATO");
             bookModal.querySelector('#modalBookPublisher').textContent = element.getAttribute('data-publisher') || 'N/D';
             bookModal.querySelector('#modalBookClasse').textContent = element.getAttribute('data-classe') || 'N/D';
             
-            // Aggiorna il link del bottone checkout nel modale
             let listingId = element.getAttribute('data-id');
             let bookTitle = element.getAttribute('data-title');
             if(listingId) {
@@ -441,9 +400,7 @@ defined("APP") or die("ACCESSO NEGATO");
         });
     });
 
-    // -----------------------------------------
-    // LOGICA RICERCA LIVE (Dal file 2)
-    // -----------------------------------------
+    // RICERCA LIVE
     let searchTimeout;
 
     document.getElementById('searchInput').addEventListener('input', function () {
@@ -470,7 +427,6 @@ defined("APP") or die("ACCESSO NEGATO");
         searchIcon.classList.add('d-none');
         loadingSpinner.classList.remove('d-none');
 
-        // Debounce impostato a 50ms come richiesto
         searchTimeout = setTimeout(() => {
             let url = `index.php?table=Listings&action=liveSearchListings&query=${encodeURIComponent(query)}&filter=${filter}`;
 
@@ -490,14 +446,13 @@ defined("APP") or die("ACCESSO NEGATO");
                         data.forEach(book => {
                             let imgSrc = book.immagine ? book.immagine : '../utils/immagini/prova_libro.png';
                             let title = book.title ? book.title : 'Title Unknown';
-                            
                             let sellerName = book.Name ? book.Name : (book.name ? book.name : '');
                             let sellerSurname = book.Surname ? book.Surname : (book.surname ? book.surname : '');
                             let seller = (sellerName + ' ' + sellerSurname).trim() || 'Unknown';
                             
                             let rawPrice = book.priceOffer !== undefined ? book.priceOffer : book.price;
                             let priceHTML = '';
-                            let cleanPriceTesto = ''; // Serve per il modale!
+                            let cleanPriceTesto = '';
                             
                             if (rawPrice !== null && parseFloat(rawPrice) > 0) {
                                 let formattedPrice = parseFloat(rawPrice).toFixed(2).replace('.', ',');
@@ -522,25 +477,18 @@ defined("APP") or die("ACCESSO NEGATO");
 
                             possibleExtras.forEach(extra => {
                                 if (extra.value && detailsCount < 3) {
-                                    extraHTML += `
-                                        <div class="text-truncate">
-                                            <strong>${extra.label}:</strong> ${extra.value}
-                                        </div>
-                                    `;
+                                    extraHTML += `<div class="text-truncate"><strong>${extra.label}:</strong> ${extra.value}</div>`;
                                     detailsCount++;
                                 }
                             });
 
                             let idItem = book.id_listing || book.id_book || '';
-                            
-                            // Estraiamo i dati per il modale in modo pulito prevenendo stringhe "undefined"
                             let safeDescription = (book.description || book.descrizione || '').replace(/"/g, '&quot;');
                             let safeAuthor = (book.author || '').replace(/"/g, '&quot;');
                             let safePublisher = (book.publishing_house || book.publish || '').replace(/"/g, '&quot;');
                             let safeClass = (book.class || book.classe || '').replace(/"/g, '&quot;');
                             let safeIsbn = (book.isbn || '').replace(/"/g, '&quot;');
 
-                            // Abbiamo aggiunto data-bs-toggle e tutti i data-* richiesti per aprire il modale!
                             let cardHTML = `
                                 <div class="col">
                                     <div class="card book-card h-100" 
@@ -565,22 +513,16 @@ defined("APP") or die("ACCESSO NEGATO");
                                             <p class="mb-2 text-muted" style="font-size: 0.85rem;">
                                                 👤 Seller: <strong>${seller}</strong>
                                             </p>
-                                            <div class="mb-2">
-                                                ${priceHTML}
-                                            </div>
+                                            <div class="mb-2">${priceHTML}</div>
                                             <p class="mb-2 small">
-                                                <span class="${statusColor} fw-bold">
-                                                    ● ${statusText}
-                                                </span>
+                                                <span class="${statusColor} fw-bold">● ${statusText}</span>
                                             </p>
-                                            <div class="small text-muted mb-3">
-                                                ${extraHTML}
-                                            </div>
+                                            <div class="small text-muted mb-3">${extraHTML}</div>
                                             <div class="mt-auto">
                                                 <a href="index.php?table=Order&action=checkout&id=${encodeURIComponent(idItem)}"
                                                    onclick="return confirmPurchase(event, '${title.replace(/'/g, "\\'")}');"
                                                    class="btn btn-warning w-100 shadow-sm d-flex justify-content-center align-items-center gap-2">
-                                                    <i class="bi bi-bag-check-fill"></i> Compra!
+                                                     <i class="bi bi-bag-check-fill"></i> Compra!
                                                 </a>
                                             </div>
                                         </div>
@@ -600,7 +542,7 @@ defined("APP") or die("ACCESSO NEGATO");
                     searchIcon.classList.remove('d-none');
                     loadingSpinner.classList.add('d-none');
                 });
-        }, 50); // Esegue la chiamata solo 50ms dopo che l'utente ha smesso di scrivere
+        }, 50);
     });
     </script>
 
