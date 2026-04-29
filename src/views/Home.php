@@ -10,6 +10,7 @@ defined("APP") or die("ACCESSO NEGATO");
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BookSwap | Compra e Vendi Libri</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
     <style>
         :root {
@@ -106,28 +107,51 @@ defined("APP") or die("ACCESSO NEGATO");
             background-color: white;
         }
 
-        /* Card Libri stile Amazon */
+        /* Card Libri stile Amazon - MIGLIORATO */
         .book-card {
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid #ddd;
-            border-radius: 8px;
+            border-radius: 12px;
             background: white;
             height: 100%;
             cursor: pointer;
+            overflow: hidden;
+            position: relative;
         }
 
         .book-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            border-color: #bbb;
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+            border-color: var(--amazon-orange);
+        }
+
+        .book-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--amazon-orange), #ffb84d);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .book-card:hover::before {
+            transform: scaleX(1);
         }
 
         .book-img {
             height: 280px;
             object-fit: contain;
             padding: 20px;
-            background-color: #fff;
-            border-radius: 8px 8px 0 0;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border-radius: 12px 12px 0 0;
+            transition: transform 0.3s ease;
+        }
+
+        .book-card:hover .book-img {
+            transform: scale(1.05);
         }
 
         .card-title {
@@ -136,6 +160,7 @@ defined("APP") or die("ACCESSO NEGATO");
             color: #0066c0;
             line-height: 1.3;
             min-height: 2.6rem;
+            transition: color 0.2s ease;
         }
 
         .card-title:hover {
@@ -144,9 +169,40 @@ defined("APP") or die("ACCESSO NEGATO");
         }
 
         .price {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: #B12704;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-available {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-unavailable {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .seller-info {
+            background-color: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
         }
 
         /* Ripristino stile bottoni arrotondati come da file originale */
@@ -158,11 +214,18 @@ defined("APP") or die("ACCESSO NEGATO");
             border-radius: 20px;
             padding: 0.5rem;
             font-size: 0.9rem;
+            transition: all 0.2s ease;
         }
 
         .btn-warning:hover {
             background-color: #ec8b00;
             color: var(--amazon-dark);
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(255, 153, 0, 0.3);
+        }
+
+        .btn-warning:active {
+            transform: scale(0.98);
         }
 
         .badge {
@@ -205,11 +268,11 @@ defined("APP") or die("ACCESSO NEGATO");
                             </a>
                         <?php endif; ?>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="#">Ordini</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.php?table=Order&action=viewMyOrders">Ordini</a></li>
                     <?php
                             if(!isset($_SESSION['id_user'])){
                                 echo '<li class="nav-item mx-2">';
-                                echo '  <a class="btn btn-login d-flex align-items-center gap-2" href="index.php?table=login&action=login">';
+                                echo '  <a class="btn btn-login d-flex align-items-center gap-2" href="index.php?table=login&action=loginView">';
                                 echo 'Accedi';
                                 echo '</a>';
                                 echo '</li>';
@@ -226,12 +289,6 @@ defined("APP") or die("ACCESSO NEGATO");
                                 echo '</li>';
                             }
                         ?>
-                    <li class="nav-item">
-                        <a class="nav-link position-relative" href="index.php?table=Home&action=cart">
-                            🛒 Carrello
-                            <span class="badge rounded-pill bg-danger">0</span>
-                        </a>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -246,7 +303,6 @@ defined("APP") or die("ACCESSO NEGATO");
                             <option value="title">Titolo</option>
                             <option value="author">Autore</option>
                             <option value="isbn">ISBN</option>
-                            <option value="class">Classe</option>
                         </select>
                         <input type="text" class="form-control" id="searchInput" placeholder="Inizia a digitare per cercare...">
                         
@@ -311,7 +367,7 @@ defined("APP") or die("ACCESSO NEGATO");
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 20px; font-weight: 600; padding: 0.5rem 1.5rem;">Chiudi</button>
-                    <a href="#" id="modalBookCartBtn" class="btn btn-warning" style="border-radius: 20px; font-weight: 600; padding: 0.5rem 1.5rem;">Aggiungi al carrello</a>
+                    <a href="#" id="modalBookCartBtn" class="btn btn-warning" style="border-radius: 20px; font-weight: 600; padding: 0.5rem 1.5rem;"><i class="bi bi-bag-check-fill"></i> Compra!</a>
                 </div>
             </div>
         </div>
@@ -345,9 +401,17 @@ defined("APP") or die("ACCESSO NEGATO");
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-    // -----------------------------------------
-    // LOGICA MODALE (Dal file 1)
-    // -----------------------------------------
+    // Funzione conferma acquisto
+    function confirmPurchase(event, bookTitle) {
+        event.stopPropagation();
+        event.preventDefault();
+        const confirmed = confirm('Vuoi davvero procedere con l\'acquisto di:\n\n"' + bookTitle + '"?\n\nVerrai reindirizzato alla pagina di checkout.');
+        if (confirmed) {
+            window.location.href = event.target.closest('a').href;
+        }
+        return false;
+    } 
+
     document.addEventListener('DOMContentLoaded', function () {
         const bookModal = document.getElementById('bookDetailModal');
         bookModal.addEventListener('show.bs.modal', function (event) {
@@ -364,10 +428,15 @@ defined("APP") or die("ACCESSO NEGATO");
             bookModal.querySelector('#modalBookPublisher').textContent = element.getAttribute('data-publisher') || 'N/D';
             bookModal.querySelector('#modalBookClasse').textContent = element.getAttribute('data-classe') || 'N/D';
             
-            // Opzionale: Aggiorna il link del bottone carrello nel modale per usare l'ID corretto
-            let cartLink = element.getAttribute('data-id');
-            if(cartLink) {
-                bookModal.querySelector('#modalBookCartBtn').href = "index.php?action=add_to_cart&id=" + cartLink;
+            // Aggiorna il link del bottone checkout nel modale
+            let listingId = element.getAttribute('data-id');
+            let bookTitle = element.getAttribute('data-title');
+            if(listingId) {
+                let checkoutBtn = bookModal.querySelector('#modalBookCartBtn');
+                checkoutBtn.href = "index.php?table=Order&action=checkout&id=" + listingId;
+                checkoutBtn.onclick = function(e) {
+                    return confirmPurchase(e, bookTitle);
+                };
             }
         });
     });
@@ -403,7 +472,7 @@ defined("APP") or die("ACCESSO NEGATO");
 
         // Debounce impostato a 50ms come richiesto
         searchTimeout = setTimeout(() => {
-            let url = `index.php?table=Listings&action=liveSearch&query=${encodeURIComponent(query)}&filter=${filter}`;
+            let url = `index.php?table=Listings&action=liveSearchListings&query=${encodeURIComponent(query)}&filter=${filter}`;
 
             fetch(url)
                 .then(response => response.json())
@@ -508,8 +577,10 @@ defined("APP") or die("ACCESSO NEGATO");
                                                 ${extraHTML}
                                             </div>
                                             <div class="mt-auto">
-                                                <a href="index.php?action=add_to_cart&id=${encodeURIComponent(idItem)}" onclick="event.stopPropagation()" class="btn btn-warning w-100 shadow-sm d-flex justify-content-center align-items-center gap-2">
-                                                    🛒 Add to cart
+                                                <a href="index.php?table=Order&action=checkout&id=${encodeURIComponent(idItem)}"
+                                                   onclick="return confirmPurchase(event, '${title.replace(/'/g, "\\'")}');"
+                                                   class="btn btn-warning w-100 shadow-sm d-flex justify-content-center align-items-center gap-2">
+                                                    <i class="bi bi-bag-check-fill"></i> Compra!
                                                 </a>
                                             </div>
                                         </div>
@@ -532,5 +603,7 @@ defined("APP") or die("ACCESSO NEGATO");
         }, 50); // Esegue la chiamata solo 50ms dopo che l'utente ha smesso di scrivere
     });
     </script>
+
+    <?php include 'views/ToastNotification.php'; ?>
 </body>
 </html>
