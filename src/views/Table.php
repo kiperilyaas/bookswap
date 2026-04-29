@@ -10,16 +10,26 @@ if (!empty($table) && is_array($table)) {
     foreach ($table as $record) {
         if (!is_array($record)) continue; 
 
+<<<<<<< HEAD
         if($record['is_available'] == 0) continue;
+=======
+>>>>>>> 1179430a5b1a361cc15aa1e984437bfe7bcfc212
         // Dati di base tradotti in italiano
         $titolo      = $record['title'] ?? 'Titolo sconosciuto';
         $imagePath   = "../utils/immagini/prova_libro.png";
         $idItem      = $record['id_listing'] ?? ($record['id_book'] ?? ($record['id'] ?? ''));
         
+<<<<<<< HEAD
         // Estrazione dati venditore - Convertito in MAIUSCOLO
         $nomeVenditore    = $record['Name'] ?? ($record['name'] ?? 'sconosciuto');
         $cognomeVenditore = $record['Surname'] ?? ($record['surname'] ?? '');
         $venditore = strtoupper(trim($nomeVenditore . ' ' . $cognomeVenditore));
+=======
+        // Estrazione dati venditore - Convertito in tutto minuscolo
+        $nomeVenditore    = $record['Name'] ?? ($record['name'] ?? 'sconosciuto');
+        $cognomeVenditore = $record['Surname'] ?? ($record['surname'] ?? '');
+        $venditore = strtolower(trim($nomeVenditore . ' ' . $cognomeVenditore));
+>>>>>>> 1179430a5b1a361cc15aa1e984437bfe7bcfc212
 
         // Dati per il modale (inclusa la classe)
         $autore    = $record['author'] ?? 'N/D';
@@ -110,14 +120,24 @@ if (!empty($table) && is_array($table)) {
                         <?= htmlspecialchars($annuncio['titolo']) ?>
                     </h5>
 
+<<<<<<< HEAD
                     <div class="seller-info">
                         <i class="bi bi-person-fill"></i> <strong><?= htmlspecialchars($annuncio['venditore']) ?></strong>
+=======
+                    <p class="mb-2 text-muted" style="font-size: 0.85rem;">
+                        👤 Venditore: <strong><?= htmlspecialchars($annuncio['venditore']) ?></strong>
+                    </p>
+
+                    <div class="mb-2">
+                        <span class="price"><?= $annuncio['prezzo'] ?></span>
+>>>>>>> 1179430a5b1a361cc15aa1e984437bfe7bcfc212
                     </div>
 
                     <div class="mb-3">
                         <span class="price"><?= $annuncio['prezzo'] ?></span>
                     </div>
 
+<<<<<<< HEAD
                     <div class="mb-3">
                         <span class="status-badge <?= $annuncio['statusColor'] == 'text-success' ? 'status-available' : 'status-unavailable' ?>">
                             <?= $annuncio['statusText'] ?>
@@ -129,6 +149,11 @@ if (!empty($table) && is_array($table)) {
                            class="btn btn-warning w-100 shadow-sm d-flex justify-content-center align-items-center gap-2 buy-btn"
                            onclick="return confirmPurchase(event, '<?= htmlspecialchars($annuncio['titolo'], ENT_QUOTES) ?>');">
                             <i class="bi bi-bag-check-fill"></i> Compra!
+=======
+                    <div class="mt-auto">
+                        <a href="index.php?action=add_to_cart&id=<?= urlencode($annuncio['idItem']) ?>" class="btn btn-warning w-100 shadow-sm d-flex justify-content-center align-items-center gap-2" onclick="event.stopPropagation();">
+                            🛒 Aggiungi al carrello
+>>>>>>> 1179430a5b1a361cc15aa1e984437bfe7bcfc212
                         </a>
                     </div>
 
