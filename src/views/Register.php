@@ -10,6 +10,7 @@
     <title>Register - Nome Azienda</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
     <style>
         :root {
@@ -110,7 +111,7 @@
 
     <nav class="navbar navbar-custom">
         <div class="container-fluid">
-            <a href="#" class="navbar-brand">📚 BookSwap</a>
+            <a href="index.php" class="navbar-brand">📚 BookSwap</a>
         </div>
     </nav>
 
@@ -157,5 +158,131 @@
         </div>
     </footer>
 
+    <?php include 'views/ToastNotification.php'; ?>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // Validazione form registrazione
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const nameInput = document.querySelector('input[name="name"]');
+        const surnameInput = document.querySelector('input[name="surname"]');
+        const classInput = document.querySelector('input[name="class"]');
+        const emailInput = document.querySelector('input[name="email"]');
+        const passwordInput = document.querySelector('input[name="password"]');
+
+        // Validazione classe in tempo reale (formato: numero + lettera, es: 5N)
+        classInput.addEventListener('blur', function() {
+            const classValue = this.value.trim().toUpperCase();
+            const classPattern = /^[1-5][A-Z]$/;
+            if (classValue && !classPattern.test(classValue)) {
+                this.classList.add('is-invalid');
+                showFieldError(this, 'Formato classe non valido (es: 5N, 3A)');
+            } else {
+                this.classList.remove('is-invalid');
+                removeFieldError(this);
+            }
+        });
+
+        // Validazione email
+        emailInput.addEventListener('blur', function() {
+            const email = this.value.trim();
+            if (email && !email.endsWith('@isit100.fe.it')) {
+                this.classList.add('is-invalid');
+                showFieldError(this, 'Usa un\'email @isit100.fe.it');
+            } else {
+                this.classList.remove('is-invalid');
+                removeFieldError(this);
+            }
+        });
+
+        // Rimuovi errori quando l'utente digita
+        [nameInput, surnameInput, classInput, emailInput, passwordInput].forEach(input => {
+            input.addEventListener('input', function() {
+                this.classList.remove('is-invalid');
+                removeFieldError(this);
+            });
+        });
+
+        // Validazione al submit
+        form.addEventListener('submit', function(e) {
+            let isValid = true;
+
+            // Valida nome
+            if (!nameInput.value.trim()) {
+                e.preventDefault();
+                nameInput.classList.add('is-invalid');
+                showFieldError(nameInput, 'Nome obbligatorio');
+                isValid = false;
+            }
+
+            // Valida cognome
+            if (!surnameInput.value.trim()) {
+                e.preventDefault();
+                surnameInput.classList.add('is-invalid');
+                showFieldError(surnameInput, 'Cognome obbligatorio');
+                isValid = false;
+            }
+
+            // Valida classe
+            const classValue = classInput.value.trim().toUpperCase();
+            const classPattern = /^[1-5][A-Z]$/;
+            if (!classValue) {
+                e.preventDefault();
+                classInput.classList.add('is-invalid');
+                showFieldError(classInput, 'Classe obbligatoria');
+                isValid = false;
+            } else if (!classPattern.test(classValue)) {
+                e.preventDefault();
+                classInput.classList.add('is-invalid');
+                showFieldError(classInput, 'Formato classe non valido (es: 5N, 3A)');
+                isValid = false;
+            }
+
+            // Valida email
+            const email = emailInput.value.trim();
+            if (!email) {
+                e.preventDefault();
+                emailInput.classList.add('is-invalid');
+                showFieldError(emailInput, 'Email obbligatoria');
+                isValid = false;
+            } else if (!email.endsWith('@isit100.fe.it')) {
+                e.preventDefault();
+                emailInput.classList.add('is-invalid');
+                showFieldError(emailInput, 'Usa un\'email @isit100.fe.it');
+                isValid = false;
+            }
+
+            // Valida password
+            const password = passwordInput.value;
+            if (!password) {
+                e.preventDefault();
+                passwordInput.classList.add('is-invalid');
+                showFieldError(passwordInput, 'Password obbligatoria');
+                isValid = false;
+            } else if (password.length < 8) {
+                e.preventDefault();
+                passwordInput.classList.add('is-invalid');
+                showFieldError(passwordInput, 'Password troppo corta (min 8 caratteri)');
+                isValid = false;
+            }
+        });
+
+        function showFieldError(input, message) {
+            removeFieldError(input);
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'invalid-feedback d-block';
+            errorDiv.textContent = message;
+            input.parentNode.appendChild(errorDiv);
+        }
+
+        function removeFieldError(input) {
+            const errorDiv = input.parentNode.querySelector('.invalid-feedback');
+            if (errorDiv) {
+                errorDiv.remove();
+            }
+        }
+    });
+    </script>
 </body>
 </html>

@@ -3,85 +3,128 @@ if(!defined('APP')) die('Accesso negato');
 
 require_once 'models/UserModel.php';
 
-class UserController
-{
-  private $page;
-  private $model;
-
+class UserController{
+  private $Usermodel;
   public function __construct()
   {
-    $this->page = 'user';
-    $this->model = new UserModel();
-
-    // ora il carrello contiene UN SOLO libro
-    if(!isset($_SESSION['cart'])){
-      $_SESSION['cart'] = null;
-    }
+    $this->Usermodel = new UserModel();
   }
 
-  //------------- VISTA CARRELLO -----------------
-  public function index()
-  {
-    $title = 'Carrello';
-    $cart = $_SESSION['cart'];
+  public function account(){
+    $myOffers = $this->Usermodel->getListingsOfUser([$_SESSION['id_user']]);
+    $myOrders = $this->Usermodel->getOrdersOfUser([$_SESSION['id_user']]);
 
-    $view = 'views/cart.php';
-    require 'views/template.php';
+    // Recupera i dati dell'utente per il form di modifica
+    $userData = $this->Usermodel->getUserById([$_SESSION['id_user']]);
+
+    include "views/Account.php";
   }
 
-  //------------- AGGIUNGI LIBRO -----------------
-  public function add()
-  {
-    $id_book = (int)($_GET['id_book'] ?? 0);
-
-    if($id_book > 0){
-      // sostituisce sempre il libro (1 solo alla volta)
-      $_SESSION['cart'] = $id_book;
+  public function updateProfile(){
+    $userId = $_SESSION['id_user'] ?? -1;
+    if($userId == -1){
+      $_SESSION['error'][] = "Devi effettuare il login";
+      header("location: index.php?table=login&action=login");
+      exit;
     }
 
-    header("Location: index.php?table=user&action=index");
+    $name = $_POST['name'] ?? null;
+    $surname = $_POST['surname'] ?? null;
+    $class = $_POST['class'] ?? null;
+    $email = $_POST['email'] ?? null;
+
+    // Validazione
+    if(!$name || !$surname || !$class || !$email){
+      $_SESSION['error'][] = "Tutti i campi sono obbligatori";
+      header("location: index.php?table=User&action=account");
+      exit;
+    }
+
+    // Verifica dominio email
+    $domain = substr($email, strpos($email, '@') + 1);
+    if($domain != "isit100.fe.it"){
+      $_SESSION['error'][] = "Dominio email non verificato. Usa un'email @isit100.fe.it";
+      header("location: index.php?table=User&action=account");
+      exit;
+    }
+
+    // Recupera password attuale
+    $currentUser = $this->Usermodel->getUserById([$userId]);
+    $password = $currentUser[0]['password'];
+
+    $param = [$name, $surname, $class, $email, $password, $userId];
+    $result = $this->Usermodel->updateRecord($param);
+
+    if($result){
+      $_SESSION['success'][] = "Profilo aggiornato con successo!";
+    } else {
+      $_SESSION['error'][] = "Errore durante l'aggiornamento del profilo";
+    }
+
+    header("location: index.php?table=User&action=account");
     exit;
   }
 
-  //------------- RIMUOVI LIBRO -----------------
-  public function remove()
-  {
-    $_SESSION['cart'] = null;
+  public function changePassword(){
+    $userId = $_SESSION['id_user'] ?? -1;
+    if($userId == -1){
+      $_SESSION['error'][] = "Devi effettuare il login";
+      header("location: index.php?table=login&action=login");
+      exit;
+    }
 
-    header("Location: index.php?table=user&action=index");
+    $currentPassword = $_POST['current_password'] ?? null;
+    $newPassword = $_POST['new_password'] ?? null;
+    $confirmPassword = $_POST['confirm_password'] ?? null;
+
+    if(!$currentPassword || !$newPassword || !$confirmPassword){
+      $_SESSION['error'][] = "Tutti i campi sono obbligatori";
+      header("location: index.php?table=User&action=account");
+      exit;
+    }
+
+    if($newPassword !== $confirmPassword){
+      $_SESSION['error'][] = "Le nuove password non coincidono";
+      header("location: index.php?table=User&action=account");
+      exit;
+    }
+
+    if(strlen($newPassword) < 6){
+      $_SESSION['error'][] = "La nuova password deve essere di almeno 8 caratteri";
+      header("location: index.php?table=User&action=account");
+      exit;
+    }
+
+    // Verifica password attuale
+    $userData = $this->Usermodel->getUserById([$userId]);
+    if(!password_verify($currentPassword, $userData[0]['password'])){
+      $_SESSION['error'][] = "Password attuale non corretta";
+      header("location: index.php?table=User&action=account");
+      exit;
+    }
+
+    // Aggiorna password
+    $newPasswordHash = password_hash($newPassword, PASSWORD_BCRYPT);
+    $param = [
+      $userData[0]['name'],
+      $userData[0]['surname'],
+      $userData[0]['class'],
+      $userData[0]['email'],
+      $newPasswordHash,
+      $userId
+    ];
+
+    $result = $this->Usermodel->updateRecord($param);
+
+    if($result){
+      $_SESSION['success'][] = "Password cambiata con successo!";
+    } else {
+      $_SESSION['error'][] = "Errore durante il cambio password";
+    }
+
+    header("location: index.php?table=User&action=account");
     exit;
   }
 
-  //------------- CHECKOUT -----------------
-  public function checkout()
-  {
-    if(empty($_SESSION['cart'])){
-      die("Nessun libro nel carrello");
-    }
 
-    $id_user = $_SESSION['id_user'] ?? 0;
-
-    if($id_user == 0){
-      die("Devi fare login");
-    }
-
-    $id_book = $_SESSION['cart'];
-
-    // crea ordine (1 libro solo)
-    #$this->model->insertRecord($id_user, $id_book);
-
-    // svuota carrello
-    $_SESSION['cart'] = null;
-
-    header("Location: index.php?table=user&action=success");
-    exit;
-  }
-
-  //------------- PAGINA SUCCESSO -----------------
-  public function success()
-  {
-    $title = "Ordine completato";
-    $view = 'views/success.php';
-    require 'views/template.php';
-  }
 }

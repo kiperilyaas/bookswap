@@ -14,8 +14,6 @@ class UserModel // Iniziale maiuscola
   {
     $this->pdo = DB::connect();
   }
-  
- // Metodo DQL per estrarre una tabella
   public function selectAll(): array
   {
     $dql = "SELECT id_user AS id,
@@ -32,33 +30,6 @@ class UserModel // Iniziale maiuscola
     //-----------------------------------
     return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
-
-  // Metodo DQL per estrarre una colonna
-  public function selectIds(): array
-  {
-    $dql = "SELECT id_user FROM users ORDER BY id_user ASC";
-    $param = [];
-    //-----------------------------------
-    $stm = $this->pdo->prepare($dql);
-    $stm->execute($param);
-    //-----------------------------------
-    return $stm->fetchAll(PDO::FETCH_COLUMN);
-  }
-
-  // Metodo DQL per controllare l'esistenza di un valore di una colonna
-  public function find($key, $value): bool
-  {
-    $dql = "SELECT * 
-            FROM users 
-            WHERE $key = ?";
-    //-----------------------------------
-    $stm = $this->pdo->prepare($dql);
-    $stm->execute([$value]);
-    //-----------------------------------
-    return $stm->fetchColumn() !== false;
-  }
-
-  // Metodo DML per inserire un record
   public function insertRecord(array $param): bool
   {
     $dml = "INSERT INTO users (name, surname, class, email, password) VALUES (?, ?, ?, ?, ?)";
@@ -66,11 +37,10 @@ class UserModel // Iniziale maiuscola
     $stm = $this->pdo->prepare($dml);
     $stm->execute($param);
     //-----------------------------------
-    return $stm->rowCount() !== 0;
+    return $stm->rowCount() !== 0;    
   }
 
-  // Metodo DML per cancellare un record
-  public function deleteRecord(array $param): bool
+  public function deleteUser(array $param): bool
   {
     $dml = "DELETE FROM users WHERE id_user = ?";
     //-----------------------------------
@@ -93,12 +63,47 @@ class UserModel // Iniziale maiuscola
     return $stm->rowCount() !== 0;
   }
 
-  //ricerca di un user per la mail
   public function findUserByMail($param = []) {
     $dml = "SELECT * FROM users 
     where email = ?
     limit 1";
     $stm = $this->pdo->prepare($dml);
+    $stm->execute($param);
+
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function getListingsOfUser($param = []){
+    $sql = "SELECT L.id_listing, L.price, L.is_available, B.title, B.isbn from listings L
+            join books B using(id_book)
+            join users U on L.id_seller = U.id_user
+            where L.id_seller = ?
+            order by L.is_available DESC";
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute($param);
+
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function getOrdersOfUser($param = []){
+    $sql = "SELECT L.*, B.*, O.*, 
+    U.name as customerName, U.surname as customerSurname, U.email as customerEmail,
+    US.name as sellerName, US.surname as sellerSurname, US.email as sellerEmail
+    from orders O 
+    join listings L using(id_listing) 
+    join books B using(id_book)
+    left join users U on O.id_customer = U.id_user
+    left join users US on O.id_seller = US.id_user
+    where O.id_seller = ?";
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute($param);
+
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function getUserById($param = []){
+    $sql = "SELECT id_user, name, surname, class, email, password FROM users WHERE id_user = ? LIMIT 1";
+    $stm = $this->pdo->prepare($sql);
     $stm->execute($param);
 
     return $stm->fetchAll(PDO::FETCH_ASSOC);
