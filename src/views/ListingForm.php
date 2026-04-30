@@ -221,7 +221,10 @@ if (!isset($_SESSION['id_user'])) {
                                 <div class="input-group">
                                     <span class="input-group-text">€</span>
                                     <input type="number" class="form-control" id="prezzo" name="prezzo" step="0.01"
-                                        min="0" placeholder="0.00" required>
+                                        min="0" max="1000" placeholder="0.00" required>
+                                </div>
+                                <div id="priceLimitAlert" class="text-danger small mt-1 fw-bold" style="display: none;">
+                                    <i class="bi bi-exclamation-circle-fill"></i> Il valore massimo consentito è 1.000€.
                                 </div>
                                 <small class="text-muted">Usa 0.00 per scambi o regali 🎁.</small>
                             </div>
@@ -266,6 +269,18 @@ if (!isset($_SESSION['id_user'])) {
     </footer>
 
     <script>
+    document.getElementById('prezzo').addEventListener('input', function() {
+        let priceAlert = document.getElementById('priceLimitAlert');
+        let val = parseFloat(this.value);
+        
+        if (val > 1000) {
+            priceAlert.style.display = 'block';
+            this.value = 1000;
+        } else {
+            priceAlert.style.display = 'none';
+        }
+    });
+
     let searchTimeout;
 
     // Logica Ricerca Live per il CATALOGO

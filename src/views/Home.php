@@ -68,7 +68,7 @@ defined("APP") or die("ACCESSO NEGATO");
             color: var(--amazon-dark);
         }
 
-        /* Search Bar Super Pulita (Dal file 2) */
+        /* Search Bar Super Pulita */
         .search-container {
             background-color: var(--amazon-light);
             padding: 20px 0;
@@ -107,7 +107,7 @@ defined("APP") or die("ACCESSO NEGATO");
             background-color: white;
         }
 
-        /* Card Libri stile Amazon - MIGLIORATO */
+        /* Card Libri stile Amazon */
         .book-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid #ddd;
@@ -205,7 +205,6 @@ defined("APP") or die("ACCESSO NEGATO");
             margin-bottom: 12px;
         }
 
-        /* Ripristino stile bottoni arrotondati come da file originale */
         .btn-warning {
             background-color: var(--amazon-orange);
             border: none;
@@ -257,7 +256,7 @@ defined("APP") or die("ACCESSO NEGATO");
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id=\"navbarNav\">
+            <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center me-3">
                     <li class="nav-item">
                         <?php if(isset($_SESSION['id_user'])): ?>
@@ -367,7 +366,10 @@ defined("APP") or die("ACCESSO NEGATO");
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 20px; font-weight: 600; padding: 0.5rem 1.5rem;">Chiudi</button>
-                    <a href="#" id="modalBookCartBtn" class="btn btn-warning" style="border-radius: 20px; font-weight: 600; padding: 0.5rem 1.5rem;"><i class="bi bi-bag-check-fill"></i> Compra!</a>
+                    <!-- Il link viene aggiornato dinamicamente da JS -->
+                    <a href="#" id="modalBookCartBtn" class="btn btn-warning" style="border-radius: 20px; font-weight: 600; padding: 0.5rem 1.5rem;">
+                        <i class="bi bi-bag-check-fill"></i> Compra!
+                    </a>
                 </div>
             </div>
         </div>
@@ -401,19 +403,30 @@ defined("APP") or die("ACCESSO NEGATO");
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-    // Funzione conferma acquisto
-    function confirmPurchase(event, bookTitle) {
+    // --- FUNZIONE D'ACQUISTO RESA SUPER ROBUSTA ---
+    function confirmPurchase(event, bookTitle, url = null) {
         event.stopPropagation();
         event.preventDefault();
+        
+        // Cerca l'url passato o prova a prenderlo dal target del click
+        const targetUrl = url || (event.currentTarget ? event.currentTarget.href : null);
+        
+        if (!targetUrl || targetUrl === "" || targetUrl === "#" || targetUrl.includes("undefined")) {
+            alert("Spiacenti, si è verificato un errore: ID dell'annuncio mancante.");
+            return false;
+        }
+
         const confirmed = confirm('Vuoi davvero procedere con l\'acquisto di:\n\n"' + bookTitle + '"?\n\nVerrai reindirizzato alla pagina di checkout.');
+        
         if (confirmed) {
-            window.location.href = event.target.closest('a').href;
+            window.location.href = targetUrl;
         }
         return false;
     } 
 
     document.addEventListener('DOMContentLoaded', function () {
         const bookModal = document.getElementById('bookDetailModal');
+        
         bookModal.addEventListener('show.bs.modal', function (event) {
             const element = event.relatedTarget;
             
@@ -428,22 +441,32 @@ defined("APP") or die("ACCESSO NEGATO");
             bookModal.querySelector('#modalBookPublisher').textContent = element.getAttribute('data-publisher') || 'N/D';
             bookModal.querySelector('#modalBookClasse').textContent = element.getAttribute('data-classe') || 'N/D';
             
-            // Aggiorna il link del bottone checkout nel modale
-            let listingId = element.getAttribute('data-id');
-            let bookTitle = element.getAttribute('data-title');
+            // CONTROLLO DI SICUREZZA: previene problemi se in Table.php la key dell'id si chiama diversamente
+            let listingId = element.getAttribute('data-id') || element.getAttribute('data-id_listing') || element.getAttribute('data-id-listing');
+            let bookTitle = element.getAttribute('data-title') || 'Libro';
+            let checkoutBtn = bookModal.querySelector('#modalBookCartBtn');
+
             if(listingId) {
-                let checkoutBtn = bookModal.querySelector('#modalBookCartBtn');
-                checkoutBtn.href = "index.php?table=Order&action=checkout&id=" + listingId;
+                let generatedUrl = "index.php?table=Order&action=checkout&id=" + listingId;
+                checkoutBtn.href = generatedUrl;
+                checkoutBtn.classList.remove('disabled');
+                
+                // Usiamo una funzione freccia per passare parametri puliti alla funzione principale
                 checkoutBtn.onclick = function(e) {
-                    return confirmPurchase(e, bookTitle);
+                    return confirmPurchase(e, bookTitle, generatedUrl);
+                };
+            } else {
+                // Disabilita graficamente il pulsante se manca l'ID
+                checkoutBtn.href = "#";
+                checkoutBtn.classList.add('disabled');
+                checkoutBtn.onclick = function(e) {
+                    e.preventDefault();
+                    alert("Questo annuncio non è acquistabile (ID Mancante).");
                 };
             }
         });
     });
 
-    // -----------------------------------------
-    // LOGICA RICERCA LIVE (Dal file 2)
-    // -----------------------------------------
     let searchTimeout;
 
     document.getElementById('searchInput').addEventListener('input', function () {
@@ -470,7 +493,6 @@ defined("APP") or die("ACCESSO NEGATO");
         searchIcon.classList.add('d-none');
         loadingSpinner.classList.remove('d-none');
 
-        // Debounce impostato a 50ms come richiesto
         searchTimeout = setTimeout(() => {
             let url = `index.php?table=Listings&action=liveSearchListings&query=${encodeURIComponent(query)}&filter=${filter}`;
 
@@ -497,7 +519,7 @@ defined("APP") or die("ACCESSO NEGATO");
                             
                             let rawPrice = book.priceOffer !== undefined ? book.priceOffer : book.price;
                             let priceHTML = '';
-                            let cleanPriceTesto = ''; // Serve per il modale!
+                            let cleanPriceTesto = ''; 
                             
                             if (rawPrice !== null && parseFloat(rawPrice) > 0) {
                                 let formattedPrice = parseFloat(rawPrice).toFixed(2).replace('.', ',');
@@ -532,27 +554,26 @@ defined("APP") or die("ACCESSO NEGATO");
                             });
 
                             let idItem = book.id_listing || book.id_book || '';
-                            
-                            // Estraiamo i dati per il modale in modo pulito prevenendo stringhe "undefined"
+                            let safeTitle = title.replace(/"/g, '&quot;');
                             let safeDescription = (book.description || book.descrizione || '').replace(/"/g, '&quot;');
                             let safeAuthor = (book.author || '').replace(/"/g, '&quot;');
                             let safePublisher = (book.publishing_house || book.publish || '').replace(/"/g, '&quot;');
                             let safeClass = (book.class || book.classe || '').replace(/"/g, '&quot;');
                             let safeIsbn = (book.isbn || '').replace(/"/g, '&quot;');
+                            let safeSeller = seller.replace(/"/g, '&quot;');
 
-                            // Abbiamo aggiunto data-bs-toggle e tutti i data-* richiesti per aprire il modale!
                             let cardHTML = `
                                 <div class="col">
                                     <div class="card book-card h-100" 
                                         data-bs-toggle="modal" 
                                         data-bs-target="#bookDetailModal"
                                         data-id="${encodeURIComponent(idItem)}"
-                                        data-title="${title.replace(/"/g, '&quot;')}"
+                                        data-title="${safeTitle}"
                                         data-img="${imgSrc}"
                                         data-price="${cleanPriceTesto}"
                                         data-description="${safeDescription}"
                                         data-author="${safeAuthor}"
-                                        data-seller="${seller.replace(/"/g, '&quot;')}"
+                                        data-seller="${safeSeller}"
                                         data-isbn="${safeIsbn}"
                                         data-publisher="${safePublisher}"
                                         data-classe="${safeClass}">
@@ -578,7 +599,7 @@ defined("APP") or die("ACCESSO NEGATO");
                                             </div>
                                             <div class="mt-auto">
                                                 <a href="index.php?table=Order&action=checkout&id=${encodeURIComponent(idItem)}"
-                                                   onclick="return confirmPurchase(event, '${title.replace(/'/g, "\\'")}');"
+                                                   onclick="return confirmPurchase(event, '${title.replace(/'/g, "\\'")}', this.href);"
                                                    class="btn btn-warning w-100 shadow-sm d-flex justify-content-center align-items-center gap-2">
                                                     <i class="bi bi-bag-check-fill"></i> Compra!
                                                 </a>
@@ -600,7 +621,7 @@ defined("APP") or die("ACCESSO NEGATO");
                     searchIcon.classList.remove('d-none');
                     loadingSpinner.classList.add('d-none');
                 });
-        }, 50); // Esegue la chiamata solo 50ms dopo che l'utente ha smesso di scrivere
+        }, 50); 
     });
     </script>
 

@@ -227,8 +227,14 @@
                                 <div class="col-md-6">
                                     <label for="price" class="form-label">Prezzo Originale (Nuovo)</label>
                                     <div class="input-group">
-                                        <span class="input-group-text bg-light">€</span>
-                                        <input type="number" step="0.01" min="0" class="form-control" id="price" name="price" placeholder="0.00" required>
+                                        <span class="input-group-text">€</span>
+                                        <!-- Aggiunto max="1000" -->
+                                        <input type="number" class="form-control" id="price" name="price" step="0.01"
+                                            min="0" max="1000" placeholder="0.00" required>
+                                    </div>
+                                    <!-- Aggiunto div per mostrare l'errore a video -->
+                                    <div id="priceLimitAlert" class="text-danger small mt-1 fw-bold" style="display: none;">
+                                        <i class="bi bi-exclamation-circle-fill"></i> Il valore massimo consentito è 1.000€.
                                     </div>
                                     <div class="form-text">Il prezzo di listino ufficiale.</div>
                                 </div>
@@ -254,5 +260,18 @@
     <?php include 'views/ToastNotification.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('price').addEventListener('input', function() {
+        let priceAlert = document.getElementById('priceLimitAlert');
+        let val = parseFloat(this.value);
+        
+        if (val > 1000) {
+            priceAlert.style.display = 'block';
+            this.value = 1000;
+        } else {
+            priceAlert.style.display = 'none';
+        }
+    });
+    </script>
 </body>
 </html>

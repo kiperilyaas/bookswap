@@ -29,7 +29,7 @@ class ListingsModel{
     }
 
     public function selectListings($param = []){
-        $dql = "SELECT *, B.title, L.price as priceOffer from listings L
+        $dql = "SELECT *, L.price as priceOffer from listings L
         join books B using(id_book)
         join users U on L.id_seller = U.id_user";
         $stm = $this->pdo->prepare($dql);

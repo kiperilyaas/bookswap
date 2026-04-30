@@ -92,6 +92,7 @@ if (!empty($table) && is_array($table)) {
             <div class="card book-card" 
                  data-bs-toggle="modal" 
                  data-bs-target="#bookDetailModal"
+                 data-id="<?= htmlspecialchars($annuncio['idItem']) ?>" 
                  data-title="<?= htmlspecialchars($annuncio['titolo']) ?>"
                  data-img="<?= htmlspecialchars($annuncio['immagine']) ?>"
                  data-price="<?= htmlspecialchars($annuncio['prezzo']) ?>"
