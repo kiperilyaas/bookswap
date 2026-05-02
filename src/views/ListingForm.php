@@ -38,6 +38,100 @@ if (!isset($_SESSION['id_user'])) {
             border: 1px solid #0066c0;
             border-radius: var(--radius-md);
         }
+
+        /* Upload Zone Styles */
+        .upload-zone { width: 100%; }
+        .drop-area {
+            border: 3px dashed #ddd;
+            border-radius: var(--radius-lg);
+            padding: 3rem 2rem;
+            text-align: center;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .drop-area:hover {
+            border-color: #0066c0;
+            background-color: #f0f8ff;
+        }
+        .drop-area.drag-over {
+            border-color: #ff9900;
+            background-color: #fff8e1;
+            transform: scale(1.02);
+        }
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .preview-item {
+            position: relative;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 2px solid #ddd;
+            background: white;
+            transition: all 0.2s;
+        }
+        .preview-item:hover {
+            border-color: #0066c0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .preview-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        .preview-item .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .preview-item .remove-btn:hover {
+            background: #dc3545;
+            transform: scale(1.1);
+        }
+        .preview-item .primary-badge {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            background: rgba(255, 153, 0, 0.95);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .preview-item .order-badge {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: rgba(0, 102, 192, 0.9);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
@@ -58,7 +152,7 @@ if (!isset($_SESSION['id_user'])) {
                 <div class="form-card">
                     <h2 class="section-title">Crea un nuovo annuncio</h2>
 
-                    <form action="index.php?table=Listings&action=addListing" method="POST" id="offerForm">
+                    <form action="index.php?table=Listings&action=addListing" method="POST" id="offerForm" enctype="multipart/form-data">
                         <input type="hidden" id="id_book_selezionato" name="id_book" required>
 
                         <div class="mb-4">
@@ -133,6 +227,28 @@ if (!isset($_SESSION['id_user'])) {
                             <label for="descrizione" class="form-label">4. Descrizione (Opzionale)</label>
                             <textarea class="form-control" id="descrizione" name="descrizione" rows="4"
                                 placeholder="Aggiungi informazioni utili (es. sottolineature, copertina rovinata…)"></textarea>
+                        </div>
+
+                        <hr>
+                        <div class="mb-4">
+                            <label class="form-label">5. Foto del Libro (Max 3)</label>
+                            <div class="upload-zone" id="uploadZone">
+                                <div class="drop-area" id="dropArea">
+                                    <i class="bi bi-cloud-upload fs-1 text-primary mb-3" style="color:#0066c0;"></i>
+                                    <h6 class="fw-bold">Trascina qui le foto o clicca per selezionare</h6>
+                                    <p class="text-muted small mb-0">JPG, PNG o WEBP - Max 2MB per foto - Max 3 foto</p>
+                                    <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp" hidden>
+                                </div>
+
+                                <!-- Container per input nascosti -->
+                                <div id="hiddenInputsContainer"></div>
+
+                                <!-- Preview delle foto caricate -->
+                                <div class="preview-grid" id="previewGrid"></div>
+                            </div>
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle"></i> La prima foto sarà quella principale visualizzata nelle card
+                            </small>
                         </div>
 
                         <div class="d-flex justify-content-end gap-3 pt-3 border-top flex-wrap">
@@ -239,6 +355,145 @@ if (!isset($_SESSION['id_user'])) {
             alert('⚠️ Seleziona un libro dal catalogo prima di pubblicare.');
         }
     });
+
+    // ========================================
+    // IMAGE UPLOAD SYSTEM
+    // ========================================
+    const dropArea = document.getElementById('dropArea');
+    const fileInput = document.getElementById('fileInput');
+    const previewGrid = document.getElementById('previewGrid');
+    const hiddenInputsContainer = document.getElementById('hiddenInputsContainer');
+    let uploadedFiles = [];
+    const MAX_FILES = 3;
+    const MAX_SIZE = 2 * 1024 * 1024; // 2MB (limite PHP)
+
+    // Click to select files
+    dropArea.addEventListener('click', () => fileInput.click());
+
+    // Drag & Drop events
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, () => dropArea.classList.add('drag-over'), false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, () => dropArea.classList.remove('drag-over'), false);
+    });
+
+    dropArea.addEventListener('drop', handleDrop, false);
+    fileInput.addEventListener('change', handleFiles, false);
+
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        handleFiles({ target: { files: files } });
+    }
+
+    function handleFiles(e) {
+        const files = Array.from(e.target.files);
+
+        files.forEach(file => {
+            if (uploadedFiles.length >= MAX_FILES) {
+                alert(`Puoi caricare massimo ${MAX_FILES} foto!`);
+                return;
+            }
+
+            if (!file.type.match('image.*')) {
+                alert(`${file.name} non è un'immagine valida!`);
+                return;
+            }
+
+            if (file.size > MAX_SIZE) {
+                alert(`${file.name} è troppo grande! Max 2MB`);
+                return;
+            }
+
+            uploadedFiles.push(file);
+            addFileToForm(file, uploadedFiles.length - 1);
+            previewFile(file, uploadedFiles.length - 1);
+        });
+
+        // Reset input per permettere di selezionare altri file
+        fileInput.value = '';
+        updateDropAreaVisibility();
+    }
+
+    function addFileToForm(file, index) {
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+
+        const newInput = document.createElement('input');
+        newInput.type = 'file';
+        newInput.name = 'listing_images[]';
+        newInput.files = dataTransfer.files;
+        newInput.style.display = 'none';
+        newInput.dataset.index = index;
+
+        hiddenInputsContainer.appendChild(newInput);
+    }
+
+    function previewFile(file, index) {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = function() {
+            const previewItem = document.createElement('div');
+            previewItem.className = 'preview-item';
+            previewItem.dataset.index = index;
+
+            previewItem.innerHTML = `
+                <img src="${reader.result}" alt="Preview">
+                <button type="button" class="remove-btn" onclick="removeImage(${index})">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+                <div class="order-badge">${index + 1}</div>
+                ${index === 0 ? '<div class="primary-badge"><i class="bi bi-star-fill"></i> Principale</div>' : ''}
+            `;
+
+            previewGrid.appendChild(previewItem);
+        }
+    }
+
+    function removeImage(index) {
+        uploadedFiles.splice(index, 1);
+
+        // Rimuovi l'input nascosto corrispondente
+        const inputToRemove = hiddenInputsContainer.querySelector(`input[data-index="${index}"]`);
+        if (inputToRemove) {
+            inputToRemove.remove();
+        }
+
+        renderPreviews();
+        updateDropAreaVisibility();
+    }
+
+    function renderPreviews() {
+        previewGrid.innerHTML = '';
+        hiddenInputsContainer.innerHTML = '';
+
+        uploadedFiles.forEach((file, index) => {
+            addFileToForm(file, index);
+            previewFile(file, index);
+        });
+    }
+
+    function updateDropAreaVisibility() {
+        if (uploadedFiles.length >= MAX_FILES) {
+            dropArea.style.display = 'none';
+        } else {
+            dropArea.style.display = 'block';
+        }
+    }
+
+    // Make removeImage global
+    window.removeImage = removeImage;
     </script>
 </body>
 </html>

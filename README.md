@@ -1,6 +1,6 @@
 # bookswap
 
-# Tutte le modifiche facciamo solo su nostri rami e dopo aver finito mandiamo la richesta PULL per modificare il main
+# Tutte le modifiche facciamo solo su nostri rami e dopo aver finito mandiamo la PULL Richiesta (PR) per modificare il main
 
 # commandi da seguire
 
@@ -28,7 +28,7 @@ https://github.com/kiperilyaas/bookswap
 #### nella sezione dei branch sceglio il tuo cognome e dopo trova il buttone `CONTRIBUTE` e fai una pool richiesta
 
 
-# to do
+# TODO list
 - [x] Progettazione del Database
     - [x] Diagramma ER
     - [x] Progettazione Fisica
