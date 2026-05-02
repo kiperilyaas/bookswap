@@ -31,9 +31,9 @@ if (!empty($myOrders)) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="views/bookswap-responsive.css">
     <style>
-        .nav-tabs .nav-link { color: #495057; font-weight: 600; border: none; border-bottom: 3px solid transparent; padding: 0.8rem 1.2rem; font-size: var(--text-sm); }
+        .nav-tabs .nav-link { color: #212529; font-weight: 600; border: none; border-bottom: 3px solid transparent; padding: 0.8rem 1.2rem; font-size: var(--text-sm); }
         .nav-tabs .nav-link:hover { color: var(--orange); background-color: #f1f3f5; }
-        .nav-tabs .nav-link.active { color: var(--dark); background: white; border-bottom: 3px solid var(--orange); }
+        .nav-tabs .nav-link.active { color: var(--orange); background: white; border-bottom: 3px solid var(--orange); }
         .action-card { transition: transform 0.2s, box-shadow 0.2s; border-left: 4px solid transparent; }
         .action-card:hover { transform: translateY(-2px); box-shadow: 0 .5rem 1rem rgba(0,0,0,.1) !important; }
         .border-left-active  { border-left-color: #198754; }
