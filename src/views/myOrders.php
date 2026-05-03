@@ -93,16 +93,38 @@ if (!empty($myOrders)) {
                 $dateOrder  = $order['date_order']      ?? 'N/D';
                 $dateFmt    = ($dateOrder !== 'N/D') ? date('d/m/Y', strtotime($dateOrder)) . ' alle ' . date('H:i', strtotime($dateOrder)) : 'N/D';
                 $sc         = $order['state_customer']  ?? 'pending';
+                $ss         = $order['state_seller']    ?? 'pending';
                 $finalPrice = $order['final_price']     ?? 0;
                 $timeMeet   = $order['time_meet']       ?? 'N/D';
                 $timeFmt    = ($timeMeet !== 'N/D') ? date('d/m/Y', strtotime($timeMeet)) . ' alle ' . date('H:i', strtotime($timeMeet)) : 'N/D';
                 $placeMeet  = $order['place_meet']      ?? 'N/D';
                 $descMeet   = $order['description_meet'] ?? '';
                 $sellerFull = strtoupper(trim(($order['name'] ?? 'N/D') . ' ' . ($order['surname'] ?? '')));
+
+                // Determina stato e badge
                 $badgeClass = 'state-pending';
                 $stateText  = 'In attesa';
-                if($sc === 'confirmed') { $badgeClass = 'state-confirmed'; $stateText = 'Confermato'; }
-                elseif($sc === 'cancelled') { $badgeClass = 'state-cancelled'; $stateText = 'Annullato'; }
+                $showWarning = false;
+                $warningMsg = '';
+
+                if($sc === 'cancelled' || $ss === 'cancelled') {
+                    $badgeClass = 'state-cancelled';
+                    $stateText = 'Annullato';
+                } elseif($sc === 'confirmed' && $ss === 'confirmed') {
+                    $badgeClass = 'state-confirmed';
+                    $stateText = 'Completato';
+                } elseif($sc === 'confirmed' && $ss === 'pending') {
+                    $badgeClass = 'state-confirmed';
+                    $stateText = 'Confermato da te';
+                    $showWarning = true;
+                    $warningMsg = 'In attesa della conferma del venditore';
+                } elseif($sc === 'pending' && $ss === 'confirmed') {
+                    $badgeClass = 'state-pending';
+                    $stateText = 'In attesa';
+                    $showWarning = true;
+                    $warningMsg = 'Il venditore ha confermato la consegna';
+                }
+
                 $priceFmt = ($finalPrice > 0) ? '€ ' . number_format($finalPrice, 2, ',', '.') : 'Scambio';
             ?>
             <div class="order-card">
@@ -113,14 +135,21 @@ if (!empty($myOrders)) {
                     </div>
                     <div class="d-flex gap-2 align-items-center">
                         <span class="badge-state <?= $badgeClass ?>"><?= $stateText ?></span>
+                        <?php if($sc !== 'cancelled' && $ss !== 'cancelled'): ?>
                         <button class="btn btn-sm btn-outline-warning change-order-state-btn"
                                 data-order-id="<?= htmlspecialchars($orderId) ?>"
                                 data-book-title="<?= htmlspecialchars($bookTitle) ?>"
                                 data-current-state="<?= htmlspecialchars($sc) ?>">
                             <i class="bi bi-arrow-repeat"></i>
                         </button>
+                        <?php endif; ?>
                     </div>
                 </div>
+                <?php if($showWarning): ?>
+                <div class="alert alert-warning mb-3 py-2" style="font-size:var(--text-xs);">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i><?= htmlspecialchars($warningMsg) ?>
+                </div>
+                <?php endif; ?>
                 <div class="book-title"><i class="bi bi-book"></i> <?= htmlspecialchars($bookTitle) ?></div>
                 <span class="badge bg-secondary mb-2"><i class="bi bi-person-fill"></i> Venditore: <?= htmlspecialchars($sellerFull) ?></span>
                 <div class="order-details">

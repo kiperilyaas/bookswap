@@ -19,6 +19,17 @@ class ListingsModel{
         return $stm->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getListingByOrderId($id){
+        $sql = "SELECT L.id_listing from listings L
+        join orders O using(id_listing)
+        where O.id_order = ?";
+        $stm = $this->pdo->prepare($sql);
+        $stm->execute([$id]);
+
+        $result = $stm->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['id_listing'] : null;
+    }
+
     public function insertRecord($param = []){
         $dml = "INSERT INTO listings(id_book, id_seller, price, book_condition, description, is_available)
         values(?, ?, ?, ?, ?, ?);";
@@ -106,6 +117,7 @@ class ListingsModel{
         } else {
             $sql .= "WHERE B.$filter LIKE :query ";
         }
+        $sql .= " AND L.is_available = 1 ";
         $sql .= "GROUP BY B.isbn
                 LIMIT 10";
 
