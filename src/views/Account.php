@@ -31,19 +31,44 @@ if (!empty($myOrders)) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="views/bookswap-responsive.css">
     <style>
-        .nav-tabs .nav-link { color: #495057; font-weight: 600; border: none; border-bottom: 3px solid transparent; padding: 0.8rem 1.2rem; font-size: var(--text-sm); }
-        .nav-tabs .nav-link:hover { color: var(--orange); background-color: #f1f3f5; }
-        .nav-tabs .nav-link.active { color: var(--dark); background: white; border-bottom: 3px solid var(--orange); }
+        /* --- FIX COLORI TAB A PROVA DI ERRORE --- */
+        #accountTabs.nav-tabs { 
+            background-color: #f8f9fa !important; 
+            border-bottom: 2px solid #dee2e6 !important; 
+        }
+        
+        #accountTabs .nav-link { 
+            color: #495057 !important; /* Grigio scuro ben visibile per i tab NON attivi */
+            font-weight: 600 !important; 
+            border: none !important; 
+            border-bottom: 3px solid transparent !important; 
+            padding: 1rem 1.5rem !important; 
+            background-color: transparent !important;
+            border-radius: 0 !important;
+        }
+        
+        #accountTabs .nav-link:hover { 
+            color: var(--orange, #ff9900) !important; /* Arancione al passaggio del mouse */
+            background-color: #e9ecef !important; 
+        }
+        
+        #accountTabs .nav-link.active { 
+            color: #000000 !important; /* NERO assoluto per il testo del tab attivo */
+            background-color: #ffffff !important; /* Sfondo bianco */
+            border-bottom: 3px solid var(--orange, #ff9900) !important; /* Linea arancione sotto */
+        }
+        /* ----------------------------------------- */
+
         .action-card { transition: transform 0.2s, box-shadow 0.2s; border-left: 4px solid transparent; }
         .action-card:hover { transform: translateY(-2px); box-shadow: 0 .5rem 1rem rgba(0,0,0,.1) !important; }
         .border-left-active  { border-left-color: #198754; }
-        .border-left-warning { border-left-color: var(--orange); }
-        .modal-header.bg-amazon { background-color: var(--orange); color: var(--dark); }
+        .border-left-warning { border-left-color: var(--orange, #ff9900); }
+        .modal-header.bg-amazon { background-color: var(--orange, #ff9900); color: #131921; }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: #131921;">
         <div class="container">
             <a class="navbar-brand fw-bold" href="index.php">📚 BookSwap</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#accountNavbar">
@@ -51,7 +76,7 @@ if (!empty($myOrders)) {
             </button>
             <div class="collapse navbar-collapse" id="accountNavbar">
                 <ul class="navbar-nav ms-auto align-items-center gap-2">
-                    <li class="nav-item"><a class="nav-link text-white" href="index.php"><i class="bi bi-house-door-fill me-1"></i>Home</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="index.php" style="color: white !important;"><i class="bi bi-house-door-fill me-1"></i>Home</a></li>
                     <li class="nav-item"><a class="btn btn-outline-danger btn-sm rounded-pill px-3" href="#" id="logoutBtn"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
                 </ul>
             </div>
@@ -62,11 +87,11 @@ if (!empty($myOrders)) {
         <!-- Header profilo -->
         <div class="d-flex align-items-center justify-content-between mb-4 bg-white p-4 rounded shadow-sm border flex-wrap gap-3">
             <div class="d-flex align-items-center gap-3">
-                <i class="bi bi-person-circle" style="font-size:clamp(2.5rem,4vw,4rem);color:var(--orange);"></i>
+                <i class="bi bi-person-circle" style="font-size:clamp(2.5rem,4vw,4rem);color:var(--orange, #ff9900);"></i>
                 <div>
-                    <h2 class="mb-0 fw-bold" style="font-size:var(--text-xl);">Area Personale</h2>
+                    <h2 class="mb-0 fw-bold" style="font-size:var(--text-xl, 1.5rem);">Area Personale</h2>
                     <?php if(!empty($userData)): ?>
-                        <p class="text-muted mb-0" style="font-size:var(--text-md);"><?= htmlspecialchars(($userData[0]['name'] ?? '') . ' ' . ($userData[0]['surname'] ?? '')) ?></p>
+                        <p class="text-muted mb-0" style="font-size:var(--text-md, 1rem);"><?= htmlspecialchars(($userData[0]['name'] ?? '') . ' ' . ($userData[0]['surname'] ?? '')) ?></p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -77,20 +102,20 @@ if (!empty($myOrders)) {
 
         <!-- Tabs -->
         <div class="bg-white rounded shadow-sm border overflow-hidden">
-            <ul class="nav nav-tabs bg-light border-bottom-0 flex-nowrap overflow-auto" id="accountTabs" role="tablist">
+            <ul class="nav nav-tabs border-bottom-0" id="accountTabs" role="tablist" style="overflow-x: hidden;">
                 <li class="nav-item">
-                    <button class="nav-link active" id="vetrina-tab" data-bs-toggle="tab" data-bs-target="#vetrina" type="button">
-                        <i class="bi bi-shop me-1"></i>Vetrina <span class="badge bg-secondary ms-1"><?= count($annunciAttivi) ?></span>
+                    <button class="nav-link active" id="vetrina-tab" data-bs-toggle="tab" data-bs-target="#vetrina" type="button" role="tab">
+                        <i class="bi bi-shop me-2"></i>La Mia Vetrina <span class="badge bg-secondary ms-1"><?= count($annunciAttivi) ?></span>
                     </button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link" id="vendite-tab" data-bs-toggle="tab" data-bs-target="#vendite" type="button">
-                        <i class="bi bi-handshake me-1"></i>Da Consegnare <span class="badge bg-warning text-dark ms-1"><?= count($venditeInCorso) ?></span>
+                    <button class="nav-link" id="vendite-tab" data-bs-toggle="tab" data-bs-target="#vendite" type="button" role="tab">
+                        <i class="bi bi-handshake me-2"></i>Da Consegnare <span class="badge bg-warning text-dark ms-1"><?= count($venditeInCorso) ?></span>
                     </button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link" id="storico-tab" data-bs-toggle="tab" data-bs-target="#storico" type="button">
-                        <i class="bi bi-archive me-1"></i>Storico
+                    <button class="nav-link" id="storico-tab" data-bs-toggle="tab" data-bs-target="#storico" type="button" role="tab">
+                        <i class="bi bi-archive me-2"></i>Storico Vendite
                     </button>
                 </li>
             </ul>
@@ -100,7 +125,7 @@ if (!empty($myOrders)) {
                 <!-- Vetrina -->
                 <div class="tab-pane fade show active" id="vetrina" role="tabpanel">
                     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                        <h5 class="fw-bold mb-0 text-success" style="font-size:var(--text-md);">Annunci visibili agli acquirenti</h5>
+                        <h5 class="fw-bold mb-0 text-success" style="font-size:var(--text-md, 1.1rem);">Annunci visibili agli acquirenti</h5>
                         <a href="index.php?table=Listings&action=createListings" class="btn btn-sm btn-success rounded-pill px-3">
                             <i class="bi bi-plus-lg"></i> Nuovo Annuncio
                         </a>
@@ -111,7 +136,7 @@ if (!empty($myOrders)) {
                             <div class="col-md-6 col-lg-4 col-12">
                                 <div class="card action-card border-left-active h-100 p-3">
                                     <h6 class="fw-bold mb-1 text-truncate" title="<?= htmlspecialchars($offer['title']) ?>"><?= htmlspecialchars($offer['title']) ?></h6>
-                                    <div class="text-muted mb-2" style="font-size:var(--text-xs);"><i class="bi bi-upc-scan"></i> ISBN: <?= htmlspecialchars($offer['isbn']) ?></div>
+                                    <div class="text-muted mb-2" style="font-size:var(--text-xs, 0.8rem);"><i class="bi bi-upc-scan"></i> ISBN: <?= htmlspecialchars($offer['isbn']) ?></div>
                                     <h5 class="text-success fw-bold mb-3">€ <?= number_format((float)$offer['price'], 2, ',', '.') ?></h5>
                                     <div class="text-end mt-auto">
                                         <button class="btn btn-sm btn-outline-danger delete-listing-btn w-100"
@@ -134,7 +159,7 @@ if (!empty($myOrders)) {
 
                 <!-- Da Consegnare -->
                 <div class="tab-pane fade" id="vendite" role="tabpanel">
-                    <h5 class="fw-bold mb-4" style="color:var(--orange);font-size:var(--text-md);">Ordini da consegnare</h5>
+                    <h5 class="fw-bold mb-4" style="color:var(--orange, #ff9900);font-size:var(--text-md, 1.1rem);">Ordini da consegnare</h5>
                     <?php if (!empty($venditeInCorso)): ?>
                         <div class="list-group">
                             <?php foreach($venditeInCorso as $order):
@@ -147,9 +172,9 @@ if (!empty($myOrders)) {
                                 <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
                                     <div>
                                         <span class="badge bg-warning text-dark mb-2"><i class="bi bi-hourglass-split"></i> In Lavorazione</span>
-                                        <h5 class="mb-1 fw-bold" style="font-size:var(--text-md);"><?= htmlspecialchars($titoloLibro) ?></h5>
+                                        <h5 class="mb-1 fw-bold" style="font-size:var(--text-md, 1.1rem);"><?= htmlspecialchars($titoloLibro) ?></h5>
                                         <div class="p-2 my-2 bg-light rounded border">
-                                            <p class="mb-0 small"><strong><i class="bi bi-person-fill"></i> Acquirente:</strong> <?= $buyerName ?></p>
+                                            <p class="mb-0 small text-dark"><strong><i class="bi bi-person-fill"></i> Acquirente:</strong> <?= $buyerName ?></p>
                                             <p class="mb-0 small text-muted"><strong><i class="bi bi-envelope-fill"></i> Email:</strong> <a href="mailto:<?= $buyerEmail ?>"><?= $buyerEmail ?></a></p>
                                         </div>
                                         <p class="mb-0 text-muted small"><i class="bi bi-calendar-event"></i> <?= htmlspecialchars($dataOrdine) ?></p>
@@ -187,7 +212,7 @@ if (!empty($myOrders)) {
 
                 <!-- Storico -->
                 <div class="tab-pane fade" id="storico" role="tabpanel">
-                    <h5 class="fw-bold mb-4 text-secondary" style="font-size:var(--text-md);">Vendite completate o annullate</h5>
+                    <h5 class="fw-bold mb-4 text-secondary" style="font-size:var(--text-md, 1.1rem);">Vendite completate o annullate</h5>
                     <?php if (!empty($venditeCompletate)): ?>
                         <div class="table-responsive">
                             <table class="table table-hover align-middle border">
@@ -211,8 +236,8 @@ if (!empty($myOrders)) {
                                         $buyerStorico = htmlspecialchars(($order['customerName'] ?? 'Utente') . ' ' . ($order['customerSurname'] ?? ''));
                                     ?>
                                     <tr>
-                                        <td class="fw-bold <?= $isAnn ? 'text-muted text-decoration-line-through' : '' ?>"><?= htmlspecialchars($order['title']) ?></td>
-                                        <td><small><?= $buyerStorico ?></small></td>
+                                        <td class="fw-bold text-dark <?= $isAnn ? 'text-muted text-decoration-line-through' : '' ?>"><?= htmlspecialchars($order['title']) ?></td>
+                                        <td class="text-dark"><small><?= $buyerStorico ?></small></td>
                                         <td class="text-muted small"><?= htmlspecialchars($order['date_order']) ?></td>
                                         <td class="<?= $isAnn ? 'text-muted' : 'text-success fw-bold' ?>"><?= $prezzoFmt ?></td>
                                         <td><span class="badge <?= $badgeClass ?>"><?= $badgeText ?></span></td>
@@ -237,16 +262,16 @@ if (!empty($myOrders)) {
     <div class="modal fade" id="editProfileModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header bg-amazon">
+                <div class="modal-header bg-amazon text-dark">
                     <h5 class="modal-title fw-bold"><i class="bi bi-person-fill-gear me-2"></i>Modifica Profilo</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form method="POST" action="index.php?table=User&action=updateProfile">
                     <div class="modal-body">
-                        <div class="mb-3"><label class="form-label fw-bold">Nome</label><input type="text" name="name" class="form-control" value="<?= htmlspecialchars($userData[0]['name'] ?? '') ?>" required></div>
-                        <div class="mb-3"><label class="form-label fw-bold">Cognome</label><input type="text" name="surname" class="form-control" value="<?= htmlspecialchars($userData[0]['surname'] ?? '') ?>" required></div>
-                        <div class="mb-3"><label class="form-label fw-bold">Classe</label><input type="text" name="class" class="form-control" value="<?= htmlspecialchars($userData[0]['class'] ?? '') ?>" required><small class="text-muted">Es: 5N, 3A</small></div>
-                        <div class="mb-3"><label class="form-label fw-bold">Email</label><input type="email" name="email" class="form-control" value="<?= htmlspecialchars($userData[0]['email'] ?? '') ?>" required><small class="text-muted">@isit100.fe.it</small></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-dark">Nome</label><input type="text" name="name" class="form-control" value="<?= htmlspecialchars($userData[0]['name'] ?? '') ?>" required></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-dark">Cognome</label><input type="text" name="surname" class="form-control" value="<?= htmlspecialchars($userData[0]['surname'] ?? '') ?>" required></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-dark">Classe</label><input type="text" name="class" class="form-control" value="<?= htmlspecialchars($userData[0]['class'] ?? '') ?>" required><small class="text-muted">Es: 5N, 3A</small></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-dark">Email</label><input type="email" name="email" class="form-control" value="<?= htmlspecialchars($userData[0]['email'] ?? '') ?>" required><small class="text-muted">@isit100.fe.it</small></div>
                         <hr>
                         <div class="text-center">
                             <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#changePasswordModal" data-bs-dismiss="modal">
@@ -272,9 +297,9 @@ if (!empty($myOrders)) {
                 </div>
                 <form method="POST" action="index.php?table=User&action=changePassword" id="changePasswordForm">
                     <div class="modal-body">
-                        <div class="mb-3"><label class="form-label fw-bold">Password Attuale</label><input type="password" name="current_password" class="form-control" required></div>
-                        <div class="mb-3"><label class="form-label fw-bold">Nuova Password</label><input type="password" name="new_password" id="newPassword" class="form-control" required><small class="text-muted">Minimo 6 caratteri</small></div>
-                        <div class="mb-3"><label class="form-label fw-bold">Conferma Password</label><input type="password" name="confirm_password" id="confirmPassword" class="form-control" required></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-dark">Password Attuale</label><input type="password" name="current_password" class="form-control" required></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-dark">Nuova Password</label><input type="password" name="new_password" id="newPassword" class="form-control" required><small class="text-muted">Minimo 6 caratteri</small></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-dark">Conferma Password</label><input type="password" name="confirm_password" id="confirmPassword" class="form-control" required></div>
                         <div id="passwordError" class="alert alert-danger d-none">Le password non coincidono!</div>
                     </div>
                     <div class="modal-footer">
@@ -294,7 +319,7 @@ if (!empty($myOrders)) {
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="mb-2">Vuoi eliminare questo annuncio?</p>
+                    <p class="mb-2 text-dark">Vuoi eliminare questo annuncio?</p>
                     <p class="fw-bold text-dark fs-5 mb-0" id="deleteBookTitle"></p>
                     <p class="text-muted small mt-2">Azione non reversibile.</p>
                 </div>
@@ -309,25 +334,25 @@ if (!empty($myOrders)) {
     <div class="modal fade" id="orderDetailsModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header bg-amazon">
+                <div class="modal-header bg-amazon text-dark">
                     <h5 class="modal-title fw-bold"><i class="bi bi-receipt me-2"></i>Riepilogo Ordine</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3"><label class="fw-bold text-muted small">Libro</label><p class="mb-0 fs-5 fw-bold" id="orderBookTitle"></p></div>
+                    <div class="mb-3"><label class="fw-bold text-muted small">Libro</label><p class="mb-0 fs-5 fw-bold text-dark" id="orderBookTitle"></p></div>
                     <hr>
                     <div class="mb-3 bg-light p-3 rounded border">
                         <label class="fw-bold text-muted small">Acquirente</label>
-                        <p class="mb-1" id="orderBuyerName"></p>
+                        <p class="mb-1 text-dark" id="orderBuyerName"></p>
                         <p class="mb-0 text-muted small" id="orderBuyerEmail"></p>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-6"><label class="fw-bold text-muted small">Data Vendita</label><p class="mb-0" id="orderDate"></p></div>
+                        <div class="col-6"><label class="fw-bold text-muted small">Data Vendita</label><p class="mb-0 text-dark" id="orderDate"></p></div>
                         <div class="col-6"><label class="fw-bold text-muted small">Prezzo</label><p class="mb-0 text-success fw-bold fs-5" id="orderPrice"></p></div>
                     </div>
                     <hr>
-                    <div class="mb-3"><label class="fw-bold text-muted small"><i class="bi bi-geo-alt"></i> Luogo</label><p class="mb-0" id="orderPlace"></p></div>
-                    <div class="mb-3"><label class="fw-bold text-muted small"><i class="bi bi-clock"></i> Orario</label><p class="mb-0" id="orderTime"></p></div>
+                    <div class="mb-3"><label class="fw-bold text-muted small"><i class="bi bi-geo-alt"></i> Luogo</label><p class="mb-0 text-dark" id="orderPlace"></p></div>
+                    <div class="mb-3"><label class="fw-bold text-muted small"><i class="bi bi-clock"></i> Orario</label><p class="mb-0 text-dark" id="orderTime"></p></div>
                 </div>
                 <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button></div>
             </div>
@@ -344,11 +369,11 @@ if (!empty($myOrders)) {
                     </div>
                     <div class="modal-body">
                         <input type="hidden" id="currentOrderId" name="currentOrderId">
-                        <div class="mb-3"><label class="fw-bold text-muted small">Libro</label><p class="mb-0 fw-bold fs-5" id="stateChangeBookTitle"></p></div>
+                        <div class="mb-3"><label class="fw-bold text-muted small">Libro</label><p class="mb-0 fw-bold fs-5 text-dark" id="stateChangeBookTitle"></p></div>
                         <hr>
                         <div class="mb-3">
-                            <label for="newState" class="form-label fw-bold">Nuovo Stato</label>
-                            <select class="form-select border-success" id="newState" name="newState">
+                            <label for="newState" class="form-label fw-bold text-dark">Nuovo Stato</label>
+                            <select class="form-select border-success text-dark" id="newState" name="newState">
                                 <option value="pending">In attesa (Da Consegnare)</option>
                                 <option value="confirmed">Consegnato</option>
                                 <option value="cancelled">Annulla Vendita</option>
@@ -371,7 +396,7 @@ if (!empty($myOrders)) {
                     <h5 class="modal-title"><i class="bi bi-box-arrow-right me-2"></i>Conferma Logout</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body"><p class="mb-0 fs-5 text-center py-3">Sei sicuro di voler uscire?</p></div>
+                <div class="modal-body"><p class="mb-0 fs-5 text-center py-3 text-dark">Sei sicuro di voler uscire?</p></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
                     <a href="index.php?table=login&action=logout" class="btn btn-danger"><i class="bi bi-box-arrow-right"></i> Esci</a>
@@ -380,10 +405,10 @@ if (!empty($myOrders)) {
         </div>
     </div>
 
-    <footer>
+    <footer class="text-center py-4 bg-dark text-white mt-5">
         <div class="container">
             <p class="mb-1">© 2026 BookSwap Team</p>
-            <small class="text-muted">Kiper Illia, Melega Leonardo, Trevisani Martina, Bertolani Leo</small>
+            <small class="text-white-50">Kiper Illia, Melega Leonardo, Trevisani Martina, Bertolani Leo</small>
         </div>
     </footer>
 

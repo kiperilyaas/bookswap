@@ -44,23 +44,24 @@ class ListingsModel{
             if (!in_array($filter, $allowedFilters)) {
                 $filter = 'title';
             }
-            
-            $sql = "SELECT B.*, C.class AS class_name 
+
+            $sql = "SELECT B.*, C.class AS class_name
                     FROM books B
                     LEFT JOIN class C ON B.id_class = C.id_class ";
 
-            if ($filter === 'class') {          
-                $sql .= "WHERE C.class LIKE :query "; 
+            if ($filter === 'class') {
+                $sql .= "WHERE C.class LIKE :query ";
             } else {
                 $sql .= "WHERE B.$filter LIKE :query ";
             }
+            $sql .= " GROUP BY B.isbn";
             $sql .= " LIMIT 8";
 
             $stm = $this->pdo->prepare($sql);
             $stm->execute(['query' => '%' . $query . '%']);
 
             $results = $stm->fetchAll(PDO::FETCH_ASSOC);
-            
+
             if ($results === false) return [];
             return $results;
 
@@ -80,12 +81,12 @@ class ListingsModel{
                 JOIN users U ON L.id_seller = U.id_user
                 LEFT JOIN class C ON B.id_class = C.id_class ";
 
-        if ($filter === 'class') {          
-            $sql .= "WHERE C.class LIKE :query "; 
+        if ($filter === 'class') {
+            $sql .= "WHERE C.class LIKE :query ";
         } else {
             $sql .= "WHERE B.$filter LIKE :query ";
         }
-        $sql .= "GROUP BY B.isbn, B.title, B.author, C.class
+        $sql .= "GROUP BY B.isbn
                 LIMIT 10";
 
         $stm = $this->pdo->prepare($sql);
