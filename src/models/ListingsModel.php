@@ -103,14 +103,16 @@ class ListingsModel{
         if (!in_array($filter, $allowedFilters)) {
             $filter = 'title';
         }
-        $sql = "SELECT L.*, B.title, L.price as priceOffer, U.name, U.surname,
+        $sql = "SELECT L.*, B.title, B.author, B.isbn, L.price as priceOffer,
+                U.name, U.surname, PH.name as publisher,
                 (SELECT image_path FROM listing_images
                  WHERE id_listing = L.id_listing AND is_primary = 1
                  LIMIT 1) as main_image
                 FROM listings L
                 JOIN books B USING(id_book)
                 JOIN users U ON L.id_seller = U.id_user
-                LEFT JOIN class C ON B.id_class = C.id_class ";
+                LEFT JOIN class C ON B.id_class = C.id_class
+                LEFT JOIN publishing_house PH ON B.id_publish_house = PH.id_publish_house ";
 
         if ($filter === 'class') {
             $sql .= "WHERE C.class LIKE :query ";
@@ -118,7 +120,7 @@ class ListingsModel{
             $sql .= "WHERE B.$filter LIKE :query ";
         }
         $sql .= " AND L.is_available = 1 ";
-        $sql .= "GROUP BY B.isbn
+        $sql .= "GROUP BY L.id_listing
                 LIMIT 10";
 
         $stm = $this->pdo->prepare($sql);

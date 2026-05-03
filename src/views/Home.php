@@ -103,51 +103,68 @@ defined("APP") or die("ACCESSO NEGATO");
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <!-- Carousel Immagini -->
+                        <!-- Carousel Immagini (Sinistra) -->
                         <div class="col-md-6 mb-3">
-                            <div id="bookImagesCarousel" class="carousel slide" data-bs-ride="carousel">
-                                <div class="carousel-inner" id="carouselImages" style="border-radius: 12px; overflow: hidden; background: #f8f9fa;">
-                                    <!-- Le immagini verranno caricate dinamicamente -->
+                            <div class="modal-image-container">
+                                <div id="bookImagesCarousel" class="carousel slide" data-bs-ride="carousel">
+                                    <div class="carousel-inner" id="carouselImages">
+                                        <!-- Le immagini verranno caricate dinamicamente -->
+                                    </div>
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#bookImagesCarousel" data-bs-slide="prev" style="display:none;" id="carouselPrev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#bookImagesCarousel" data-bs-slide="next" style="display:none;" id="carouselNext">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    </button>
                                 </div>
-                                <button class="carousel-control-prev" type="button" data-bs-target="#bookImagesCarousel" data-bs-slide="prev" style="display:none;" id="carouselPrev">
-                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                </button>
-                                <button class="carousel-control-next" type="button" data-bs-target="#bookImagesCarousel" data-bs-slide="next" style="display:none;" id="carouselNext">
-                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                </button>
+                                <div class="carousel-indicators position-static mt-3" id="carouselIndicators" style="margin-bottom: 0;"></div>
                             </div>
-                            <div class="carousel-indicators position-static mt-3" id="carouselIndicators" style="margin-bottom: 0;"></div>
                         </div>
 
-                        <!-- Dettagli Libro -->
+                        <!-- Dettagli Libro (Destra) -->
                         <div class="col-md-6">
-                            <div class="mb-3">
-                                <span id="modalBookPrice" class="price fs-3 fw-bold"></span>
+                            <!-- Prezzo in alto -->
+                            <div class="modal-price-box mb-3">
+                                <span id="modalBookPrice" class="modal-price-large"></span>
                             </div>
 
-                            <div class="mb-3">
-                                <h6 class="text-muted mb-2">Informazioni Libro</h6>
-                                <p class="mb-1"><strong>Autore:</strong> <span id="modalBookAuthor"></span></p>
-                                <p class="mb-1"><strong>ISBN:</strong> <span id="modalBookISBN"></span></p>
-                                <p class="mb-1"><strong>Casa Editrice:</strong> <span id="modalBookPublisher"></span></p>
-                                <p class="mb-1"><strong>Libro di classe:</strong> <span id="modalBookClasse"></span></p>
+                            <!-- Informazioni Ordinate -->
+                            <div class="modal-info-list">
+                                <div class="modal-info-item">
+                                    <strong><i class="bi bi-person-circle"></i> Autore:</strong>
+                                    <span id="modalBookAuthor"></span>
+                                </div>
+                                <div class="modal-info-item">
+                                    <strong><i class="bi bi-bookmark-fill"></i> ISBN:</strong>
+                                    <span id="modalBookISBN"></span>
+                                </div>
+                                <div class="modal-info-item">
+                                    <strong><i class="bi bi-building"></i> Casa Editrice:</strong>
+                                    <span id="modalBookPublisher"></span>
+                                </div>
+                                <div class="modal-info-item">
+                                    <strong><i class="bi bi-star-fill"></i> Condizioni:</strong>
+                                    <span id="modalBookCondition">Buone</span>
+                                </div>
+                                <div class="modal-info-item">
+                                    <strong><i class="bi bi-shop"></i> Venditore:</strong>
+                                    <span id="modalBookSeller"></span>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <h6 class="text-muted mb-2">Venditore</h6>
-                                <p class="mb-0"><i class="bi bi-shop"></i> <strong><span id="modalBookSeller"></span></strong></p>
-                            </div>
-
-                            <div class="p-3 bg-light rounded">
-                                <h6 class="fw-bold mb-2">Descrizione</h6>
-                                <p id="modalBookDescription" class="mb-0 text-muted"></p>
+                            <!-- Descrizione -->
+                            <div class="modal-description-container">
+                                <h6 class="modal-description-header">
+                                    <i class="bi bi-journal-text"></i> Descrizione
+                                </h6>
+                                <p id="modalBookDescription" class="modal-description-content"></p>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Chiudi</button>
-                    <a href="#" id="modalBookCartBtn" class="btn-amazon rounded-pill"><i class="bi bi-bag-check-fill"></i> Compra!</a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                    <a href="#" id="modalBookCartBtn" class="btn-amazon"><i class="bi bi-cart-plus"></i> Acquista</a>
                 </div>
             </div>
         </div>
@@ -246,7 +263,6 @@ defined("APP") or die("ACCESSO NEGATO");
             modalElement.querySelector('#modalBookSeller').textContent = seller || 'N/D';
             modalElement.querySelector('#modalBookISBN').textContent = isbn || 'N/D';
             modalElement.querySelector('#modalBookPublisher').textContent = publisher || 'N/D';
-            modalElement.querySelector('#modalBookClasse').textContent = classe || 'N/D';
 
             // Configura bottone acquisto
             const cartBtn = modalElement.querySelector('#modalBookCartBtn');
