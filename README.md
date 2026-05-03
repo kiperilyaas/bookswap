@@ -1,6 +1,6 @@
 # bookswap
 
-# Tutte le modifiche facciamo solo su nostri rami e dopo aver finito mandiamo la richesta PULL per modificare il main
+# Tutte le modifiche facciamo solo su nostri rami e dopo aver finito mandiamo la PULL Richiesta (PR) per modificare il main
 
 # commandi da seguire
 
@@ -28,7 +28,7 @@ https://github.com/kiperilyaas/bookswap
 #### nella sezione dei branch sceglio il tuo cognome e dopo trova il buttone `CONTRIBUTE` e fai una pool richiesta
 
 
-# to do
+# TODO list
 - [x] Progettazione del Database
     - [x] Diagramma ER
     - [x] Progettazione Fisica
@@ -49,6 +49,14 @@ https://github.com/kiperilyaas/bookswap
         - [x] Registrazione
         - [x] Inserimento del libro
         - [x] Error
+    - [ ] Sistema Immagini Libri
+        - [ ] Creazione tabella book_images nel DB
+        - [ ] Form upload immagini (max 3 per libro)
+        - [ ] Drag & drop con preview
+        - [ ] Visualizzazione immagine principale nelle card
+        - [ ] Gallery con thumbnails nel modal BS5 dettagli
+        - [ ] Visualizzazione foto in Account/Vetrina
+        - [ ] Visualizzazione foto in myOrders
 - [ ] Back-End
     - [x] Models
         - [x] Users
@@ -66,20 +74,24 @@ https://github.com/kiperilyaas/bookswap
             - [x] creare una offerta di vendita
             - [x] creazione del libro
         - [ ] User
-            - [ ] modificare anagrafe/email/password
+            - [x] modificare anagrafe/email/password
             - [ ] eliminare utente
             - [x] eliminazione di una offerta
             - [x] gestione della offerta/ordine del utente
-            - [ ] acquistare un libro
-            - [ ] verifica di chiusura del ordine
+            - [x] acquistare un libro
+            - [x] verifica di chiusura del ordine
             - [ ] Quando nella mia vetrina clicco sul libro, di devono vedere le informazioni
         - [x] Error
             - [x] Gestione del Errore
 - [ ] Test 
-    - [ ] Quando un numero è troppo alto da errore (es. 1milione di euro)
-    - [ ] Quando la scheda è a meta schermo, il menu per accedere non si apre
-    - [ ] Quando fai la ricerca dei libri disponibili, ti escono tutti i libri anche se non 
+    - [x] Quando un numero è troppo alto da errore (es. 1milione di euro)
+        --> risolto impostando il limite nel <input> di 1000$
+    - [x] Quando la scheda è a meta schermo, il menu per accedere non si apre
+        --> aggiunto UI responsive sia per telefoni che per schermi diversi.
+    - [x] Quando fai la ricerca dei libri disponibili, ti escono tutti i libri anche se non 
       sono disponibili
+        --> aggiornata la Querry string impostando WHERE L.is_available = 1
     - [ ] convertire prezzi in float
+    - [ ] quando scegli In Attesa da parte di Venditore, ordine conclude.
 - [ ] Pubblicazione
 

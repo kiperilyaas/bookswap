@@ -31,34 +31,9 @@ if (!empty($myOrders)) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="views/bookswap-responsive.css">
     <style>
-        /* --- FIX COLORI TAB A PROVA DI ERRORE --- */
-        #accountTabs.nav-tabs { 
-            background-color: #f8f9fa !important; 
-            border-bottom: 2px solid #dee2e6 !important; 
-        }
-        
-        #accountTabs .nav-link { 
-            color: #495057 !important; /* Grigio scuro ben visibile per i tab NON attivi */
-            font-weight: 600 !important; 
-            border: none !important; 
-            border-bottom: 3px solid transparent !important; 
-            padding: 1rem 1.5rem !important; 
-            background-color: transparent !important;
-            border-radius: 0 !important;
-        }
-        
-        #accountTabs .nav-link:hover { 
-            color: var(--orange, #ff9900) !important; /* Arancione al passaggio del mouse */
-            background-color: #e9ecef !important; 
-        }
-        
-        #accountTabs .nav-link.active { 
-            color: #000000 !important; /* NERO assoluto per il testo del tab attivo */
-            background-color: #ffffff !important; /* Sfondo bianco */
-            border-bottom: 3px solid var(--orange, #ff9900) !important; /* Linea arancione sotto */
-        }
-        /* ----------------------------------------- */
-
+        .nav-tabs .nav-link { color: #212529; font-weight: 600; border: none; border-bottom: 3px solid transparent; padding: 0.8rem 1.2rem; font-size: var(--text-sm); }
+        .nav-tabs .nav-link:hover { color: var(--orange); background-color: #f1f3f5; }
+        .nav-tabs .nav-link.active { color: var(--orange); background: white; border-bottom: 3px solid var(--orange); }
         .action-card { transition: transform 0.2s, box-shadow 0.2s; border-left: 4px solid transparent; }
         .action-card:hover { transform: translateY(-2px); box-shadow: 0 .5rem 1rem rgba(0,0,0,.1) !important; }
         .border-left-active  { border-left-color: #198754; }

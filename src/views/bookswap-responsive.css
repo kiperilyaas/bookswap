@@ -73,13 +73,13 @@ body {
 
 .navbar-brand:hover { color: var(--orange) !important; }
 
-.nav-link {
+.navbar .nav-link {
     color: white !important;
     font-size: var(--text-sm) !important;
     padding: var(--sp-xs) var(--sp-sm) !important;
 }
 
-.nav-link:hover { color: var(--orange) !important; }
+.navbar .nav-link:hover { color: var(--orange) !important; }
 
 /* ── Pulsante Login/CTA nella navbar ── */
 .btn-nav-cta {

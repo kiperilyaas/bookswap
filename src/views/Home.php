@@ -89,24 +89,54 @@ defined("APP") or die("ACCESSO NEGATO");
 
     <!-- Modale dettaglio libro -->
     <div class="modal fade" id="bookDetailModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalBookTitle"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body text-center">
-                    <img id="modalBookImg" src="" class="img-fluid mb-3" style="max-height:220px;object-fit:contain;">
-                    <div class="mb-3 text-start">
-                        <p class="mb-1"><strong>Autore:</strong> <span id="modalBookAuthor"></span></p>
-                        <p class="mb-1"><strong>Venditore:</strong> <span id="modalBookSeller"></span> | <strong>Classe:</strong> <span id="modalBookClasse"></span></p>
-                        <p class="mb-1"><strong>ISBN:</strong> <span id="modalBookISBN"></span></p>
-                        <p class="mb-1"><strong>Casa Editrice:</strong> <span id="modalBookPublisher"></span></p>
-                    </div>
-                    <div id="modalBookPrice" class="price mb-3"></div>
-                    <div class="text-start p-3 bg-light rounded">
-                        <h6><strong>Descrizione:</strong></h6>
-                        <p id="modalBookDescription" class="mb-0"></p>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Carousel Immagini -->
+                        <div class="col-md-6 mb-3">
+                            <div id="bookImagesCarousel" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner" id="carouselImages" style="border-radius: 12px; overflow: hidden; background: #f8f9fa;">
+                                    <!-- Le immagini verranno caricate dinamicamente -->
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#bookImagesCarousel" data-bs-slide="prev" style="display:none;" id="carouselPrev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#bookImagesCarousel" data-bs-slide="next" style="display:none;" id="carouselNext">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                </button>
+                            </div>
+                            <div class="carousel-indicators position-static mt-3" id="carouselIndicators" style="margin-bottom: 0;"></div>
+                        </div>
+
+                        <!-- Dettagli Libro -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <span id="modalBookPrice" class="price fs-3 fw-bold"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <h6 class="text-muted mb-2">Informazioni Libro</h6>
+                                <p class="mb-1"><strong>Autore:</strong> <span id="modalBookAuthor"></span></p>
+                                <p class="mb-1"><strong>ISBN:</strong> <span id="modalBookISBN"></span></p>
+                                <p class="mb-1"><strong>Casa Editrice:</strong> <span id="modalBookPublisher"></span></p>
+                                <p class="mb-1"><strong>Classe:</strong> <span id="modalBookClasse"></span></p>
+                            </div>
+
+                            <div class="mb-3">
+                                <h6 class="text-muted mb-2">Venditore</h6>
+                                <p class="mb-0"><i class="bi bi-shop"></i> <strong><span id="modalBookSeller"></span></strong></p>
+                            </div>
+
+                            <div class="p-3 bg-light rounded">
+                                <h6 class="fw-bold mb-2">Descrizione</h6>
+                                <p id="modalBookDescription" class="mb-0 text-muted"></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -155,22 +185,121 @@ defined("APP") or die("ACCESSO NEGATO");
 
     document.addEventListener('DOMContentLoaded', function () {
         // Modale libro
-        document.getElementById('bookDetailModal').addEventListener('show.bs.modal', function (event) {
-            const el = event.relatedTarget;
-            this.querySelector('#modalBookTitle').textContent     = el.dataset.title || 'N/D';
-            this.querySelector('#modalBookImg').src               = el.dataset.img   || '';
-            this.querySelector('#modalBookPrice').textContent     = el.dataset.price || '';
-            this.querySelector('#modalBookDescription').textContent = el.dataset.description || 'Nessuna descrizione.';
-            this.querySelector('#modalBookAuthor').textContent    = el.dataset.author    || 'N/D';
-            this.querySelector('#modalBookSeller').textContent    = el.dataset.seller    || 'N/D';
-            this.querySelector('#modalBookISBN').textContent      = el.dataset.isbn      || 'N/D';
-            this.querySelector('#modalBookPublisher').textContent = el.dataset.publisher || 'N/D';
-            this.querySelector('#modalBookClasse').textContent    = el.dataset.classe    || 'N/D';
-            const cartBtn = this.querySelector('#modalBookCartBtn');
-            const idItem = el.dataset.id;
+        const modalElement = document.getElementById('bookDetailModal');
+
+        modalElement.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+
+            // Cerca la card parent se l'elemento cliccato non ha i data attributes
+            let dataSource = button;
+            if (!button.getAttribute('data-title')) {
+                dataSource = button.closest('[data-title]');
+            }
+
+            if (!dataSource) {
+                console.error('Nessun elemento con data-title trovato!');
+                return;
+            }
+
+            // Popola i dati dal bottone/card che ha aperto il modale
+            const title = dataSource.getAttribute('data-title');
+            const price = dataSource.getAttribute('data-price');
+            const description = dataSource.getAttribute('data-description');
+            const author = dataSource.getAttribute('data-author');
+            const seller = dataSource.getAttribute('data-seller');
+            const isbn = dataSource.getAttribute('data-isbn');
+            const publisher = dataSource.getAttribute('data-publisher');
+            const classe = dataSource.getAttribute('data-classe');
+            const idItem = dataSource.getAttribute('data-id');
+            const img = dataSource.getAttribute('data-img');
+
+            // Imposta i valori nel modale
+            modalElement.querySelector('#modalBookTitle').textContent = title || 'N/D';
+            modalElement.querySelector('#modalBookPrice').textContent = price || '';
+            modalElement.querySelector('#modalBookDescription').textContent = description || 'Nessuna descrizione disponibile.';
+            modalElement.querySelector('#modalBookAuthor').textContent = author || 'N/D';
+            modalElement.querySelector('#modalBookSeller').textContent = seller || 'N/D';
+            modalElement.querySelector('#modalBookISBN').textContent = isbn || 'N/D';
+            modalElement.querySelector('#modalBookPublisher').textContent = publisher || 'N/D';
+            modalElement.querySelector('#modalBookClasse').textContent = classe || 'N/D';
+
+            // Configura bottone acquisto
+            const cartBtn = modalElement.querySelector('#modalBookCartBtn');
             if (idItem) {
                 cartBtn.href = "index.php?table=Order&action=checkout&id=" + idItem;
-                cartBtn.onclick = e => confirmPurchase(e, el.dataset.title);
+                cartBtn.onclick = e => confirmPurchase(e, title);
+            }
+
+            // Carica le immagini del listing
+            const carouselImages = modalElement.querySelector('#carouselImages');
+            const carouselIndicators = modalElement.querySelector('#carouselIndicators');
+            const carouselPrev = modalElement.querySelector('#carouselPrev');
+            const carouselNext = modalElement.querySelector('#carouselNext');
+            const defaultImg = img || '../utils/immagini/prova_libro.png';
+
+            // Reset carousel
+            carouselImages.innerHTML = '';
+            carouselIndicators.innerHTML = '';
+            carouselPrev.style.display = 'none';
+            carouselNext.style.display = 'none';
+
+            // Fetch immagini del listing
+            if (idItem) {
+                fetch(`index.php?table=Listings&action=getListingImages&id=${idItem}`)
+                    .then(r => r.json())
+                    .then(images => {
+                        if (images && images.length > 0) {
+                            // Mostra controlli se ci sono più immagini
+                            if (images.length > 1) {
+                                carouselPrev.style.display = 'block';
+                                carouselNext.style.display = 'block';
+                            }
+
+                            // Crea slide per ogni immagine
+                            images.forEach((img, index) => {
+                                const imgPath = '../utils/immagini/' + img.image_path;
+
+                                // Slide
+                                const slide = document.createElement('div');
+                                slide.className = 'carousel-item' + (index === 0 ? ' active' : '');
+                                slide.innerHTML = `<img src="${imgPath}" class="d-block w-100" style="height: 400px; object-fit: contain;" alt="Foto ${index + 1}">`;
+                                carouselImages.appendChild(slide);
+
+                                // Indicator (thumbnail)
+                                const indicator = document.createElement('button');
+                                indicator.type = 'button';
+                                indicator.setAttribute('data-bs-target', '#bookImagesCarousel');
+                                indicator.setAttribute('data-bs-slide-to', index);
+                                if (index === 0) indicator.className = 'active';
+                                indicator.style.cssText = 'width: 60px; height: 60px; border-radius: 8px; overflow: hidden; margin: 0 5px; border: 2px solid #ddd; background-size: cover; background-position: center;';
+                                indicator.style.backgroundImage = `url('${imgPath}')`;
+                                carouselIndicators.appendChild(indicator);
+                            });
+                        } else {
+                            // Nessuna immagine - mostra immagine di default
+                            carouselImages.innerHTML = `
+                                <div class="carousel-item active">
+                                    <img src="${defaultImg}" class="d-block w-100" style="height: 400px; object-fit: contain;" alt="Nessuna foto">
+                                </div>
+                            `;
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Errore caricamento immagini:', err);
+                        // Fallback a immagine di default
+                        carouselImages.innerHTML = `
+                            <div class="carousel-item active">
+                                <img src="${defaultImg}" class="d-block w-100" style="height: 400px; object-fit: contain;" alt="Errore caricamento">
+                            </div>
+                        `;
+                    });
+            } else {
+                // Nessun ID - mostra solo immagine di default
+                carouselImages.innerHTML = `
+                    <div class="carousel-item active">
+                        <img src="${defaultImg}" class="d-block w-100" style="height: 400px; object-fit: contain;" alt="Immagine libro">
+                    </div>
+                `;
             }
         });
 
@@ -218,7 +347,9 @@ defined("APP") or die("ACCESSO NEGATO");
                                 const priceText = (rawPrice !== null && parseFloat(rawPrice) > 0)
                                     ? '€ ' + parseFloat(rawPrice).toFixed(2).replace('.', ',')
                                     : 'Scambio';
-                                const imgSrc = book.immagine || '../utils/immagini/prova_libro.png';
+                                const imgSrc = book.main_image
+                                    ? '../utils/immagini/' + book.main_image
+                                    : '../utils/immagini/prova_libro.png';
                                 const idItem = book.id_listing || book.id_book || '';
                                 const safeQ  = s => (s || '').replace(/"/g, '&quot;');
 
@@ -234,13 +365,14 @@ defined("APP") or die("ACCESSO NEGATO");
                                         data-author="${safeQ(book.author || '')}"
                                         data-seller="${safeQ(seller)}"
                                         data-isbn="${safeQ(book.isbn || '')}"
-                                        data-publisher="${safeQ(book.publishing_house || book.publish || '')}"
+                                        data-publisher="${safeQ(book.publishing_house || book.publish || book.publisher || '')}"
                                         data-classe="${safeQ(book.class || book.classe || '')}">
-                                        <img src="${imgSrc}" class="card-img-top book-img" alt="Copertina">
+                                        <img src="${imgSrc}" class="card-img-top book-img" alt="Copertina" style="height: 280px; object-fit: cover;">
                                         <div class="card-body d-flex flex-column p-3">
-                                            <h5 class="card-title" style="-webkit-line-clamp:2;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;">${title}</h5>
-                                            <div class="seller-info"><i class="bi bi-person-fill"></i> <strong>${seller}</strong></div>
-                                            <div class="mb-2"><span class="price">${priceText}</span></div>
+                                            <h5 class="card-title mb-2" style="font-weight:600;line-height:1.3;">${title}</h5>
+                                            <div class="text-muted small mb-2"><i class="bi bi-person-circle"></i> ${safeQ(book.author || 'N/D')}</div>
+                                            <div class="seller-info mb-2"><i class="bi bi-shop"></i> <strong>${seller}</strong></div>
+                                            <div class="mb-2"><span class="price fs-5">${priceText}</span></div>
                                             <div class="mt-auto">
                                                 <a href="index.php?table=Order&action=checkout&id=${encodeURIComponent(idItem)}"
                                                    onclick="return confirmPurchase(event,'${title.replace(/'/g,"\\'")}');"

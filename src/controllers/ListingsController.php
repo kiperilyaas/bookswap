@@ -2,16 +2,21 @@
 defined("APP") or die("ACESSO NEGATO");
 require_once 'models/ListingsModel.php';
 require_once "models/BookModel.php";
+require_once 'models/ListingImagesModel.php';
 require_once "../utils/function.php";
+require_once "../utils/imageUpload.php";
 
 class ListingsController
 {
     private $model;
     private $modelBook;
+    private $modelImages;
+
     public function __construct()
     {
         $this->model = new ListingsModel();
         $this->modelBook = new BookModel();
+        $this->modelImages = new ListingImagesModel();
     }
 
     public function createListings()
@@ -76,11 +81,50 @@ class ListingsController
         $description = $_POST['descrizione'] ?? "";
 
 
-
+        // Crea il listing
         $param = [$book, $seller, $price, $condition, $description, 1];
-        $this->model->insertRecord($param);
-        $_SESSION['success'][] = "Annuncio creato con successo!";
+        $result = $this->model->insertRecord($param);
+
+        if ($result) {
+            // Recupera l'ID del listing appena creato
+            $id_listing = $this->model->getLastInsertedId();
+
+            // Gestione upload immagini
+            if (isset($_FILES['listing_images']) && !empty($_FILES['listing_images']['name'][0])) {
+                $uploadedImages = handleImageUpload($_FILES['listing_images'], $id_listing);
+
+                if (!empty($uploadedImages)) {
+                    foreach ($uploadedImages as $index => $imagePath) {
+                        $is_primary = ($index === 0) ? 1 : 0; // Prima immagine = principale
+                        $this->modelImages->addImage($id_listing, $imagePath, $is_primary);
+                    }
+                    $_SESSION['success'][] = "Annuncio creato con " . count($uploadedImages) . " foto!";
+                } else {
+                    $_SESSION['success'][] = "Annuncio creato senza foto";
+                }
+            } else {
+                $_SESSION['success'][] = "Annuncio creato con successo, senza foto!";
+            }
+        } else {
+            $_SESSION['error'][] = "Errore durante la creazione dell'annuncio";
+        }
+
         header("location: index.php");
+        exit;
+    }
+
+    public function getListingImages() {
+        $id_listing = $_GET['id'] ?? -1;
+
+        if ($id_listing == -1) {
+            echo json_encode([]);
+            exit;
+        }
+
+        $images = $this->modelImages->getImagesByListing($id_listing);
+
+        header('Content-Type: application/json');
+        echo json_encode($images);
         exit;
     }
 

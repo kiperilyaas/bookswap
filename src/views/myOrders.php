@@ -98,7 +98,7 @@ if (!empty($myOrders)) {
                 $timeFmt    = ($timeMeet !== 'N/D') ? date('d/m/Y', strtotime($timeMeet)) . ' alle ' . date('H:i', strtotime($timeMeet)) : 'N/D';
                 $placeMeet  = $order['place_meet']      ?? 'N/D';
                 $descMeet   = $order['description_meet'] ?? '';
-                $sellerFull = trim(($order['seller_name'] ?? 'N/D') . ' ' . ($order['seller_surname'] ?? ''));
+                $sellerFull = strtoupper(trim(($order['name'] ?? 'N/D') . ' ' . ($order['surname'] ?? '')));
                 $badgeClass = 'state-pending';
                 $stateText  = 'In attesa';
                 if($sc === 'confirmed') { $badgeClass = 'state-confirmed'; $stateText = 'Confermato'; }
@@ -169,7 +169,7 @@ if (!empty($myOrders)) {
                     $fp  = $order['final_price'] ?? 0;
                     $pfmt = ($fp > 0) ? '€ ' . number_format($fp, 2, ',', '.') : 'Scambio';
                     $sc  = $order['state_customer'] ?? 'pending';
-                    $sfn = trim(($order['seller_name'] ?? 'N/D') . ' ' . ($order['seller_surname'] ?? ''));
+                    $sfn = strtoupper(trim(($order['name'] ?? 'N/D') . ' ' . ($order['surname'] ?? '')));
                     $bc  = ($sc === 'cancelled') ? 'state-cancelled' : 'state-confirmed';
                     $bt  = ($sc === 'cancelled') ? 'Annullato' : 'Completato';
                 ?>
