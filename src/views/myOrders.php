@@ -175,10 +175,10 @@ if (!empty($myOrders)) {
                 ?>
                 <div class="order-card-history">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span style="font-size:var(--text-xs);color:#666;font-weight:600;"><?= htmlspecialchars($sfn) ?></span>
+                        <span style="font-size:var(--text-xs);color:#666;font-weight:600;">Venditore: <?= htmlspecialchars($sfn) ?></span>
                         <span class="badge-state <?= $bc ?>" style="font-size:0.72rem;"><?= $bt ?></span>
                     </div>
-                    <h6 class="fw-bold mb-1" style="font-size:var(--text-sm);"><?= htmlspecialchars($order['title'] ?? 'N/D') ?></h6>
+                    <h6 class="fw-bold mb-1" style="font-size:var(--text-sm);">Titolo: <?= htmlspecialchars($order['title'] ?? 'N/D') ?></h6>
                     <div class="d-flex justify-content-between align-items-end mt-3">
                         <span class="text-muted" style="font-size:var(--text-xs);">Prezzo:</span>
                         <span class="fw-bold <?= ($sc === 'cancelled') ? 'text-muted text-decoration-line-through' : 'text-success' ?>" style="font-size:var(--text-sm);"><?= $pfmt ?></span>

@@ -119,8 +119,9 @@ class OrderController {
     }
 
     public function changeStateSeller(){
+        $availabelState = ['pending', 'confirmed', 'cancelled'];
         $newState = $_POST['newState'] ?? null;
-        if(!$newState){
+        if(!in_array($newState, $availabelState)){
             $_SESSION['error'][] = "Stato del libro non esiste";
             header("location: index.php?table=User&action=account");
             exit;
@@ -133,9 +134,10 @@ class OrderController {
             exit;
         }
 
-        $result = $this->orderModel->changeOrderStateSeller([$newState, $orderId]);
+        $result = $this->orderModel->changeOrderStateSeller($orderId, $newState);
+        
         if(!$result){
-            $_SESSION['error'][] = "Non e' stato possibile aggiornare lo stato del ordine";
+            $_SESSION['error'][] = "Non e' stato possibile aggiornare lo stato della vendita";
             header("location: index.php?table=User&action=account");
             exit;
         }
@@ -155,14 +157,15 @@ class OrderController {
             exit;
         }
 
+        $availabelState = ['pending', 'confirmed', 'cancelled'];
         $newState = $_POST['newState'] ?? null;
-        if(!$newState){
+        if(!in_array($newState, $availabelState)){
             $_SESSION['error'][] = "Stato del libro non esiste";
             header("location: index.php?table=User&action=account");
             exit;
         }
         
-        $result = $this->orderModel->changeOrderStateCustomer([$newState, $orderId]);
+        $result = $this->orderModel->changeOrderStateCustomer($orderId, $newState);
 
         if(!$result){
             $_SESSION['error'][] = "Non e' stato possibile aggiornare lo stato del ordine";

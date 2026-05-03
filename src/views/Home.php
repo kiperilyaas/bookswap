@@ -30,7 +30,13 @@ defined("APP") or die("ACCESSO NEGATO");
                             <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Crea Annuncio</a>
                         <?php endif; ?>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="index.php?table=Order&action=viewMyOrders">Ordini</a></li>
+
+                    <?php if(isset($_SESSION['id_user'])): ?>
+                            <li class="nav-item"><a class="nav-link" href="index.php?table=Order&action=viewMyOrders">Tuoi Ordini</a></li>
+                    <?php else: ?>
+                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#orderModal">Tuoi Ordini</a>
+                    <?php endif; ?>
+                    
                     <?php
                     if (!isset($_SESSION['id_user'])) {
                         echo '<li class="nav-item mx-1">';
@@ -124,7 +130,7 @@ defined("APP") or die("ACCESSO NEGATO");
                                 <p class="mb-1"><strong>Autore:</strong> <span id="modalBookAuthor"></span></p>
                                 <p class="mb-1"><strong>ISBN:</strong> <span id="modalBookISBN"></span></p>
                                 <p class="mb-1"><strong>Casa Editrice:</strong> <span id="modalBookPublisher"></span></p>
-                                <p class="mb-1"><strong>Classe:</strong> <span id="modalBookClasse"></span></p>
+                                <p class="mb-1"><strong>Libro di classe:</strong> <span id="modalBookClasse"></span></p>
                             </div>
 
                             <div class="mb-3">
@@ -147,7 +153,6 @@ defined("APP") or die("ACCESSO NEGATO");
         </div>
     </div>
 
-    <!-- Modale login richiesto -->
     <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -155,10 +160,30 @@ defined("APP") or die("ACCESSO NEGATO");
                     <h5 class="modal-title">Accesso richiesto</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">Per pubblicare un annuncio su <strong>BookSwap</strong> devi prima autenticarti.</div>
+                <div class="modal-body">
+                    Per pubblicare un annuncio su <strong>BookSwap</strong> devi prima autenticarti.
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
-                    <a href="index.php?table=login&action=login" class="btn-amazon">Accedi ora</a>
+                    <a href="index.php?table=login&action=loginView" class="btn btn-amazon">Accedi ora</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="orderModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Accesso richiesto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Per visualizzare i tuoi <strong>Ordini</strong> devi prima autenticarti.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                    <a href="index.php?table=login&action=loginView" class="btn btn-amazon">Accedi ora</a>
                 </div>
             </div>
         </div>
@@ -355,7 +380,7 @@ defined("APP") or die("ACCESSO NEGATO");
 
                                 resDiv.innerHTML += `
                                 <div class="col">
-                                    <div class="card book-card"
+                                    <div class="card book-card h-100"
                                         data-bs-toggle="modal" data-bs-target="#bookDetailModal"
                                         data-id="${encodeURIComponent(idItem)}"
                                         data-title="${safeQ(title)}"
@@ -367,19 +392,28 @@ defined("APP") or die("ACCESSO NEGATO");
                                         data-isbn="${safeQ(book.isbn || '')}"
                                         data-publisher="${safeQ(book.publishing_house || book.publish || book.publisher || '')}"
                                         data-classe="${safeQ(book.class || book.classe || '')}">
+                                        
                                         <img src="${imgSrc}" class="card-img-top book-img" alt="Copertina" style="height: 280px; object-fit: cover;">
+                                        
                                         <div class="card-body d-flex flex-column p-3">
-                                            <h5 class="card-title mb-2" style="font-weight:600;line-height:1.3;">${title}</h5>
-                                            <div class="text-muted small mb-2"><i class="bi bi-person-circle"></i> ${safeQ(book.author || 'N/D')}</div>
+                                            
+                                            <!-- BLOCCO CHE SI ESPANDE PER ALLINEARE IL FONDO -->
+                                            <div class="flex-grow-1">
+                                                <h5 class="card-title mb-2" style="font-weight:600;line-height:1.3;">${title}</h5>
+                                                <div class="text-muted small mb-2"><i class="bi bi-person-circle"></i> ${safeQ(book.author || 'N/D')}</div>
+                                            </div>
+
                                             <div class="seller-info mb-2"><i class="bi bi-shop"></i> <strong>${seller}</strong></div>
                                             <div class="mb-2"><span class="price fs-5">${priceText}</span></div>
+                                            
                                             <div class="mt-auto">
                                                 <a href="index.php?table=Order&action=checkout&id=${encodeURIComponent(idItem)}"
-                                                   onclick="return confirmPurchase(event,'${title.replace(/'/g,"\\'")}');"
-                                                   class="btn btn-warning w-100 d-flex justify-content-center align-items-center gap-2">
+                                                onclick="return confirmPurchase(event,'${title.replace(/'/g,"\\'")}');"
+                                                class="btn btn-warning w-100 d-flex justify-content-center align-items-center gap-2">
                                                     <i class="bi bi-bag-check-fill"></i> Compra!
                                                 </a>
                                             </div>
+                                            
                                         </div>
                                     </div>
                                 </div>`;

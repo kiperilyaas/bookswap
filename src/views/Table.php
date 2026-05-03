@@ -91,7 +91,7 @@ if (!empty($table) && is_array($table)) {
     <?php foreach ($annunciPreparati as $annuncio): ?>
         
         <div class="col">
-            <div class="card book-card" 
+            <div class="card book-card h-100" 
                  data-bs-toggle="modal" 
                  data-bs-target="#bookDetailModal"
                  data-id="<?= htmlspecialchars($annuncio['idItem']) ?>" 
@@ -109,14 +109,17 @@ if (!empty($table) && is_array($table)) {
 
                 <div class="card-body d-flex flex-column p-3">
 
-                    <h5 class="card-title mb-2" style="font-weight: 600; line-height: 1.3;">
-                        <?= htmlspecialchars($annuncio['titolo']) ?>
-                    </h5>
-
-                    <div class="text-muted small mb-2">
-                        <i class="bi bi-person-circle"></i> <?= htmlspecialchars($annuncio['autore']) ?>
+                    <!-- IL TRUCCO È QUI: questo div assorbe lo spazio vuoto in eccesso -->
+                    <div class="flex-grow-1">
+                        <h5 class="card-title mb-2" style="font-weight: 600; line-height: 1.3;">
+                            <?= htmlspecialchars($annuncio['titolo']) ?>
+                        </h5>
+                        <div class="text-muted small mb-2">
+                            <i class="bi bi-person-circle"></i> <?= htmlspecialchars($annuncio['autore']) ?>
+                        </div>
                     </div>
 
+                    <!-- Da qui in giù, tutto sarà perfettamente allineato al fondo -->
                     <div class="seller-info mb-2">
                         <i class="bi bi-shop"></i> <strong><?= htmlspecialchars($annuncio['venditore']) ?></strong>
                     </div>

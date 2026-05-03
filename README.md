@@ -49,14 +49,14 @@ https://github.com/kiperilyaas/bookswap
         - [x] Registrazione
         - [x] Inserimento del libro
         - [x] Error
-    - [ ] Sistema Immagini Libri
-        - [ ] Creazione tabella book_images nel DB
-        - [ ] Form upload immagini (max 3 per libro)
-        - [ ] Drag & drop con preview
-        - [ ] Visualizzazione immagine principale nelle card
-        - [ ] Gallery con thumbnails nel modal BS5 dettagli
-        - [ ] Visualizzazione foto in Account/Vetrina
-        - [ ] Visualizzazione foto in myOrders
+    - [x] Sistema Immagini Libri
+        - [x] Creazione tabella book_images nel DB
+        - [x] Form upload immagini (max 3 per libro)
+        - [x] Drag & drop con preview
+        - [x] Visualizzazione immagine principale nelle card
+        - [x] Gallery con thumbnails nel modal BS5 dettagli
+        - [x] Visualizzazione foto in Account/Vetrina
+        - [x] Visualizzazione foto in myOrders
 - [ ] Back-End
     - [x] Models
         - [x] Users
@@ -93,5 +93,6 @@ https://github.com/kiperilyaas/bookswap
         --> aggiornata la Querry string impostando WHERE L.is_available = 1
     - [ ] convertire prezzi in float
     - [ ] quando scegli In Attesa da parte di Venditore, ordine conclude.
+    - [ ] gestire cancellazione del ordine dalla parte di Customer
 - [ ] Pubblicazione
 
