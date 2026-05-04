@@ -142,11 +142,42 @@ if (!empty($myOrders)) {
                                 $dataOrdine  = $order['date_order'] ?? 'N/D';
                                 $buyerName   = htmlspecialchars(($order['customerName'] ?? 'Utente') . ' ' . ($order['customerSurname'] ?? ''));
                                 $buyerEmail  = htmlspecialchars($order['customerEmail'] ?? 'N/D');
+                                $sc = $order['state_customer'] ?? 'pending';
+                                $ss = $order['state_seller']   ?? 'pending';
+
+                                // Determina stato e badge
+                                $badgeClass = 'bg-warning text-dark';
+                                $stateText = 'In Lavorazione';
+                                $showWarning = false;
+                                $warningMsg = '';
+
+                                if($sc === 'cancelled' || $ss === 'cancelled') {
+                                    $badgeClass = 'bg-danger text-white';
+                                    $stateText = 'Annullato';
+                                } elseif($sc === 'confirmed' && $ss === 'confirmed') {
+                                    $badgeClass = 'bg-success text-white';
+                                    $stateText = 'Completato';
+                                } elseif($ss === 'confirmed' && $sc === 'pending') {
+                                    $badgeClass = 'bg-success text-white';
+                                    $stateText = 'Confermato da te';
+                                    $showWarning = true;
+                                    $warningMsg = 'In attesa della conferma dell\'acquirente';
+                                } elseif($ss === 'pending' && $sc === 'confirmed') {
+                                    $badgeClass = 'bg-warning text-dark';
+                                    $stateText = 'In Lavorazione';
+                                    $showWarning = true;
+                                    $warningMsg = 'L\'acquirente ha confermato la ricezione';
+                                }
                             ?>
                             <div class="list-group-item action-card border-left-warning p-3 mb-2 rounded shadow-sm">
                                 <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
                                     <div>
-                                        <span class="badge bg-warning text-dark mb-2"><i class="bi bi-hourglass-split"></i> In Lavorazione</span>
+                                        <span class="badge <?= $badgeClass ?> mb-2"><i class="bi bi-hourglass-split"></i> <?= $stateText ?></span>
+                                        <?php if($showWarning): ?>
+                                        <div class="alert alert-info mb-2 py-1 px-2" style="font-size:var(--text-xs);">
+                                            <i class="bi bi-info-circle-fill me-1"></i><?= htmlspecialchars($warningMsg) ?>
+                                        </div>
+                                        <?php endif; ?>
                                         <h5 class="mb-1 fw-bold" style="font-size:var(--text-md, 1.1rem);"><?= htmlspecialchars($titoloLibro) ?></h5>
                                         <div class="p-2 my-2 bg-light rounded border">
                                             <p class="mb-0 small text-dark"><strong><i class="bi bi-person-fill"></i> Acquirente:</strong> <?= $buyerName ?></p>
@@ -166,12 +197,14 @@ if (!empty($myOrders)) {
                                                 data-description="<?= htmlspecialchars($order['description_meet'] ?? '') ?>">
                                             <i class="bi bi-info-circle"></i> Riepilogo
                                         </button>
+                                        <?php if($sc !== 'cancelled' && $ss !== 'cancelled'): ?>
                                         <button class="btn btn-sm btn-success change-state-btn"
                                                 data-order-id="<?= htmlspecialchars($order['id_order'] ?? '') ?>"
                                                 data-title="<?= htmlspecialchars($titoloLibro) ?>"
-                                                data-current-state="<?= htmlspecialchars($order['state_seller'] ?? 'pending') ?>">
+                                                data-current-state="<?= htmlspecialchars($ss) ?>">
                                             <i class="bi bi-arrow-repeat"></i> Aggiorna Stato
                                         </button>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>

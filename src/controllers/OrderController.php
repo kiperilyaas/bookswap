@@ -142,11 +142,24 @@ class OrderController {
             exit;
         }
 
-        if(checkStateIsEqual($orderId));
+        $result = checkStateIsEqual($orderId);
+        if($result == -2){
+            $idListing = $this->listingsModel->getListingByOrderId($orderId);
+            $this->listingsModel->updateAvailability($idListing, 1); // Rimetti disponibile
 
-        $_SESSION['success'][] = "Stato del ordine e' stato cambiato";
-        header("location: index.php?table=User&action=account");
-        exit;
+            $_SESSION['success'][] = "Ordine e' stato cancellato con successo. Il libro e' di nuovo disponibile.";
+            header("location: index.php?table=User&action=account");
+            exit;
+        }
+        else if($result == -1){
+            $_SESSION['success'][] = "Stato del ordine e' stato cambiato, si attende la conferma da parte di aquirente";
+            header("location: index.php?table=User&action=account");
+            exit;
+        }
+        else if($result == 1){
+            $_SESSION['success'][] = "Ordine e' stato chiuso. Grazie per aver uttilizato BookSwap";
+            header("location: index.php?table=User&action=account");
+        }
     }
 
     public function changeStateCustomer(){
@@ -173,11 +186,24 @@ class OrderController {
             exit;
         }
 
-        if(checkStateIsEqual($orderId));
+        $result = checkStateIsEqual($orderId);
+        if($result == -2){
+            $idListing = $this->listingsModel->getListingByOrderId($orderId);
+            $this->listingsModel->updateAvailability($idListing, 1); // Rimetti disponibile
 
-        $_SESSION['success'][] = "Stato del ordine e' stato cambiato";
-        header("location: index.php?table=Order&action=viewMyOrders");
-        exit;
-
+            $_SESSION['success'][] = "Ordine e' stato cancellato con successo. Il libro e' di nuovo disponibile.";
+            header("location: index.php?table=Order&action=viewMyOrders");
+            exit;
+        }
+        else if($result == -1){
+            $_SESSION['success'][] = "Stato del ordine e' stato cambiato, si attende la conferma da parte di venditore";
+            header("location: index.php?table=Order&action=viewMyOrders");
+            exit;
+        }
+        else if($result == 1){
+            $_SESSION['success'][] = "Ordine e' stato chiuso. Grazie per aver uttilizato BookSwap";
+            header("location: index.php?table=Order&action=viewMyOrders");
+            exit;
+        }
     }
 }
