@@ -1,25 +1,20 @@
 <?php
 defined("APP") or die("ACCESSO NEGATO");
 
-// --- LOGICA DI SEPARAZIONE DEGLI ORDINI ---
 $ordiniAttivi = [];
 $ordiniChiusi = [];
-
 if (!empty($myOrders)) {
     foreach ($myOrders as $order) {
-        $generalState = $order['state'] ?? 'open';
-        $stateCustomer = $order['state_customer'] ?? 'pending';
-        $stateSeller = $order['state_seller'] ?? 'pending';
-        
-        if ($generalState === 'closed' || ($stateCustomer === 'confirmed' && $stateSeller === 'confirmed') || $stateCustomer === 'cancelled') {
+        $gs = $order['state']          ?? 'open';
+        $sc = $order['state_customer'] ?? 'pending';
+        $ss = $order['state_seller']   ?? 'pending';
+        if ($gs === 'closed' || ($sc === 'confirmed' && $ss === 'confirmed') || $sc === 'cancelled')
             $ordiniChiusi[] = $order;
-        } else {
+        else
             $ordiniAttivi[] = $order;
-        }
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -28,154 +23,49 @@ if (!empty($myOrders)) {
     <title>I Miei Ordini | BookSwap</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="views/bookswap-responsive.css">
     <style>
-        :root {
-            --bs-orange: #ff9900;
-            --bs-dark: #131921;
-            --bs-bg: #eaeded;
-        }
-
-        /* --- FIX FOOTER A FONDO PAGINA --- */
-        html, body {
-            height: 100%;
-        }
-
-        body {
-            background-color: var(--bs-bg);
-            font-family: "Segoe UI", Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            margin: 0;
-        }
-
-        .navbar {
-            background-color: var(--bs-dark) !important;
-            padding: 0.5rem 1rem;
-        }
-
-        .navbar-brand {
-            font-weight: 700;
-            color: white !important;
-        }
-
         .page-header {
-            background: linear-gradient(135deg, var(--bs-orange) 0%, #ffb84d 100%);
-            padding: 2rem 0;
-            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--orange) 0%, #ffb84d 100%);
+            padding: var(--sp-lg) 0;
+            margin-bottom: var(--sp-lg);
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-
-        .page-title {
-            color: var(--bs-dark);
-            font-weight: 800;
-            font-size: 2.5rem;
-            margin: 0;
-        }
+        .page-title { color: var(--dark); font-weight: 800; font-size: var(--text-2xl); margin: 0; }
 
         .order-card {
             background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 1.5rem;
+            border-radius: var(--radius-lg);
+            padding: var(--sp-md);
+            margin-bottom: var(--sp-md);
             border: 1px solid #ddd;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            transition: all 0.3s;
         }
-
-        .order-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            transform: translateY(-2px);
-        }
-
-        .order-card-history {
-            background: #fdfdfd;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 1rem;
-            border: 1px solid #e0e0e0;
-        }
-
-        .order-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .order-id {
-            font-size: 0.9rem;
-            color: #666;
-            font-weight: 600;
-        }
-
-        .book-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--bs-dark);
-            margin-bottom: 10px;
-        }
-
-        .order-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .detail-item {
-            background-color: #f8f9fa;
-            padding: 12px;
-            border-radius: 8px;
-        }
-
-        .detail-label {
-            font-size: 0.75rem;
-            color: #666;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        .badge-state {
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        .state-pending { background-color: #fff3cd; color: #856404; }
-        .state-confirmed { background-color: #d4edda; color: #155724; }
-        .state-cancelled { background-color: #f8d7da; color: #721c24; }
-
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            background: white;
-            border-radius: 12px;
-        }
-
-        footer {
-            background-color: var(--bs-dark);
-            color: white;
-            padding: 2rem 0;
-            margin-top: auto; /* Spinge il footer in fondo */
-        }
+        .order-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.13); transform: translateY(-2px); }
+        .order-card-history { background: #fdfdfd; border-radius: var(--radius-sm); padding: 15px; margin-bottom: 1rem; border: 1px solid #e0e0e0; }
+        .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--sp-sm); padding-bottom: var(--sp-sm); border-bottom: 2px solid #f0f0f0; flex-wrap: wrap; gap: 0.5rem; }
+        .order-id { font-size: var(--text-xs); color: #666; font-weight: 600; }
+        .book-title { font-size: var(--text-md); font-weight: 700; color: var(--dark); margin-bottom: 10px; }
+        .order-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: clamp(8px, 1vw, 16px); margin-top: var(--sp-sm); }
+        .detail-item { background-color: #f8f9fa; padding: clamp(8px, 0.8vw, 14px); border-radius: var(--radius-sm); }
+        .detail-label { font-size: var(--text-xs); color: #666; text-transform: uppercase; font-weight: 600; }
+        .detail-value { font-size: var(--text-sm); margin-top: 2px; }
+        .badge-state { padding: clamp(5px,0.5vw,9px) clamp(10px,1vw,18px); border-radius: 20px; font-weight: 600; font-size: var(--text-xs); }
+        .state-pending   { background: #fff3cd; color: #856404; }
+        .state-confirmed { background: #d4edda; color: #155724; }
+        .state-cancelled { background: #f8d7da; color: #721c24; }
+        .empty-state { text-align: center; padding: var(--sp-xl) var(--sp-md); background: white; border-radius: var(--radius-lg); }
     </style>
 </head>
 <body>
-
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
         <div class="container-fluid">
-            <a class="navbar-brand ms-3" href="index.php">📚 BookSwap</a>
+            <a class="navbar-brand ms-2" href="index.php">📚 BookSwap</a>
             <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto me-3">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php"><i class="bi bi-house-fill"></i> Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php?table=User&action=account"><i class="bi bi-person-circle"></i> Area Personale</a>
-                    </li>
+                <ul class="navbar-nav ms-auto me-2">
+                    <li class="nav-item"><a class="nav-link" href="index.php"><i class="bi bi-house-fill"></i> Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.php?table=User&action=account"><i class="bi bi-person-circle"></i> Area Personale</a></li>
                 </ul>
             </div>
         </div>
@@ -184,12 +74,12 @@ if (!empty($myOrders)) {
     <div class="page-header">
         <div class="container d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
-                <h1 class="page-title"><i class="bi bi-box-seam me-3"></i>I Miei Ordini</h1>
-                <p class="text-dark mb-0">Visualizza e gestisci tutti i tuoi acquisti in corso</p>
+                <h1 class="page-title"><i class="bi bi-box-seam me-2"></i>I Miei Ordini</h1>
+                <p class="text-dark mb-0" style="font-size:var(--text-sm);">Visualizza e gestisci i tuoi acquisti</p>
             </div>
             <?php if(count($ordiniChiusi) > 0): ?>
             <button class="btn btn-dark shadow-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#storicoOrdini">
-                <i class="bi bi-clock-history"></i> Visualizza Storico (<?= count($ordiniChiusi) ?>)
+                <i class="bi bi-clock-history"></i> Storico (<?= count($ordiniChiusi) ?>)
             </button>
             <?php endif; ?>
         </div>
@@ -198,124 +88,138 @@ if (!empty($myOrders)) {
     <div class="container pb-5">
         <?php if (!empty($ordiniAttivi)): ?>
             <?php foreach($ordiniAttivi as $order):
-                $orderId = $order['id_order'] ?? 'N/D';
-                $bookTitle = $order['title'] ?? 'Libro sconosciuto';
-                $dateOrder = $order['date_order'] ?? 'Data sconosciuta';
-                $dateOrderFormatted = ($dateOrder != 'Data sconosciuta') ? date('d/m/Y', strtotime($dateOrder)) . ' alle ' . date('H:i', strtotime($dateOrder)) : 'Data sconosciuta';
-                $stateCustomer = $order['state_customer'] ?? 'pending';
-                $finalPrice = $order['final_price'] ?? 0;
-                $timeMeet = $order['time_meet'] ?? 'N/D';
-                $timeMeetFormatted = ($timeMeet != 'N/D') ? date('d/m/Y', strtotime($timeMeet)) . ' alle ' . date('H:i', strtotime($timeMeet)) : 'N/D';
-                $placeMeet = $order['place_meet'] ?? 'N/D';
-                $descriptionMeet = $order['description_meet'] ?? 'Nessuna nota';
-                
-                $sellerName = $order['seller_name'] ?? ($order['name'] ?? 'N/D');
-                $sellerSurname = $order['seller_surname'] ?? ($order['surname'] ?? '');
-                $sellerFullName = trim($sellerName . ' ' . $sellerSurname);
+                $orderId    = $order['id_order']       ?? 'N/D';
+                $bookTitle  = $order['title']           ?? 'Libro sconosciuto';
+                $dateOrder  = $order['date_order']      ?? 'N/D';
+                $dateFmt    = ($dateOrder !== 'N/D') ? date('d/m/Y', strtotime($dateOrder)) . ' alle ' . date('H:i', strtotime($dateOrder)) : 'N/D';
+                $sc         = $order['state_customer']  ?? 'pending';
+                $ss         = $order['state_seller']    ?? 'pending';
+                $finalPrice = $order['final_price']     ?? 0;
+                $timeMeet   = $order['time_meet']       ?? 'N/D';
+                $timeFmt    = ($timeMeet !== 'N/D') ? date('d/m/Y', strtotime($timeMeet)) . ' alle ' . date('H:i', strtotime($timeMeet)) : 'N/D';
+                $placeMeet  = $order['place_meet']      ?? 'N/D';
+                $descMeet   = $order['description_meet'] ?? '';
+                $sellerFull = strtoupper(trim(($order['name'] ?? 'N/D') . ' ' . ($order['surname'] ?? '')));
 
+                // Determina stato e badge
                 $badgeClass = 'state-pending';
-                $stateText = 'In attesa';
-                if($stateCustomer == 'confirmed') { $badgeClass = 'state-confirmed'; $stateText = 'Confermato'; } 
-                elseif($stateCustomer == 'cancelled') { $badgeClass = 'state-cancelled'; $stateText = 'Annullato'; }
+                $stateText  = 'In attesa';
+                $showWarning = false;
+                $warningMsg = '';
 
-                $priceFormatted = ($finalPrice > 0) ? '€ ' . number_format($finalPrice, 2, ',', '.') : 'Scambio';
+                if($sc === 'cancelled' || $ss === 'cancelled') {
+                    $badgeClass = 'state-cancelled';
+                    $stateText = 'Annullato';
+                } elseif($sc === 'confirmed' && $ss === 'confirmed') {
+                    $badgeClass = 'state-confirmed';
+                    $stateText = 'Completato';
+                } elseif($sc === 'confirmed' && $ss === 'pending') {
+                    $badgeClass = 'state-confirmed';
+                    $stateText = 'Confermato da te';
+                    $showWarning = true;
+                    $warningMsg = 'In attesa della conferma del venditore';
+                } elseif($sc === 'pending' && $ss === 'confirmed') {
+                    $badgeClass = 'state-pending';
+                    $stateText = 'In attesa';
+                    $showWarning = true;
+                    $warningMsg = 'Il venditore ha confermato la consegna';
+                }
+
+                $priceFmt = ($finalPrice > 0) ? '€ ' . number_format($finalPrice, 2, ',', '.') : 'Scambio';
             ?>
-                <div class="order-card">
-                    <div class="order-header">
-                        <div>
-                            <div class="order-id"><i class="bi bi-hash"></i> Ordine: <?= htmlspecialchars($orderId) ?></div>
-                            <div class="order-date"><i class="bi bi-calendar3"></i> <?= htmlspecialchars($dateOrderFormatted) ?></div>
-                        </div>
-                        <div class="d-flex gap-2 align-items-center">
-                            <span class="badge-state <?= $badgeClass ?>"><?= $stateText ?></span>
-                            <button class="btn btn-sm btn-outline-warning change-order-state-btn"
-                                    data-order-id="<?= htmlspecialchars($orderId) ?>"
-                                    data-book-title="<?= htmlspecialchars($bookTitle) ?>"
-                                    data-current-state="<?= htmlspecialchars($stateCustomer) ?>">
-                                <i class="bi bi-arrow-repeat"></i>
-                            </button>
-                        </div>
+            <div class="order-card">
+                <div class="order-header">
+                    <div>
+                        <div class="order-id"><i class="bi bi-hash"></i> Ordine: <?= htmlspecialchars($orderId) ?></div>
+                        <div class="order-id"><i class="bi bi-calendar3"></i> <?= htmlspecialchars($dateFmt) ?></div>
                     </div>
-                    <div class="book-title"><i class="bi bi-book"></i> <?= htmlspecialchars($bookTitle) ?></div>
-                    <div class="mb-3">
-                        <span class="badge bg-secondary"><i class="bi bi-person-fill"></i> Venditore: <?= htmlspecialchars($sellerFullName) ?></span>
+                    <div class="d-flex gap-2 align-items-center">
+                        <span class="badge-state <?= $badgeClass ?>"><?= $stateText ?></span>
+                        <?php if($sc !== 'cancelled' && $ss !== 'cancelled'): ?>
+                        <button class="btn btn-sm btn-outline-warning change-order-state-btn"
+                                data-order-id="<?= htmlspecialchars($orderId) ?>"
+                                data-book-title="<?= htmlspecialchars($bookTitle) ?>"
+                                data-current-state="<?= htmlspecialchars($sc) ?>">
+                            <i class="bi bi-arrow-repeat"></i>
+                        </button>
+                        <?php endif; ?>
                     </div>
-                    <div class="order-details">
-                        <div class="detail-item">
-                            <div class="detail-label"><i class="bi bi-cash-coin"></i> Prezzo</div>
-                            <div class="detail-value text-success"><?= $priceFormatted ?></div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label"><i class="bi bi-clock"></i> Orario Incontro</div>
-                            <div class="detail-value"><?= htmlspecialchars($timeMeetFormatted) ?></div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label"><i class="bi bi-geo-alt"></i> Luogo Incontro</div>
-                            <div class="detail-value"><?= htmlspecialchars($placeMeet) ?></div>
-                        </div>
-                    </div>
-                    <?php if($descriptionMeet && $descriptionMeet != 'Nessuna nota'): ?>
-                        <div class="mt-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
-                            <div class="detail-label mb-2"><i class="bi bi-chat-left-text"></i> Note</div>
-                            <p class="mb-0 text-muted"><?= htmlspecialchars($descriptionMeet) ?></p>
-                        </div>
-                    <?php endif; ?>
                 </div>
+                <?php if($showWarning): ?>
+                <div class="alert alert-warning mb-3 py-2" style="font-size:var(--text-xs);">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i><?= htmlspecialchars($warningMsg) ?>
+                </div>
+                <?php endif; ?>
+                <div class="book-title"><i class="bi bi-book"></i> <?= htmlspecialchars($bookTitle) ?></div>
+                <span class="badge bg-secondary mb-2"><i class="bi bi-person-fill"></i> Venditore: <?= htmlspecialchars($sellerFull) ?></span>
+                <div class="order-details">
+                    <div class="detail-item">
+                        <div class="detail-label"><i class="bi bi-cash-coin"></i> Prezzo</div>
+                        <div class="detail-value text-success fw-bold"><?= $priceFmt ?></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label"><i class="bi bi-clock"></i> Orario Incontro</div>
+                        <div class="detail-value"><?= htmlspecialchars($timeFmt) ?></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label"><i class="bi bi-geo-alt"></i> Luogo Incontro</div>
+                        <div class="detail-value"><?= htmlspecialchars($placeMeet) ?></div>
+                    </div>
+                </div>
+                <?php if($descMeet): ?>
+                <div class="mt-3 p-3" style="background:#f8f9fa;border-radius:var(--radius-sm);">
+                    <div class="detail-label mb-1"><i class="bi bi-chat-left-text"></i> Note</div>
+                    <p class="mb-0 text-muted" style="font-size:var(--text-sm);"><?= htmlspecialchars($descMeet) ?></p>
+                </div>
+                <?php endif; ?>
+            </div>
             <?php endforeach; ?>
         <?php else: ?>
             <div class="empty-state">
-                <div class="empty-icon" style="font-size: 5rem; color: #ccc;"><i class="bi bi-inbox"></i></div>
+                <i class="bi bi-inbox" style="font-size:clamp(3rem,5vw,5rem);color:#ccc;display:block;margin-bottom:1rem;"></i>
                 <h3 class="text-muted mb-3">Nessun ordine in corso</h3>
-                <p class="text-muted mb-4">Tutti i tuoi acquisti passati sono nello storico o non hai ancora ordini.</p>
-                <a href="index.php" class="btn btn-lg" style="background-color: var(--bs-orange); color: var(--bs-dark); font-weight: 700; border-radius: 20px; padding: 12px 30px;">
+                <p class="text-muted mb-4">Tutti i tuoi acquisti passati sono nello storico.</p>
+                <a href="index.php" class="btn-amazon">
                     <i class="bi bi-search"></i> Scopri i Libri
                 </a>
             </div>
         <?php endif; ?>
     </div>
 
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="storicoOrdini" style="width: 400px;">
+    <!-- Storico offcanvas -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="storicoOrdini" style="width:clamp(300px,40vw,440px);">
         <div class="offcanvas-header bg-light border-bottom">
-            <h5 class="offcanvas-title fw-bold"><i class="bi bi-archive-fill text-secondary me-2"></i> Storico Ordini</h5>
+            <h5 class="offcanvas-title fw-bold"><i class="bi bi-archive-fill text-secondary me-2"></i>Storico Ordini</h5>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
         </div>
-        <div class="offcanvas-body" style="background-color: var(--bs-bg);">
+        <div class="offcanvas-body" style="background-color:var(--bg);">
             <?php if (!empty($ordiniChiusi)): ?>
-                <?php foreach($ordiniChiusi as $order): 
-                    $bookTitle = $order['title'] ?? 'Libro sconosciuto';
-                    $finalPrice = $order['final_price'] ?? 0;
-                    $priceFormatted = ($finalPrice > 0) ? '€ ' . number_format($finalPrice, 2, ',', '.') : 'Scambio';
-                    $stateCustomer = $order['state_customer'] ?? 'pending';
-                    $sellerFullName = trim(($order['seller_name'] ?? 'N/D') . ' ' . ($order['seller_surname'] ?? ''));
-                    $badgeClass = ($stateCustomer == 'cancelled') ? 'state-cancelled' : 'state-confirmed';
-                    $stateText = ($stateCustomer == 'cancelled') ? 'Annullato' : 'Completato';
+                <?php foreach($ordiniChiusi as $order):
+                    $fp  = $order['final_price'] ?? 0;
+                    $pfmt = ($fp > 0) ? '€ ' . number_format($fp, 2, ',', '.') : 'Scambio';
+                    $sc  = $order['state_customer'] ?? 'pending';
+                    $sfn = strtoupper(trim(($order['name'] ?? 'N/D') . ' ' . ($order['surname'] ?? '')));
+                    $bc  = ($sc === 'cancelled') ? 'state-cancelled' : 'state-confirmed';
+                    $bt  = ($sc === 'cancelled') ? 'Annullato' : 'Completato';
                 ?>
-                    <div class="order-card-history">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="order-id small"><i class="bi bi-hash"></i> <?= htmlspecialchars($sellerFullName) ?></span>
-                            <span class="badge-state <?= $badgeClass ?> px-2 py-1" style="font-size: 0.75rem;"><?= $stateText ?></span>
-                        </div>
-                        <h6 class="fw-bold mb-1"><?= htmlspecialchars($bookTitle) ?></h6>
-                        <div class="d-flex justify-content-between align-items-end mt-3">
-                            <span class="small text-muted">Prezzo:</span>
-                            <span class="fw-bold <?= ($stateCustomer == 'cancelled') ? 'text-muted text-decoration-line-through' : 'text-success' ?>"><?= $priceFormatted ?></span>
-                        </div>
+                <div class="order-card-history">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span style="font-size:var(--text-xs);color:#666;font-weight:600;">Venditore: <?= htmlspecialchars($sfn) ?></span>
+                        <span class="badge-state <?= $bc ?>" style="font-size:0.72rem;"><?= $bt ?></span>
                     </div>
+                    <h6 class="fw-bold mb-1" style="font-size:var(--text-sm);">Titolo: <?= htmlspecialchars($order['title'] ?? 'N/D') ?></h6>
+                    <div class="d-flex justify-content-between align-items-end mt-3">
+                        <span class="text-muted" style="font-size:var(--text-xs);">Prezzo:</span>
+                        <span class="fw-bold <?= ($sc === 'cancelled') ? 'text-muted text-decoration-line-through' : 'text-success' ?>" style="font-size:var(--text-sm);"><?= $pfmt ?></span>
+                    </div>
+                </div>
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>
     </div>
 
-    <footer class="text-center">
-        <div class="container">
-            <p class="mb-1">© 2026 BookSwap Team</p>
-            <small class="text-muted">Kiper Illia, Melega Leonardo, Trevisani Martina, Bertolani Leo</small>
-        </div>
-    </footer>
-
-    <?php include 'views/ToastNotification.php'; ?>
-
-    <div class="modal fade" id="changeOrderStateModal" tabindex="-1" aria-hidden="true">
+    <!-- Modale cambia stato -->
+    <div class="modal fade" id="changeOrderStateModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-warning">
@@ -325,14 +229,8 @@ if (!empty($myOrders)) {
                 <form action="index.php?table=Order&action=changeStateCustomer" method="post">
                     <div class="modal-body">
                         <input type="hidden" name="currentOrderId" id="currentOrderId">
-                        <div class="mb-3">
-                            <label class="fw-bold text-muted small">Ordine ID</label>
-                            <p class="mb-0 fw-bold" id="modalOrderId"></p>
-                        </div>
-                        <div class="mb-3">
-                            <label class="fw-bold text-muted small">Libro</label>
-                            <p class="mb-0" id="modalBookTitle"></p>
-                        </div>
+                        <div class="mb-3"><label class="fw-bold text-muted small">Ordine</label><p class="mb-0 fw-bold" id="modalOrderId"></p></div>
+                        <div class="mb-3"><label class="fw-bold text-muted small">Libro</label><p class="mb-0" id="modalBookTitle"></p></div>
                         <hr>
                         <div class="mb-3">
                             <label for="modalNewState" class="form-label fw-bold">Nuovo Stato</label>
@@ -352,16 +250,22 @@ if (!empty($myOrders)) {
         </div>
     </div>
 
+    <footer>
+        <div class="container">
+            <p class="mb-1">© 2026 BookSwap Team</p>
+            <small class="text-muted">Kiper Illia, Melega Leonardo, Trevisani Martina, Bertolani Leo</small>
+        </div>
+    </footer>
+
+    <?php include 'views/ToastNotification.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const changeStateButtons = document.querySelectorAll('.change-order-state-btn');
         const modal = new bootstrap.Modal(document.getElementById('changeOrderStateModal'));
-
-        changeStateButtons.forEach(button => {
-            button.addEventListener('click', function() {
+        document.querySelectorAll('.change-order-state-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
                 document.getElementById('currentOrderId').value = this.dataset.orderId;
-                document.getElementById('modalOrderId').textContent = this.dataset.orderId;
+                document.getElementById('modalOrderId').textContent  = this.dataset.orderId;
                 document.getElementById('modalBookTitle').textContent = this.dataset.bookTitle;
                 document.getElementById('modalNewState').value = this.dataset.currentState;
                 modal.show();
