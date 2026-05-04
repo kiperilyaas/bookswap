@@ -1,6 +1,6 @@
 # bookswap
 
-# Tutte le modifiche facciamo solo su nostri rami e dopo aver finito mandiamo la richesta PULL per modificare il main
+# Tutte le modifiche facciamo solo su nostri rami e dopo aver finito mandiamo la PULL Richiesta (PR) per modificare il main
 
 # commandi da seguire
 
@@ -28,39 +28,71 @@ https://github.com/kiperilyaas/bookswap
 #### nella sezione dei branch sceglio il tuo cognome e dopo trova il buttone `CONTRIBUTE` e fai una pool richiesta
 
 
-# to do
-1. [x] Progettazione del Database
+# TODO list
+- [x] Progettazione del Database
     - [x] Diagramma ER
     - [x] Progettazione Fisica
-2. [ ] Front-End
+- [ ] Front-End
     - [x] Idea visiva
         - [x] Schermata Home
         - [x] Schermata Vendi
         - [x] Schermata Login
         - [x] Schermata Personali
         - [x] Schermata Carello
-    - [ ] Creazione delle pagine web
-        - [ ] Home
-        - [ ] Login
-        - [ ] Vendita
-        - [ ] Info personali
-        - [ ] Carello
+    - [x] Creazione delle pagine web
+        - [x] Home
+        - [x] Login
+        - [x] Creazione della offerta
+        - [x] Info personali
+        - [x] Carello
+        - [x] Account (Dati Personali)
+        - [x] Registrazione
+        - [x] Inserimento del libro
+        - [x] Error
+    - [x] Sistema Immagini Libri
+        - [x] Creazione tabella book_images nel DB
+        - [x] Form upload immagini (max 3 per libro)
+        - [x] Drag & drop con preview
+        - [x] Visualizzazione immagine principale nelle card
+        - [x] Gallery con thumbnails nel modal BS5 dettagli
+        - [x] Visualizzazione foto in Account/Vetrina
+        - [x] Visualizzazione foto in myOrders
 - [ ] Back-End
-    - [ ] Crezione dei Models
-        - [x] CRUD per users
-        - [x] CRUD per books
-        - [x] CRUD per orders
-        - [x] gestione del login
-        - [x] select Model #tutti select utili
-    - [ ] Creazione dei Controller
-        - [ ] Login
+    - [x] Models
+        - [x] Users
+        - [x] Books
+        - [x] Orders
+        - [x] Listings
+        - [x] Utils 
+    - [ ] Controller
+        - [x] Login
             - [x] Funzionamento generale
-            - [ ] Gestione dei errori
-            - [ ] Verifica dei dati personali (solo studenti della scuola)
+            - [x] Gestione dei errori
+            - [x] Verifica dei dati personali (solo studenti della scuola)
+            - [x] Controllo di logout
+        - [x] Offerte
+            - [x] creare una offerta di vendita
+            - [x] creazione del libro
         - [ ] User
-            - [ ] creare un ordine di vendita
-            - [ ] aggiungere/eliminare i libri dal carrello
-            - [ ] acquistare un libro
+            - [x] modificare anagrafe/email/password
+            - [ ] eliminare utente
+            - [x] eliminazione di una offerta
+            - [x] gestione della offerta/ordine del utente
+            - [x] acquistare un libro
+            - [x] verifica di chiusura del ordine
+            - [ ] Quando nella mia vetrina clicco sul libro, di devono vedere le informazioni
+        - [x] Error
+            - [x] Gestione del Errore
 - [ ] Test 
+    - [x] Quando un numero è troppo alto da errore (es. 1milione di euro)
+        --> risolto impostando il limite nel <input> di 1000$
+    - [x] Quando la scheda è a meta schermo, il menu per accedere non si apre
+        --> aggiunto UI responsive sia per telefoni che per schermi diversi.
+    - [x] Quando fai la ricerca dei libri disponibili, ti escono tutti i libri anche se non 
+      sono disponibili
+        --> aggiornata la Querry string impostando WHERE L.is_available = 1
+    - [ ] convertire prezzi in float
+    - [ ] quando scegli In Attesa da parte di Venditore, ordine conclude.
+    - [ ] gestire cancellazione del ordine dalla parte di Customer
 - [ ] Pubblicazione
 

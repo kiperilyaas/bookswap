@@ -1,61 +1,156 @@
-<?php
-defined("APP") or die("ACCESSO NEGATO");
+<?php 
+defined("APP") or die("ACCESSO NEGATO"); 
 
-if(!empty($table) && is_array($table)){
-    foreach($table as $record){
-        if(!is_array($record)) continue;
+// ==========================================
+// 1. ESTRAZIONE E PREPARAZIONE DI TUTTI I DATI
+// ==========================================
+$annunciPreparati = [];
 
-        echo "<div class='col'>";
-        echo "  <div class='card h-100 shadow-sm rounded-4 border-0'>";
+if (!empty($table) && is_array($table)) {
+    foreach ($table as $record) {
+        if (!is_array($record)) continue; 
 
-        // --- PERCORSO IMMAGINE AGGIORNATO ---
-        // Avendo spostato il file in utils/immagini/, il percorso corretto è questo:
-        $imagePath = "../utils/immagini/prova_libro.png";
+        if($record['is_available'] == 0) continue;
+        // Dati di base tradotti in italiano
+        $titolo      = $record['title'] ?? 'Titolo sconosciuto';
+        $imagePath   = !empty($record['main_image'])
+                       ? "../utils/immagini/" . $record['main_image']
+                       : "../utils/immagini/prova_libro.png";
+        $idItem      = $record['id_listing'] ?? ($record['id_book'] ?? ($record['id'] ?? ''));
+        
+        // Estrazione dati venditore - Convertito in MAIUSCOLO
+        $nomeVenditore    = $record['Name'] ?? ($record['name'] ?? 'sconosciuto');
+        $cognomeVenditore = $record['Surname'] ?? ($record['surname'] ?? '');
+        $venditore = strtoupper(trim($nomeVenditore . ' ' . $cognomeVenditore));
 
-        echo "    <img src='".$imagePath."' class='card-img-top rounded-top-4' alt='Copertina' style='object-fit: cover; height: 230px; background-color: #eee;'>";
+        // Dati per il modale (inclusa la classe)
+        $autore    = $record['author'] ?? 'N/D';
+        $isbn      = $record['isbn'] ?? 'N/D';
+        $editore   = $record['publisher'] ?? ($record['editore'] ?? 'N/D');
+        $classe    = $record['classe'] ?? ($record['class'] ?? 'N/D');
 
-        echo "    <div class='card-body d-flex flex-column p-4'>";
+        // Disponibilità in italiano
+        $isAvailable = $record['is_available'] ?? 1;
+        $statusText  = ($isAvailable == 1) ? "Disponibile" : "Non disponibile";
+        $statusColor = ($isAvailable == 1) ? "text-success" : "text-danger";
 
-        // Ciclo dei campi
-        foreach($record as $key => $value){
-            // Salta ID, Created_at e chiavi immagine
-            if(stripos($key, 'id') !== false || 
-               stripos($key, 'created') !== false || 
-               in_array($key, ['image', 'img', 'copertina'])) {
-                continue;
+        $prezzoLibro = $record['priceOffer'] ?? ($record['priceoffer'] ?? ($record['price'] ?? null));
+
+        $dettagliExtra = [];
+
+        $daIgnorare = [
+            'id', 'created', 'title', 'is_available', 
+            'image', 'img', 'cover', 
+            'author', 'isbn', 'vol', 'school_year',
+            'name', 'surname', 'email', 
+            'priceoffer', 'price',
+            'password', 'pass', 'pwd',
+            'classe', 'condizione', 'editore', 'publisher'
+        ];
+
+        $descrizionePerModale = $record['description'] ?? "";
+        
+        foreach ($record as $key => $value) {
+            $keyLower = strtolower($key);
+            $saltaCampo = false;
+            foreach ($daIgnorare as $ignore) {
+                if (str_contains($keyLower, $ignore)) {
+                    $saltaCampo = true;
+                    break;
+                }
             }
+            if ($saltaCampo) continue;
 
-            // Gestione "Stato"
-            if ($key === 'is_available' || $key === 'disponibilita') {
-                $label = "Stato";
-                $statusText = ($value == 1) ? "Disponibile" : "Non disponibile";
-                $statusColor = ($value == 1) ? "text-success" : "text-danger";
-                
-                echo "      <p class='mb-2 text-dark'><strong>".$label.":</strong> <span class='".$statusColor." fw-bold'>".$statusText."</span></p>";
-            } else {
-                // Label pulita per gli altri campi
-                $label = ucfirst(str_replace('_', ' ', $key));
-                echo "      <p class='mb-2 text-dark'><strong>".$label.":</strong> ".htmlspecialchars($value)."</p>";
-            }
+            $label = ucfirst(str_replace('_', ' ', $key));
+            $dettagliExtra[$label] = $value;
         }
 
-        // --- BOTTONE AGGIUNGI AL CARRELLO ---
-        echo "      <div class='mt-auto pt-3'>";
-        echo "          <a href='index.php?action=add_to_cart&id=".($record['id'] ?? '')."' 
-                           class='btn btn-dark rounded-pill py-2 w-100 d-flex align-items-center justify-content-center gap-2 shadow-sm' 
-                           style='font-weight: 600;'>";
-        
-        // Icona Carrello SVG
-        echo '              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-                            </svg>';
-        echo "              Aggiungi al carrello";
-        echo "          </a>";
-        echo "      </div>";
+        $prezzoFinal = ($prezzoLibro !== null && $prezzoLibro > 0) ? "€ " . number_format((float)$prezzoLibro, 2, ',', '.') : "Scambio";
 
-        echo "    </div>";
-        echo "  </div>";
-        echo "</div>";
+        $annunciPreparati[] = [
+            'titolo'        => $titolo,
+            'immagine'      => $imagePath,
+            'idItem'        => $idItem,
+            'statusText'    => $statusText,
+            'statusColor'   => $statusColor,
+            'prezzo'        => $prezzoFinal,
+            'venditore'     => $venditore,
+            'autore'        => $autore,
+            'isbn'          => $isbn,
+            'editore'       => $editore,
+            'classe'        => $classe,
+            'dettagliExtra' => $dettagliExtra,
+            'descrizione'   => $descrizionePerModale ?: "Nessun dettaglio extra."
+        ];
     }
 }
 ?>
+
+<?php if (!empty($annunciPreparati)): ?>
+    
+    <?php foreach ($annunciPreparati as $annuncio): ?>
+        
+        <div class="col">
+            <div class="card book-card h-100" 
+                 data-bs-toggle="modal" 
+                 data-bs-target="#bookDetailModal"
+                 data-id="<?= htmlspecialchars($annuncio['idItem']) ?>" 
+                 data-title="<?= htmlspecialchars($annuncio['titolo']) ?>"
+                 data-img="<?= htmlspecialchars($annuncio['immagine']) ?>"
+                 data-price="<?= htmlspecialchars($annuncio['prezzo']) ?>"
+                 data-author="<?= htmlspecialchars($annuncio['autore']) ?>"
+                 data-seller="<?= htmlspecialchars($annuncio['venditore']) ?>"
+                 data-isbn="<?= htmlspecialchars($annuncio['isbn']) ?>"
+                 data-publisher="<?= htmlspecialchars($annuncio['editore']) ?>"
+                 data-classe="<?= htmlspecialchars($annuncio['classe']) ?>"
+                 data-description="<?= htmlspecialchars($annuncio['descrizione']) ?>">
+                
+                <img src="<?= htmlspecialchars($annuncio['immagine']) ?>" class="card-img-top book-img" alt="Copertina" style="height: 280px; object-fit: cover;">
+
+                <div class="card-body d-flex flex-column p-3">
+
+                    <!-- IL TRUCCO È QUI: questo div assorbe lo spazio vuoto in eccesso -->
+                    <div class="flex-grow-1">
+                        <h5 class="card-title mb-2" style="font-weight: 600; line-height: 1.3;">
+                            <?= htmlspecialchars($annuncio['titolo']) ?>
+                        </h5>
+                        <div class="text-muted small mb-2">
+                            <i class="bi bi-person-circle"></i> <?= htmlspecialchars($annuncio['autore']) ?>
+                        </div>
+                    </div>
+
+                    <!-- Da qui in giù, tutto sarà perfettamente allineato al fondo -->
+                    <div class="seller-info mb-2">
+                        <i class="bi bi-shop"></i> <strong><?= htmlspecialchars($annuncio['venditore']) ?></strong>
+                    </div>
+
+                    <div class="mb-2">
+                        <span class="price fs-5"><?= $annuncio['prezzo'] ?></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <span class="status-badge <?= $annuncio['statusColor'] == 'text-success' ? 'status-available' : 'status-unavailable' ?>">
+                            <?= $annuncio['statusText'] ?>
+                        </span>
+                    </div>
+
+                    <div class="mt-auto">
+                        <a href="index.php?table=Order&action=checkout&id=<?= urlencode($annuncio['idItem']) ?>"
+                           class="btn btn-warning w-100 shadow-sm d-flex justify-content-center align-items-center gap-2 buy-btn"
+                           onclick="return confirmPurchase(event, '<?= htmlspecialchars($annuncio['titolo'], ENT_QUOTES) ?>');">
+                            <i class="bi bi-bag-check-fill"></i> Compra!
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    <?php endforeach; ?>
+
+<?php else: ?>
+    <div class="col-12 text-center py-5 w-100">
+        <h4 class="text-muted">Nessun libro disponibile al momento.</h4>
+        <p>Torna più tardi o pubblica un nuovo annuncio!</p>
+    </div>
+<?php endif; ?>

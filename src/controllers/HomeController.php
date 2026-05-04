@@ -1,16 +1,12 @@
 <?php
 defined("APP") or die("ACCESSO NEGATO");
-require_once 'models/OrderModel.php';
+require_once 'models/ListingsModel.php';
 class HomeController{
 
     private $model;
     public function __construct()
     {
-        $this->model = new OrderModel();
-    }
-
-    public function getTable(){
-        
+        $this->model = new ListingsModel();
     }
 
     public function index(){
