@@ -217,6 +217,7 @@ defined("APP") or die("ACCESSO NEGATO");
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+    // Funzione conferma acquisto
     function confirmPurchase(event, bookTitle) {
         event.stopPropagation();
         event.preventDefault();
