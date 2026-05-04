@@ -88,12 +88,16 @@ function isEmailExist($email){
 
 function checkStateIsEqual($id){
     $result = $GLOBALS['model']->selectStateCustomerSellerFromOrder([$id]);
-    if($result[0]['state_customer'] == $result[0]['state_seller']){
-        $result = $GLOBALS['model']->changeGlobalStateOrder([$id]);
-    }
-    else return -1;
 
-    if($result) return 1;
+    if($result[0]['state_customer'] == "cancelled" || $result[0]['state_seller'] == "cancelled"){
+        $GLOBALS['model']->changeGlobalStateOrder($id, "cancelled");
+        return -2;
+    }
+
+    if($result[0]['state_customer'] == $result[0]['state_seller']){
+        $result = $GLOBALS['model']->changeGlobalStateOrder($id, "confirmed");
+        return 1;
+    }
     else return -1;
 }
 

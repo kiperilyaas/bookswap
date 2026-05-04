@@ -29,22 +29,32 @@ class OrderModel
     return $stm->rowCount() !== 0;
   }
 
-  public function changeOrderStateSeller($param = []){
-    $availabelState = ['pending', 'confirmed', 'cancelled'];
-    if(!in_array($param[0], $availabelState)) return 0;
-    $sql = "UPDATE orders set `state_seller` = ? where id_order = ?";
+  public function changeOrderStateSeller($orderId, $newState){
+    $sql = "SELECT O.state_seller FROM orders O where id_order = ?";
     $stm = $this->pdo->prepare($sql);
-    $stm->execute($param);
+    $stm->execute([$orderId]);
+    $result = $stm->fetchAll(PDO::FETCH_ASSOC);
+
+    if($result[0] != $newState){
+      $sql = "UPDATE orders set `state_seller` = ? where id_order = ?";
+      $stm = $this->pdo->prepare($sql);
+      $stm->execute([$newState, $orderId]);
+    }else return 1;
 
     return $stm->rowCount() !== 0;
   }
 
-  public function changeOrderStateCustomer($param = []){
-    $availabelState = ['pending', 'confirmed', 'cancelled'];
-    if(!in_array($param[0], $availabelState)) return 0;
-    $sql = "UPDATE orders set `state_customer` = ? where id_order = ?";
+  public function changeOrderStateCustomer($orderId, $newState){
+    $sql = "SELECT O.state_customer FROM orders O where id_order = ?";
     $stm = $this->pdo->prepare($sql);
-    $stm->execute($param);
+    $stm->execute([$orderId]);
+    $result = $stm->fetchAll(PDO::FETCH_ASSOC);
+
+    if($result[0] != $newState){
+      $sql = "UPDATE orders set `state_customer` = ? where id_order = ?";
+      $stm = $this->pdo->prepare($sql);
+      $stm->execute([$newState, $orderId]);
+    }else return 1;
 
     return $stm->rowCount() !== 0;
   }
