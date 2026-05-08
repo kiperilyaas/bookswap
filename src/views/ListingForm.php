@@ -17,131 +17,292 @@ if (!isset($_SESSION['id_user'])) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="views/bookswap-responsive.css">
     <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .form-card {
+            background: white;
+            padding: clamp(2rem, 3vw, 3rem);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border: none;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--orange), var(--orange-hover));
+        }
+
+        .section-title {
+            color: var(--dark);
+            font-weight: 800;
+            font-size: var(--text-2xl);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            font-size: var(--text-sm);
+        }
+
+        .form-control, .form-select {
+            padding: 0.9rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: var(--text-sm);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--orange);
+            box-shadow: 0 0 0 4px rgba(255, 153, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .input-group-text {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-right: none;
+            border-radius: 12px 0 0 12px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .input-group .form-control {
+            border-left: none;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .input-group .form-control:focus {
+            border-left: 2px solid var(--orange);
+        }
+
         .custom-dropdown {
-            border-radius: var(--radius-md);
-            border: 1px solid #ddd;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
             padding: 0.5rem 0;
             overflow: hidden;
+            margin-top: 0.5rem;
         }
-        .custom-dropdown .dropdown-item { padding: 0.6rem 1.5rem; transition: background-color 0.2s; font-size: var(--text-sm); }
-        .custom-dropdown .dropdown-item:hover { background-color: #f7fafa; color: var(--orange); font-weight: 600; }
+
+        .custom-dropdown .dropdown-item {
+            padding: 0.8rem 1.5rem;
+            transition: all 0.2s;
+            font-size: var(--text-sm);
+            font-weight: 500;
+        }
+
+        .custom-dropdown .dropdown-item:hover {
+            background-color: rgba(255, 153, 0, 0.1);
+            color: var(--orange);
+            font-weight: 600;
+            transform: translateX(4px);
+        }
+
+        .dropdown-toggle {
+            background: #f8f9fa !important;
+            border: 2px solid #e9ecef !important;
+            border-radius: 12px 0 0 12px !important;
+            color: #495057 !important;
+            min-width: 120px;
+            font-weight: 600;
+            font-size: var(--text-sm);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-toggle:hover {
+            background: #e9ecef !important;
+            border-color: var(--orange) !important;
+        }
+
+        .input-group input[type="text"] {
+            border-radius: 0 12px 12px 0 !important;
+            border-left: none !important;
+        }
+
         .book-result-item {
-            border: 1px solid #eee;
-            border-radius: var(--radius-md);
-            transition: background 0.2s, border-color 0.2s;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            transition: all 0.3s ease;
             cursor: pointer;
+            background: white;
         }
-        .book-result-item:hover { background-color: #f7fafa; border-color: var(--orange); }
+
+        .book-result-item:hover {
+            background-color: #f8f9fa;
+            border-color: var(--orange);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 153, 0, 0.2);
+        }
+
         .selected-book-alert {
-            background-color: #f0f8ff;
-            border: 1px solid #0066c0;
-            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6f2ff 100%);
+            border: 2px solid #0066c0;
+            border-radius: 12px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Upload Zone Styles */
-        .upload-zone { width: 100%; }
+        .upload-zone {
+            width: 100%;
+        }
+
         .drop-area {
-            border: 3px dashed #ddd;
-            border-radius: var(--radius-lg);
+            border: 3px dashed #cbd5e0;
+            border-radius: 16px;
             padding: 3rem 2rem;
             text-align: center;
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             cursor: pointer;
             transition: all 0.3s ease;
         }
+
         .drop-area:hover {
-            border-color: #0066c0;
-            background-color: #f0f8ff;
-        }
-        .drop-area.drag-over {
-            border-color: #ff9900;
-            background-color: #fff8e1;
+            border-color: var(--orange);
+            background: linear-gradient(135deg, #fff8e1 0%, #ffe0b2 100%);
             transform: scale(1.02);
         }
+
+        .drop-area.drag-over {
+            border-color: var(--orange);
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px rgba(255, 153, 0, 0.3);
+        }
+
         .preview-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 1rem;
             margin-top: 1.5rem;
         }
+
         .preview-item {
             position: relative;
-            border-radius: var(--radius-md);
+            border-radius: 12px;
             overflow: hidden;
-            border: 2px solid #ddd;
+            border: 2px solid #e9ecef;
             background: white;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
         }
+
         .preview-item:hover {
-            border-color: #0066c0;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: var(--orange);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
+
         .preview-item img {
             width: 100%;
             height: 150px;
             object-fit: cover;
         }
+
         .preview-item .remove-btn {
             position: absolute;
-            top: 5px;
-            right: 5px;
-            background: rgba(220, 53, 69, 0.9);
+            top: 8px;
+            right: 8px;
+            background: rgba(220, 53, 69, 0.95);
             color: white;
             border: none;
             border-radius: 50%;
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
+
         .preview-item .remove-btn:hover {
             background: #dc3545;
-            transform: scale(1.1);
+            transform: scale(1.15);
         }
+
         .preview-item .primary-badge {
             position: absolute;
-            bottom: 5px;
-            left: 5px;
-            background: rgba(255, 153, 0, 0.95);
+            bottom: 8px;
+            left: 8px;
+            background: linear-gradient(135deg, var(--orange), var(--orange-hover));
             color: white;
-            padding: 3px 8px;
+            padding: 4px 10px;
             border-radius: 12px;
             font-size: 0.7rem;
-            font-weight: 600;
+            font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 3px;
+            gap: 4px;
+            box-shadow: 0 2px 8px rgba(255, 153, 0, 0.4);
         }
+
         .preview-item .order-badge {
             position: absolute;
-            top: 5px;
-            left: 5px;
-            background: rgba(0, 102, 192, 0.9);
+            top: 8px;
+            left: 8px;
+            background: linear-gradient(135deg, #0066c0, #004d99);
             color: white;
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 700;
+            box-shadow: 0 2px 8px rgba(0, 102, 192, 0.4);
+        }
+
+        hr {
+            border-color: #e9ecef;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .form-card {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: var(--dark);">
         <div class="container-fluid">
-            <a class="navbar-brand ms-2" href="index.php">📚 BookSwap</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto me-2">
-                    <li class="nav-item"><a class="nav-link" href="index.php">Torna alla Home</a></li>
-                </ul>
+            <a class="navbar-brand ms-2 fw-bold text-white" href="index.php">📚 BookSwap</a>
+            <div class="ms-auto me-2">
+                <a href="index.php" class="btn btn-outline-light btn-sm rounded-pill">
+                    <i class="bi bi-arrow-left me-1"></i>Torna alla Home
+                </a>
             </div>
         </div>
     </nav>
@@ -247,7 +408,7 @@ if (!isset($_SESSION['id_user'])) {
                                 <div class="preview-grid" id="previewGrid"></div>
                             </div>
                             <small class="text-muted">
-                                <i class="bi bi-info-circle"></i> La prima foto sarà quella principale visualizzata nelle card
+                                <i class="bi bi-info-circle"></i> La prima foto sarà quella principale visualizzata nel annuncio
                             </small>
                         </div>
 
@@ -261,10 +422,10 @@ if (!isset($_SESSION['id_user'])) {
         </div>
     </main>
 
-    <footer>
+    <footer class="text-center py-4 bg-dark text-white mt-auto">
         <div class="container">
-            <p class="mb-1 text-white">© 2026 BookSwap Team</p>
-            <small style="color:#ccc;">Kiper Illia, Melega Leonardo, Trevisani Martina, Bertolani Leo</small>
+            <p class="mb-1">© 2026 BookSwap Team</p>
+            <small class="text-white-50">Kiper Illia, Melega Leonardo, Trevisani Martina, Bertolani Leo</small>
         </div>
     </footer>
 
