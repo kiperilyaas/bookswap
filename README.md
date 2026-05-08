@@ -75,7 +75,7 @@ https://github.com/kiperilyaas/bookswap
             - [x] creazione del libro
         - [ ] User
             - [x] modificare anagrafe/email/password
-            - [ ] eliminare utente
+            - [x] eliminare utente
             - [x] eliminazione di una offerta
             - [x] gestione della offerta/ordine del utente
             - [x] acquistare un libro
@@ -91,8 +91,8 @@ https://github.com/kiperilyaas/bookswap
     - [x] Quando fai la ricerca dei libri disponibili, ti escono tutti i libri anche se non 
       sono disponibili
         --> aggiornata la Querry string impostando WHERE L.is_available = 1
-    - [ ] convertire prezzi in float
-    - [ ] quando scegli In Attesa da parte di Venditore, ordine conclude.
-    - [ ] gestire cancellazione del ordine dalla parte di Customer
+    - [x] convertire prezzi in float
+    - [x] quando scegli In Attesa da parte di Venditore, ordine conclude.
+    - [x] gestire cancellazione del ordine dalla parte di Customer
 - [ ] Pubblicazione
 
