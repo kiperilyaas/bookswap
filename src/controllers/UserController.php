@@ -126,5 +126,26 @@ class UserController{
     exit;
   }
 
+  public function deleteUser(){
+    $idUser = $_POST['id_user'] ?? -1;
+    if ($idUser == -1){
+      $_SESSION['error'][] = "Utente non esiste";
+      header("location: index.php?table=User&action=account");
+      exit;
+    }
+
+    $result = $this->Usermodel->deleteUser([$idUser]);
+    if($result){
+      $_SESSION['success'][] = "Eliminazione del utente andata a buon fine";
+      header("location: index.php");
+      exit;
+    }
+    else{
+      $_SESSION['error'][] = "Eliminazione del utente non e' andata a buon fine";
+      header("index.php?table=User&action=account");
+      exit;
+    }
+  }
+
 
 }
