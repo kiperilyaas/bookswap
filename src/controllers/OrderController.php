@@ -71,7 +71,7 @@ class OrderController {
         $id_listing = $_POST['id_listing'] ?? -1;
         $id_seller = $_POST['id_seller'] ?? -1;
         $id_customer = $_SESSION['id_user'];
-        $final_price = $_POST['final_price'] ?? 0;
+        $final_price = floatval($_POST['final_price'] ?? 0);
         $time_meet = $_POST['time_meet'] ?? null;
         $place_meet = $_POST['place_meet'] ?? null;
         $description_meet = $_POST['description_meet'] ?? '';

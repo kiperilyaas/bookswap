@@ -51,8 +51,8 @@ class ListingsController
 
     public function addListing()
     {
-        $price = $_POST['prezzo'] ?? -1;
-        if ($price == -1) {
+        $price = floatval($_POST['prezzo'] ?? -1);
+        if ($price < 0) {
             $_SESSION['error'][] = "Prezzo dell'offerta non valido";
             header("location: index.php?table=Listings&action=createListings");
             exit;
@@ -199,8 +199,8 @@ class ListingsController
             exit;
         } */
 
-        $price = $_POST['price'] ?? -1;
-        if ($price == -1 || $price < 0) {
+        $price = floatval($_POST['price'] ?? -1);
+        if ($price < 0) {
             $_SESSION['error'][] = "Prezzo non valido";
             header("location: index.php?table=Listings&action=addBookForm");
             exit;
