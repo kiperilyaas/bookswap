@@ -1,7 +1,6 @@
 <?php
 defined("APP") or die("ACCESSO NEGATO");
 ?>
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -10,109 +9,51 @@ defined("APP") or die("ACCESSO NEGATO");
     <title>Checkout | BookSwap</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="views/bookswap-responsive.css">
     <style>
-        :root {
-            --bs-orange: #ff9900;
-            --bs-dark: #131921;
-            --bs-bg: #eaeded;
-        }
-
-        body {
-            background-color: var(--bs-bg);
-            font-family: "Segoe UI", Arial, sans-serif;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        .navbar {
-            background-color: var(--bs-dark) !important;
-            padding: 0.5rem 1rem;
-        }
-        .navbar-brand {
-            font-weight: 700;
-            color: white !important;
-        }
-
-        .main-container {
-            padding-top: 2rem;
-            padding-bottom: 3rem;
-        }
-
         .checkout-card {
             background: white;
-            border-radius: 10px;
-            padding: 30px;
-            margin-bottom: 1rem;
+            border-radius: var(--radius-lg);
+            padding: var(--sp-lg);
             border: 1px solid #ddd;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
-
-        .section-title {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--bs-dark);
-            margin-bottom: 1.5rem;
-        }
-
         .book-summary {
             background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
+            padding: var(--sp-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--sp-md);
         }
-
-        .book-summary h5 {
-            font-weight: 700;
-            color: var(--bs-dark);
-            margin-bottom: 15px;
-        }
-
-        .form-label {
-            font-weight: 600;
-            color: #333;
-        }
-
+        .book-summary h5 { font-weight: 700; color: var(--dark); margin-bottom: var(--sp-sm); }
         .btn-complete-order {
-            background-color: var(--bs-orange);
+            background-color: var(--orange);
             border: none;
             color: black;
             font-weight: 700;
             border-radius: 20px;
-            padding: 12px 30px;
+            padding: clamp(0.6rem,0.9vw,1rem) clamp(1.5rem,2vw,2.5rem);
             width: 100%;
-            transition: all 0.2s;
+            font-size: var(--text-md);
+            transition: filter 0.2s, transform 0.15s;
         }
-
-        .btn-complete-order:hover {
-            filter: brightness(0.95);
-            transform: scale(1.02);
-        }
-
-        footer {
-            background-color: var(--bs-dark);
-            color: white;
-            margin-top: auto;
-        }
+        .btn-complete-order:hover { filter: brightness(0.94); transform: scale(1.02); }
     </style>
 </head>
 <body>
-
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
         <div class="container-fluid">
-            <a class="navbar-brand ms-3" href="index.php">📚 BookSwap</a>
+            <a class="navbar-brand ms-2" href="index.php">📚 BookSwap</a>
             <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto me-3">
+                <ul class="navbar-nav ms-auto me-2">
                     <li class="nav-item"><a class="nav-link" href="index.php">Torna alla Home</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container main-container">
+    <div class="container py-4">
         <div class="row justify-content-center">
-            <div class="col-lg-8">
+            <div class="col-lg-7 col-12">
                 <div class="checkout-card">
                     <h2 class="section-title">Completa il tuo ordine</h2>
 
@@ -130,32 +71,22 @@ defined("APP") or die("ACCESSO NEGATO");
                         </div>
 
                         <form action="index.php?table=Order&action=processCheckout" method="post">
-                            <input type="hidden" name="id_listing" value="<?= htmlspecialchars($listing['id_listing'] ?? '') ?>">
-                            <input type="hidden" name="id_seller" value="<?= htmlspecialchars($listing['id_seller'] ?? '') ?>">
+                            <input type="hidden" name="id_listing"  value="<?= htmlspecialchars($listing['id_listing'] ?? '') ?>">
+                            <input type="hidden" name="id_seller"   value="<?= htmlspecialchars($listing['id_seller'] ?? '') ?>">
                             <input type="hidden" name="final_price" value="<?= htmlspecialchars($price) ?>">
 
                             <div class="mb-3">
-                                <label for="time_meet" class="form-label">
-                                    <i class="bi bi-clock"></i> Orario di incontro
-                                </label>
+                                <label for="time_meet" class="form-label"><i class="bi bi-clock"></i> Orario di incontro</label>
                                 <input type="datetime-local" class="form-control" id="time_meet" name="time_meet" required>
                                 <small class="text-muted">Quando vuoi incontrare il venditore?</small>
                             </div>
-
                             <div class="mb-3">
-                                <label for="place_meet" class="form-label">
-                                    <i class="bi bi-geo-alt"></i> Luogo di incontro
-                                </label>
-                                <input type="text" class="form-control" id="place_meet" name="place_meet"
-                                       placeholder="Es: Ingresso principale " required>
+                                <label for="place_meet" class="form-label"><i class="bi bi-geo-alt"></i> Luogo di incontro</label>
+                                <input type="text" class="form-control" id="place_meet" name="place_meet" placeholder="Es: Ingresso principale" required>
                             </div>
-
                             <div class="mb-4">
-                                <label for="description_meet" class="form-label">
-                                    <i class="bi bi-chat-left-text"></i> Note aggiuntive (opzionale)
-                                </label>
-                                <textarea class="form-control" id="description_meet" name="description_meet"
-                                          rows="3" placeholder="Aggiungi eventuali dettagli o richieste..."></textarea>
+                                <label for="description_meet" class="form-label"><i class="bi bi-chat-left-text"></i> Note (opzionale)</label>
+                                <textarea class="form-control" id="description_meet" name="description_meet" rows="3" placeholder="Aggiungi dettagli o richieste..."></textarea>
                             </div>
 
                             <button type="submit" class="btn-complete-order">
@@ -174,7 +105,7 @@ defined("APP") or die("ACCESSO NEGATO");
         </div>
     </div>
 
-    <footer class="text-center py-4">
+    <footer>
         <div class="container">
             <p class="mb-1">© 2026 BookSwap Team</p>
             <small class="text-muted">Kiper Illia, Melega Leonardo, Trevisani Martina, Bertolani Leo</small>
@@ -182,7 +113,6 @@ defined("APP") or die("ACCESSO NEGATO");
     </footer>
 
     <?php include 'views/ToastNotification.php'; ?>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

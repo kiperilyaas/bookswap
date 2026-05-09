@@ -119,8 +119,9 @@ class OrderController {
     }
 
     public function changeStateSeller(){
+        $availabelState = ['pending', 'confirmed', 'cancelled'];
         $newState = $_POST['newState'] ?? null;
-        if(!$newState){
+        if(!in_array($newState, $availabelState)){
             $_SESSION['error'][] = "Stato del libro non esiste";
             header("location: index.php?table=User&action=account");
             exit;
@@ -133,18 +134,32 @@ class OrderController {
             exit;
         }
 
-        $result = $this->orderModel->changeOrderStateSeller([$newState, $orderId]);
+        $result = $this->orderModel->changeOrderStateSeller($orderId, $newState);
+        
         if(!$result){
-            $_SESSION['error'][] = "Non e' stato possibile aggiornare lo stato del ordine";
+            $_SESSION['error'][] = "Non e' stato possibile aggiornare lo stato della vendita";
             header("location: index.php?table=User&action=account");
             exit;
         }
 
-        if(checkStateIsEqual($orderId));
+        $result = checkStateIsEqual($orderId);
+        if($result == -2){
+            $idListing = $this->listingsModel->getListingByOrderId($orderId);
+            $this->listingsModel->updateAvailability($idListing, 1); // Rimetti disponibile
 
-        $_SESSION['success'][] = "Stato del ordine e' stato cambiato";
-        header("location: index.php?table=User&action=account");
-        exit;
+            $_SESSION['success'][] = "Ordine e' stato cancellato con successo. Il libro e' di nuovo disponibile.";
+            header("location: index.php?table=User&action=account");
+            exit;
+        }
+        else if($result == -1){
+            $_SESSION['success'][] = "Stato del ordine e' stato cambiato, si attende la conferma da parte di aquirente";
+            header("location: index.php?table=User&action=account");
+            exit;
+        }
+        else if($result == 1){
+            $_SESSION['success'][] = "Ordine e' stato chiuso. Grazie per aver uttilizato BookSwap";
+            header("location: index.php?table=User&action=account");
+        }
     }
 
     public function changeStateCustomer(){
@@ -155,14 +170,15 @@ class OrderController {
             exit;
         }
 
+        $availabelState = ['pending', 'confirmed', 'cancelled'];
         $newState = $_POST['newState'] ?? null;
-        if(!$newState){
+        if(!in_array($newState, $availabelState)){
             $_SESSION['error'][] = "Stato del libro non esiste";
             header("location: index.php?table=User&action=account");
             exit;
         }
         
-        $result = $this->orderModel->changeOrderStateCustomer([$newState, $orderId]);
+        $result = $this->orderModel->changeOrderStateCustomer($orderId, $newState);
 
         if(!$result){
             $_SESSION['error'][] = "Non e' stato possibile aggiornare lo stato del ordine";
@@ -170,11 +186,24 @@ class OrderController {
             exit;
         }
 
-        if(checkStateIsEqual($orderId));
+        $result = checkStateIsEqual($orderId);
+        if($result == -2){
+            $idListing = $this->listingsModel->getListingByOrderId($orderId);
+            $this->listingsModel->updateAvailability($idListing, 1); // Rimetti disponibile
 
-        $_SESSION['success'][] = "Stato del ordine e' stato cambiato";
-        header("location: index.php?table=Order&action=viewMyOrders");
-        exit;
-
+            $_SESSION['success'][] = "Ordine e' stato cancellato con successo. Il libro e' di nuovo disponibile.";
+            header("location: index.php?table=Order&action=viewMyOrders");
+            exit;
+        }
+        else if($result == -1){
+            $_SESSION['success'][] = "Stato del ordine e' stato cambiato, si attende la conferma da parte di venditore";
+            header("location: index.php?table=Order&action=viewMyOrders");
+            exit;
+        }
+        else if($result == 1){
+            $_SESSION['success'][] = "Ordine e' stato chiuso. Grazie per aver uttilizato BookSwap";
+            header("location: index.php?table=Order&action=viewMyOrders");
+            exit;
+        }
     }
 }

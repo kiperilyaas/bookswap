@@ -13,7 +13,9 @@ if (!empty($table) && is_array($table)) {
         if($record['is_available'] == 0) continue;
         // Dati di base tradotti in italiano
         $titolo      = $record['title'] ?? 'Titolo sconosciuto';
-        $imagePath   = "../utils/immagini/prova_libro.png";
+        $imagePath   = !empty($record['main_image'])
+                       ? "../utils/immagini/" . $record['main_image']
+                       : "../utils/immagini/prova_libro.png";
         $idItem      = $record['id_listing'] ?? ($record['id_book'] ?? ($record['id'] ?? ''));
         
         // Estrazione dati venditore - Convertito in MAIUSCOLO
@@ -89,9 +91,10 @@ if (!empty($table) && is_array($table)) {
     <?php foreach ($annunciPreparati as $annuncio): ?>
         
         <div class="col">
-            <div class="card book-card" 
+            <div class="card book-card h-100" 
                  data-bs-toggle="modal" 
                  data-bs-target="#bookDetailModal"
+                 data-id="<?= htmlspecialchars($annuncio['idItem']) ?>" 
                  data-title="<?= htmlspecialchars($annuncio['titolo']) ?>"
                  data-img="<?= htmlspecialchars($annuncio['immagine']) ?>"
                  data-price="<?= htmlspecialchars($annuncio['prezzo']) ?>"
@@ -102,20 +105,27 @@ if (!empty($table) && is_array($table)) {
                  data-classe="<?= htmlspecialchars($annuncio['classe']) ?>"
                  data-description="<?= htmlspecialchars($annuncio['descrizione']) ?>">
                 
-                <img src="<?= htmlspecialchars($annuncio['immagine']) ?>" class="card-img-top book-img" alt="Copertina">
+                <img src="<?= htmlspecialchars($annuncio['immagine']) ?>" class="card-img-top book-img" alt="Copertina" style="height: 280px; object-fit: cover;">
 
                 <div class="card-body d-flex flex-column p-3">
 
-                    <h5 class="card-title text-truncate-2" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                        <?= htmlspecialchars($annuncio['titolo']) ?>
-                    </h5>
-
-                    <div class="seller-info">
-                        <i class="bi bi-person-fill"></i> <strong><?= htmlspecialchars($annuncio['venditore']) ?></strong>
+                    <!-- IL TRUCCO È QUI: questo div assorbe lo spazio vuoto in eccesso -->
+                    <div class="flex-grow-1">
+                        <h5 class="card-title mb-2" style="font-weight: 600; line-height: 1.3;">
+                            <?= htmlspecialchars($annuncio['titolo']) ?>
+                        </h5>
+                        <div class="text-muted small mb-2">
+                            <i class="bi bi-person-circle"></i> <?= htmlspecialchars($annuncio['autore']) ?>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <span class="price"><?= $annuncio['prezzo'] ?></span>
+                    <!-- Da qui in giù, tutto sarà perfettamente allineato al fondo -->
+                    <div class="seller-info mb-2">
+                        <i class="bi bi-shop"></i> <strong><?= htmlspecialchars($annuncio['venditore']) ?></strong>
+                    </div>
+
+                    <div class="mb-2">
+                        <span class="price fs-5"><?= $annuncio['prezzo'] ?></span>
                     </div>
 
                     <div class="mb-3">
