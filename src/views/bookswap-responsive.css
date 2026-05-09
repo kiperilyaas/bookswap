@@ -77,29 +77,9 @@ body {
     color: white !important;
     font-size: var(--text-sm) !important;
     padding: var(--sp-xs) var(--sp-sm) !important;
-    position: relative;
-    transition: color 0.3s ease;
 }
 
-.navbar .nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 2px;
-    background: var(--orange);
-    transition: width 0.3s ease;
-}
-
-.navbar .nav-link:hover {
-    color: var(--orange) !important;
-}
-
-.navbar .nav-link:hover::after {
-    width: 80%;
-}
+.navbar .nav-link:hover { color: var(--orange) !important; }
 
 /* ── Pulsante Login/CTA nella navbar ── */
 .btn-nav-cta {
@@ -562,60 +542,6 @@ footer .text-muted { color: #aaa !important; }
 
     /* Tabella storico: scroll orizzontale */
     .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-
-    /* Tabella storico vendite responsive */
-    .table {
-        font-size: var(--text-sm);
-    }
-
-    .table thead th {
-        background: #f8f9fa;
-        font-weight: 600;
-        border-bottom: 2px solid #dee2e6;
-        white-space: nowrap;
-    }
-
-    .table tbody tr {
-        transition: all 0.2s ease;
-    }
-
-    .table tbody tr:hover {
-        background: #f8f9fa;
-        transform: scale(1.01);
-    }
-
-    @media (max-width: 768px) {
-        .table {
-            font-size: 0.8rem;
-        }
-
-        .table thead {
-            display: none;
-        }
-
-        .table tbody tr {
-            display: block;
-            margin-bottom: 1rem;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 0.8rem;
-            background: white;
-        }
-
-        .table tbody td {
-            display: block;
-            text-align: right;
-            padding: 0.5rem 0;
-            border: none;
-        }
-
-        .table tbody td::before {
-            content: attr(data-label);
-            float: left;
-            font-weight: 600;
-            color: #6c757d;
-        }
-    }
 }
 
 /* ============================================================

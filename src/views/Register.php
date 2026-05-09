@@ -11,11 +11,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="views/bookswap-responsive.css">
     <style>
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-        }
-
         .reg-wrap {
             flex-grow: 1;
             display: flex;
@@ -23,34 +18,20 @@
             align-items: center;
             padding: var(--sp-md);
         }
-
         .register-card {
             background: white;
-            padding: clamp(2rem, 3vw, 3rem);
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            padding: var(--sp-lg);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: clamp(320px, 35vw, 480px);
-            border: none;
-            position: relative;
-            overflow: hidden;
+            max-width: clamp(320px, 35vw, 500px);
+            border: 1px solid #ddd;
         }
-
-        .register-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--orange), var(--orange-hover));
-        }
-
         .reg-title {
             color: var(--dark);
             font-weight: 800;
-            font-size: var(--text-2xl);
-            margin-bottom: 0.5rem;
+            font-size: var(--text-xl);
+            margin-bottom: var(--sp-md);
             text-align: center;
             letter-spacing: -0.02em;
         }
@@ -76,85 +57,6 @@
             transition: color 0.3s ease;
             z-index: 2;
         }
-
-        .form-control {
-            padding: 0.9rem 1rem 0.9rem 2.8rem;
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            font-size: var(--text-sm);
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus {
-            border-color: var(--orange);
-            box-shadow: 0 0 0 4px rgba(255, 153, 0, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .form-control:focus + i {
-            color: var(--orange);
-        }
-
-        .btn-amazon {
-            padding: 1rem;
-            font-size: var(--text-base);
-            font-weight: 700;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(255, 153, 0, 0.3);
-            margin-top: 0.5rem;
-        }
-
-        .btn-amazon:hover {
-            box-shadow: 0 6px 20px rgba(255, 153, 0, 0.4);
-            transform: translateY(-2px);
-        }
-
-        .login-link {
-            display: block;
-            text-align: center;
-            margin-top: 1.5rem;
-            color: #0066c0;
-            text-decoration: none;
-            font-size: var(--text-sm);
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-
-        .login-link:hover {
-            color: var(--orange);
-            transform: translateX(2px);
-        }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            margin: 1.5rem 0;
-            color: #adb5bd;
-            font-size: var(--text-xs);
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .divider span {
-            padding: 0 1rem;
-        }
-
-        @media (max-width: 576px) {
-            .register-card {
-                padding: 1.5rem;
-            }
-
-            .reg-title {
-                font-size: 1.8rem;
-            }
-        }
     </style>
 </head>
 <body>
@@ -166,39 +68,25 @@
 
     <div class="reg-wrap">
         <div class="register-card">
-            <h2 class="reg-title">Crea Account</h2>
-            <p class="reg-subtitle">Unisciti alla community BookSwap</p>
+            <h2 class="reg-title">Registrati</h2>
             <form action="index.php?table=login&action=insert" method="post">
-                <div class="form-group">
-                    <input type="text" name="name" class="form-control" placeholder="Nome" required>
-                    <i class="bi bi-person-fill"></i>
+                <div class="mb-3">
+                    <input type="text" name="name" class="form-control" placeholder="Inserisci Nome" required>
                 </div>
-                <div class="form-group">
-                    <input type="text" name="surname" class="form-control" placeholder="Cognome" required>
-                    <i class="bi bi-person-fill"></i>
+                <div class="mb-3">
+                    <input type="text" name="surname" class="form-control" placeholder="Inserisci Cognome" required>
                 </div>
-                <div class="form-group">
-                    <input type="text" name="class" class="form-control" placeholder="Classe (es. 5N)" required>
-                    <i class="bi bi-mortarboard-fill"></i>
+                <div class="mb-3">
+                    <input type="text" name="class" class="form-control" placeholder="Classe/Sezione (es. 5N)" required>
                 </div>
-                <div class="form-group">
-                    <input type="email" name="email" class="form-control" placeholder="Email @isit100.fe.it" required>
-                    <i class="bi bi-envelope-fill"></i>
+                <div class="mb-3">
+                    <input type="email" name="email" class="form-control" placeholder="Inserisci Email" required>
                 </div>
-                <div class="form-group">
-                    <input type="password" name="password" class="form-control" placeholder="Password (min 8 caratteri)" required>
-                    <i class="bi bi-lock-fill"></i>
+                <div class="mb-4">
+                    <input type="password" name="password" class="form-control" placeholder="Inserisci Password" required>
                 </div>
-                <button type="submit" class="btn-amazon w-100 d-block text-center">
-                    <i class="bi bi-person-plus-fill me-2"></i>Registrati
-                </button>
+                <button type="submit" class="btn-amazon w-100 d-block text-center">Registrati</button>
             </form>
-            <div class="divider">
-                <span>oppure</span>
-            </div>
-            <a href="index.php?table=login&action=loginView" class="login-link">
-                <i class="bi bi-box-arrow-in-right me-1"></i>Hai già un account? Accedi
-            </a>
         </div>
     </div>
 

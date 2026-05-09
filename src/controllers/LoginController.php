@@ -21,14 +21,14 @@ class LoginController{
 
         if($email != null){
             if($domain != "isit100.fe.it"){
-                $_SESSION["error"][] = "Dominio email non verificato. Usa un'email @isit100.fe.it";
+                $_SESSION["error"][] = "Il dominio dell'email non è verificato. Utilizza un'email @isit100.fe.it";
                 header("location: index.php?table=login&action=loginView");
                 exit;
             }
         }
 
         if(!isEmailExist($email)){
-            $_SESSION["error"][] = "Email non registrata nel sistema";
+            $_SESSION["error"][] = "L'email non è registrata nel sistema";
             header("location: index.php?table=login&action=loginView");
             exit;
         }
@@ -36,7 +36,7 @@ class LoginController{
         //password check
         $password = $_POST['password'] ?? null;
         if(!$password){
-            $_SESSION['error'][] = "Password non inserita";
+            $_SESSION['error'][] = "La password non è stata inserita";
             header("index.php?table=Login&action=loginView");
             exit;
         }
@@ -50,7 +50,7 @@ class LoginController{
             exit;
         }
         else{
-            $_SESSION['error'][] = "Password non corretta";
+            $_SESSION['error'][] = "La password non è corretta";
             header("location: index.php?table=login&action=loginView");
             exit;
         }
@@ -64,7 +64,7 @@ class LoginController{
         $name = $_POST['name'] ?? null;
         $name = strtoupper($name);
         if(!$name){
-            $_SESSION["error"][] = "Il nome non e' stato inserito corretamente";
+            $_SESSION["error"][] = "Il nome non è stato inserito corretamente";
             header("location: index.php?table=Login&action=registerView");
             exit;
         }
@@ -72,27 +72,27 @@ class LoginController{
         $surname = $_POST['surname'] ?? null;
         $surname = strtoupper($surname);
         if(!$surname){
-            $_SESSION["error"][] = "Il congome non e' stato inserito corretamente";
+            $_SESSION["error"][] = "Il cognome non è stato inserito correttamente";
             header("location: index.php?table=Login&action=registerView");
             exit;
         }
 
         $email = $_POST['email'] ?? null;
         if(isEmailExist($email)){
-            $_SESSION["error"][] = "Email già registrata";
+            $_SESSION["error"][] = "L'email è già stata registrata";
             header("location: index.php?table=login&action=registerView");
             exit;
         }
         $domain = substr($email, strpos($email, '@') + 1);
         if($domain != "isit100.fe.it"){
-            $_SESSION['error'][] = "Dominio email non verificato. Usa un'email @isit100.fe.it";
+            $_SESSION['error'][] = "Il dominio dell'email non è verificato. Utilizza un'email @isit100.fe.it";
             header("location: index.php?table=login&action=registerView");
             exit;
         }
 
         $class = $_POST['class'] ?? "";
         if(!$class){
-            $_SESSION["error"][] = "La classe non e' stato inserita corretamente";
+            $_SESSION["error"][] = "La classe non è stata inserita correttamente";
             header("location: index.php?table=Login&action=registerView");
             exit;
         }
@@ -111,14 +111,14 @@ class LoginController{
             else $isGood = false;
         }
         if(!$isGood){
-            $_SESSION['error'][] = "Classe non esistente. Verifica il formato (es: 5N)";
+            $_SESSION['error'][] = "Classe inesistente. Verifica il formato (es: 5N)";
             header("location: index.php?table=login&action=registerView");
             exit;
         }
 
         $password = $_POST['password'] ?? null;
         if(!$password){
-            $_SESSION["error"][] = "La password non e' stato inserito corretamente";
+            $_SESSION["error"][] = "La password non è stata inserita correttamente";
             header("location: index.php?table=Login&action=registerView");
             exit;
         }
