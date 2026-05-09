@@ -45,7 +45,6 @@
             height: 4px;
             background: linear-gradient(90deg, var(--orange), var(--orange-hover));
         }
-
         .login-title {
             color: var(--dark);
             font-weight: 800;
@@ -159,7 +158,7 @@
         .register-link {
             display: block;
             text-align: center;
-            margin-top: 1.5rem;
+            margin-top: var(--sp-sm);
             color: #0066c0;
             text-decoration: none;
             font-size: var(--text-sm);
@@ -201,6 +200,7 @@
                 font-size: 1.8rem;
             }
         }
+        .register-link:hover { color: #c45500; text-decoration: underline; }
     </style>
 </head>
 <body>
