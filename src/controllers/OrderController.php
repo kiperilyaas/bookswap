@@ -21,14 +21,14 @@ class OrderController {
 
     public function checkout() {
         if(!isset($_SESSION['id_user'])) {
-            $_SESSION['error'][] = "Devi effettuare il login per acquistare";
+            $_SESSION['error'][] = "Devi effettuare il login prima di acquistare";
             header("location: index.php");
             exit;
         }
 
         $id_listing = $_GET['id'] ?? -1;
         if($id_listing == -1) {
-            $_SESSION['error'][] = "Annuncio non valido";
+            $_SESSION['error'][] = "L'annuncio non è valido";
             header("location: index.php");
             exit;
         }
@@ -36,7 +36,7 @@ class OrderController {
         $listings = $this->listingsModel->getListingsById([$id_listing]);
 
         if(empty($listings)) {
-            $_SESSION['error'][] = "Libro non trovato";
+            $_SESSION['error'][] = "Il libro non è stato trovato";
             header("location: index.php");
             exit;
         }
@@ -71,7 +71,7 @@ class OrderController {
         $id_listing = $_POST['id_listing'] ?? -1;
         $id_seller = $_POST['id_seller'] ?? -1;
         $id_customer = $_SESSION['id_user'];
-        $final_price = $_POST['final_price'] ?? 0;
+        $final_price = floatval($_POST['final_price'] ?? 0);
         $time_meet = $_POST['time_meet'] ?? null;
         $place_meet = $_POST['place_meet'] ?? null;
         $description_meet = $_POST['description_meet'] ?? '';
@@ -104,7 +104,7 @@ class OrderController {
         if($result) {
             // Aggiorna il listing come non disponibile
             $this->markListingAsUnavailable($id_listing);
-            $_SESSION['success'][] = "Ordine creato con successo! Il venditore è stato notificato.";
+            $_SESSION['success'][] = "Ordine creato con successo! Il venditore è stato avvisato";
             header("location: index.php");
 
         } else {
@@ -119,62 +119,91 @@ class OrderController {
     }
 
     public function changeStateSeller(){
+        $availabelState = ['pending', 'confirmed', 'cancelled'];
         $newState = $_POST['newState'] ?? null;
-        if(!$newState){
-            $_SESSION['error'][] = "Stato del libro non esiste";
+        if(!in_array($newState, $availabelState)){
+            $_SESSION['error'][] = "Lo stato dell'ordine non esiste";
             header("location: index.php?table=User&action=account");
             exit;
         }
 
         $orderId = $_POST['currentOrderId'] ?? -1;
         if($orderId == -1){
-            $_SESSION['error'][] = "Ordine non esiste";
+            $_SESSION['error'][] = "Ordine inesistente";
             header("location: index.php?table=User&acton=account");
             exit;
         }
 
-        $result = $this->orderModel->changeOrderStateSeller([$newState, $orderId]);
+        $result = $this->orderModel->changeOrderStateSeller($orderId, $newState);
+        
         if(!$result){
-            $_SESSION['error'][] = "Non e' stato possibile aggiornare lo stato del ordine";
+            $_SESSION['error'][] = "Non è stato possibile aggiornare lo stato della vendita";
             header("location: index.php?table=User&action=account");
             exit;
         }
 
-        if(checkStateIsEqual($orderId));
+        $result = checkStateIsEqual($orderId);
+        if($result == -2){
+            $idListing = $this->listingsModel->getListingByOrderId($orderId);
+            $this->listingsModel->updateAvailability($idListing, 1); // Rimetti disponibile
 
-        $_SESSION['success'][] = "Stato del ordine e' stato cambiato";
-        header("location: index.php?table=User&action=account");
-        exit;
+            $_SESSION['success'][] = "L'ordine è stato cancellato con successo. Il libro è di nuovo disponibile.";
+            header("location: index.php?table=User&action=account");
+            exit;
+        }
+        else if($result == -1){
+            $_SESSION['success'][] = "Lo stato dell'ordine è cambiato, si attende la conferma da parte dell' acquirente";
+            header("location: index.php?table=User&action=account");
+            exit;
+        }
+        else if($result == 1){
+            $_SESSION['success'][] = "L'ordine è stato chiuso. Grazie per aver utilizzato BookSwap";
+            header("location: index.php?table=User&action=account");
+        }
     }
 
     public function changeStateCustomer(){
         $orderId = $_POST['currentOrderId'] ?? -1;
         if($orderId == -1){
-            $_SESSION['error'][] = "Ordine non esiste";
+            $_SESSION['error'][] = "Ordine inesistente";
             header("location: index.php?table=Order&table=viewMyOrders");
             exit;
         }
 
+        $availabelState = ['pending', 'confirmed', 'cancelled'];
         $newState = $_POST['newState'] ?? null;
-        if(!$newState){
-            $_SESSION['error'][] = "Stato del libro non esiste";
+        if(!in_array($newState, $availabelState)){
+            $_SESSION['error'][] = "Lo stato dell'ordine non esiste";
             header("location: index.php?table=User&action=account");
             exit;
         }
         
-        $result = $this->orderModel->changeOrderStateCustomer([$newState, $orderId]);
+        $result = $this->orderModel->changeOrderStateCustomer($orderId, $newState);
 
         if(!$result){
-            $_SESSION['error'][] = "Non e' stato possibile aggiornare lo stato del ordine";
+            $_SESSION['error'][] = "Non è stato possibile aggiornare lo stato dell' ordine";
             header("location: index.php?table=Order&action=viewMyOrders");
             exit;
         }
 
-        if(checkStateIsEqual($orderId));
+        $result = checkStateIsEqual($orderId);
+        if($result == -2){
+            $idListing = $this->listingsModel->getListingByOrderId($orderId);
+            $this->listingsModel->updateAvailability($idListing, 1); // Rimetti disponibile
 
-        $_SESSION['success'][] = "Stato del ordine e' stato cambiato";
-        header("location: index.php?table=Order&action=viewMyOrders");
-        exit;
-
+            $_SESSION['success'][] = "L'ordine è stato cancellato con successo. Il libro è nuovamente disponibile.";
+            header("location: index.php?table=Order&action=viewMyOrders");
+            exit;
+        }
+        else if($result == -1){
+            $_SESSION['success'][] = "Lo stato dell'ordine è cambiato, si attende la conferma da parte del venditore";
+            header("location: index.php?table=Order&action=viewMyOrders");
+            exit;
+        }
+        else if($result == 1){
+            $_SESSION['success'][] = "L'ordine è stato chiuso. Grazie per aver utilizzato BookSwap";
+            header("location: index.php?table=Order&action=viewMyOrders");
+            exit;
+        }
     }
 }

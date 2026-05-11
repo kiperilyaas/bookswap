@@ -2,16 +2,21 @@
 defined("APP") or die("ACESSO NEGATO");
 require_once 'models/ListingsModel.php';
 require_once "models/BookModel.php";
+require_once 'models/ListingImagesModel.php';
 require_once "../utils/function.php";
+require_once "../utils/imageUpload.php";
 
 class ListingsController
 {
     private $model;
     private $modelBook;
+    private $modelImages;
+
     public function __construct()
     {
         $this->model = new ListingsModel();
         $this->modelBook = new BookModel();
+        $this->modelImages = new ListingImagesModel();
     }
 
     public function createListings()
@@ -46,16 +51,16 @@ class ListingsController
 
     public function addListing()
     {
-        $price = $_POST['prezzo'] ?? -1;
-        if ($price == -1) {
-            $_SESSION['error'][] = "Prezzo dell'offerta non valido";
+        $price = floatval($_POST['prezzo'] ?? -1);
+        if ($price < 0) {
+            $_SESSION['error'][] = "Il prezzo dell'offerta non è valido";
             header("location: index.php?table=Listings&action=createListings");
             exit;
         }
 
         $condition = $_POST['condizioni'] ?? "";
         if ($condition == "") {
-            $_SESSION['error'][] = "Condizioni dell'offerta non valide";
+            $_SESSION['error'][] = "Le condizioni dell'offerta non sono valide";
             header("location: index.php?table=Listings&action=createListings");
             exit;
         }
@@ -76,11 +81,50 @@ class ListingsController
         $description = $_POST['descrizione'] ?? "";
 
 
-
+        // Crea il listing
         $param = [$book, $seller, $price, $condition, $description, 1];
-        $this->model->insertRecord($param);
-        $_SESSION['success'][] = "Annuncio creato con successo!";
+        $result = $this->model->insertRecord($param);
+
+        if ($result) {
+            // Recupera l'ID del listing appena creato
+            $id_listing = $this->model->getLastInsertedId();
+
+            // Gestione upload immagini
+            if (isset($_FILES['listing_images']) && !empty($_FILES['listing_images']['name'][0])) {
+                $uploadedImages = handleImageUpload($_FILES['listing_images'], $id_listing);
+
+                if (!empty($uploadedImages)) {
+                    foreach ($uploadedImages as $index => $imagePath) {
+                        $is_primary = ($index === 0) ? 1 : 0; // Prima immagine = principale
+                        $this->modelImages->addImage($id_listing, $imagePath, $is_primary);
+                    }
+                    $_SESSION['success'][] = "Annuncio creato con " . count($uploadedImages) . " foto!";
+                } else {
+                    $_SESSION['success'][] = "Annuncio creato senza foto";
+                }
+            } else {
+                $_SESSION['success'][] = "Annuncio creato con successo, senza foto!";
+            }
+        } else {
+            $_SESSION['error'][] = "Errore durante la creazione dell'annuncio";
+        }
+
         header("location: index.php");
+        exit;
+    }
+
+    public function getListingImages() {
+        $id_listing = $_GET['id'] ?? -1;
+
+        if ($id_listing == -1) {
+            echo json_encode([]);
+            exit;
+        }
+
+        $images = $this->modelImages->getImagesByListing($id_listing);
+
+        header('Content-Type: application/json');
+        echo json_encode($images);
         exit;
     }
 
@@ -88,7 +132,7 @@ class ListingsController
     {
         $id = $_GET['id'] ?? -1;
         if ($id == -1) {
-            $_SESSION['error'][] = "ID dell'offerta non valido";
+            $_SESSION['error'][] = "L'id dell'offerta non è valido";
             header("location: index.php?table=User&action=account");
             exit;
         }
@@ -108,7 +152,7 @@ class ListingsController
     {
         $title = $_POST['title'] ?? "";
         if($title == ""){
-            $_SESSION['error'][] = "Titolo del libro non valido ";
+            $_SESSION['error'][] = "Il titolo del libro non è valido";
             header("location: index.php?table=Listings&action=addBookForm");
             exit;
         }
@@ -122,49 +166,49 @@ class ListingsController
 
         $vol = $_POST['vol'] ?? "";
         if($vol !== "U" && $vol !== "1" && $vol !== "2" && $vol !== "3"){
-            $_SESSION['error'][] = "Volume non valido solo (U, 1, 2 o 3)";
+            $_SESSION['error'][] = "Il volume non è valido, solo (U, 1, 2 o 3)";
             header("Location: index.php?table=Listings&action=addBookForm");
             exit;
         }
 
         $author = $_POST['author'] ?? "";
         if($author == ""){
-            $_SESSION['error'][] = "Nome di Autore non valido";
+            $_SESSION['error'][] = "Il nome dell'autore non è valido";
             header("location: index.php?table=Listings&action=addBookForm");
             exit;
         }
 
         $class = $_POST['class'] ?? "";
         if (!classExist($class)) {
-            $_SESSION['error'][] = "Classe non esistente, scelgi una classe presente nel elenco delle classi del ISIT";
+            $_SESSION['error'][] = "Classe inesistente, scelgi una classe presente nell' elenco delle classi dell' ISIT";
             header("location: index.php?table=Listings&action=addBookForm");
             exit;
         }
 
         $subject = $_POST['subject'] ?? "";
         /*if(!subjectExist($subject)){
-            $_SESSION['error'][] = "Materia non esiste";
+            $_SESSION['error'][] = "Materia inesistente";
             header("location: index.php?table=Listings&action=addBookForm");
             exit;
         }*/
 
         $faculty = $_POST['faculty'] ?? "";
         /* if(!facultyExist($faculty)){
-            $_SESSION['error'][] = "Indirizzo non esiste";
+            $_SESSION['error'][] = "Indirizzo inesistente";
             header("location: index.php?table=Listings&action=addBookForm");
             exit;
         } */
 
-        $price = $_POST['price'] ?? -1;
-        if ($price == -1 || $price < 0) {
-            $_SESSION['error'][] = "Prezzo non valido";
+        $price = floatval($_POST['price'] ?? -1);
+        if ($price < 0) {
+            $_SESSION['error'][] = "Il prezzo nonè valido";
             header("location: index.php?table=Listings&action=addBookForm");
             exit;
         }
 
         $publish = $_POST['publish'] ?? "";
         if($publish == ""){
-            $_SESSION['error'][] = "Casa editrice non valida";
+            $_SESSION['error'][] = "La casa editrice non è valida";
             header("location: index.php?table=Listings&action=addBookForm");
             exit;
         }
