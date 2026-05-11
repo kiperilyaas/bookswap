@@ -138,7 +138,6 @@ if (!empty($table) && is_array($table)) {
                         <span class="price fs-5"><?= $annuncio['prezzo'] ?></span>
                     </div>
 
-<<<<<<< HEAD
                     <div class="mb-3">
                         <span class="status-badge <?= $annuncio['statusColor'] == 'text-success' ? 'status-available' : 'status-unavailable' ?>">
                             <?= $annuncio['statusText'] ?>
@@ -150,11 +149,6 @@ if (!empty($table) && is_array($table)) {
                            class="btn btn-warning w-100 shadow-sm d-flex justify-content-center align-items-center gap-2 buy-btn"
                            onclick="return confirmPurchase(event, '<?= htmlspecialchars($annuncio['titolo'], ENT_QUOTES) ?>');">
                             <i class="bi bi-bag-check-fill"></i> Compra!
-=======
-                    <div class="mt-auto">
-                        <a href="index.php?action=add_to_cart&id=<?= urlencode($annuncio['idItem']) ?>" class="btn btn-warning w-100 shadow-sm d-flex justify-content-center align-items-center gap-2" onclick="event.stopPropagation();">
-                            🛒 Aggiungi al carrello
->>>>>>> 1179430a5b1a361cc15aa1e984437bfe7bcfc212
                         </a>
                     </div>
 
