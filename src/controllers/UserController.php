@@ -23,7 +23,7 @@ class UserController{
   public function updateProfile(){
     $userId = $_SESSION['id_user'] ?? -1;
     if($userId == -1){
-      $_SESSION['error'][] = "Devi effettuare il login";
+      $_SESSION['error'][] = "Devi prima effettuare il login";
       header("location: index.php?table=login&action=login");
       exit;
     }
@@ -43,7 +43,7 @@ class UserController{
     // Verifica dominio email
     $domain = substr($email, strpos($email, '@') + 1);
     if($domain != "isit100.fe.it"){
-      $_SESSION['error'][] = "Dominio email non verificato. Usa un'email @isit100.fe.it";
+      $_SESSION['error'][] = "Il dominio dell'email non è verificato. Usa un'email @isit100.fe.it";
       header("location: index.php?table=User&action=account");
       exit;
     }
@@ -68,7 +68,7 @@ class UserController{
   public function changePassword(){
     $userId = $_SESSION['id_user'] ?? -1;
     if($userId == -1){
-      $_SESSION['error'][] = "Devi effettuare il login";
+      $_SESSION['error'][] = "Devi prima effettuare il login";
       header("location: index.php?table=login&action=login");
       exit;
     }
@@ -119,11 +119,32 @@ class UserController{
     if($result){
       $_SESSION['success'][] = "Password cambiata con successo!";
     } else {
-      $_SESSION['error'][] = "Errore durante il cambio password";
+      $_SESSION['error'][] = "Errore durante il cambio della password";
     }
 
     header("location: index.php?table=User&action=account");
     exit;
+  }
+
+  public function deleteUser(){
+    $idUser = $_POST['id_user'] ?? -1;
+    if ($idUser == -1){
+      $_SESSION['error'][] = "Utente inesistente";
+      header("location: index.php?table=User&action=account");
+      exit;
+    }
+
+    $result = $this->Usermodel->deleteUser([$idUser]);
+    if($result){
+      $_SESSION['success'][] = "L'eliminazione dell'utente è avvenuta correttamente";
+      header("location: index.php");
+      exit;
+    }
+    else{
+      $_SESSION['error'][] = "L'eliminazione dell'utente non è avvenuta correttamente";
+      header("index.php?table=User&action=account");
+      exit;
+    }
   }
 
 

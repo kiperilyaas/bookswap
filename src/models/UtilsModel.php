@@ -82,10 +82,10 @@ class UtilsModel{
     return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function changeGlobalStateOrder($param = []){
-    $sql = "UPDATE orders set `state` = 'cancelled' where orders.id_order = ?";
+  public function changeGlobalStateOrder($id, $state){
+    $sql = "UPDATE orders set `state` = ? where orders.id_order = ?";
     $stm = $this->pdo->prepare($sql);
-    $stm->execute($param);
+    $stm->execute([$state, $id]);
 
     return $stm->rowCount() !== 0;
   }

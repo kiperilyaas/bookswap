@@ -4,266 +4,52 @@ defined("APP") or die("ACCESSO NEGATO");
 
 <!DOCTYPE html>
 <html lang="it">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BookSwap | Compra e Vendi Libri</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-
-    <style>
-        :root {
-            --amazon-orange: #ff9900;
-            --amazon-dark: #131921;
-            --amazon-light: #232f3e;
-            --light-bg: #eaeded;
-        }
-
-        body {
-            background-color: var(--light-bg);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            font-family: 'Amazon Ember', Arial, sans-serif;
-        }
-
-        /* Navbar stile Amazon */
-        .navbar {
-            background-color: var(--amazon-dark) !important;
-            padding: 0.5rem 0;
-        }
-
-        .navbar-brand {
-            color: white !important;
-            font-weight: 700;
-            font-size: 1.5rem;
-            letter-spacing: -0.5px;
-        }
-
-        .navbar-brand:hover {
-            color: var(--amazon-orange) !important;
-        }
-
-        .nav-link {
-            color: white !important;
-            font-size: 0.9rem;
-            padding: 0.5rem 1rem !important;
-        }
-
-        .nav-link:hover {
-            color: var(--amazon-orange) !important;
-        }
-
-        .btn-login {
-            background-color: var(--amazon-orange);
-            border: none;
-            color: var(--amazon-dark);
-            font-weight: 600;
-            padding: 0.4rem 1.5rem;
-        }
-
-        .btn-login:hover {
-            background-color: #ec8b00;
-            color: var(--amazon-dark);
-        }
-
-        /* Search Bar Super Pulita (Dal file 2) */
-        .search-container {
-            background-color: var(--amazon-light);
-            padding: 20px 0;
-        }
-
-        .search-wrapper {
-            background-color: white;
-            border-radius: 50px;
-            overflow: hidden;
-            border: 2px solid transparent;
-            transition: border-color 0.2s;
-        }
-
-        .search-wrapper:focus-within {
-            border-color: var(--amazon-orange);
-        }
-
-        .search-wrapper select, 
-        .search-wrapper input {
-            border: none !important;
-            box-shadow: none !important;
-        }
-
-        .search-wrapper select {
-            background-color: #f3f3f3;
-            border-right: 1px solid #ddd !important;
-            cursor: pointer;
-        }
-
-        .search-icon-box {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 20px;
-            color: var(--amazon-dark);
-            background-color: white;
-        }
-
-        /* Card Libri stile Amazon - MIGLIORATO */
-        .book-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            background: white;
-            height: 100%;
-            cursor: pointer;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .book-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
-            border-color: var(--amazon-orange);
-        }
-
-        .book-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--amazon-orange), #ffb84d);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .book-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .book-img {
-            height: 280px;
-            object-fit: contain;
-            padding: 20px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-            border-radius: 12px 12px 0 0;
-            transition: transform 0.3s ease;
-        }
-
-        .book-card:hover .book-img {
-            transform: scale(1.05);
-        }
-
-        .card-title {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #0066c0;
-            line-height: 1.3;
-            min-height: 2.6rem;
-            transition: color 0.2s ease;
-        }
-
-        .card-title:hover {
-            color: #c45500;
-            text-decoration: underline;
-        }
-
-        .price {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #B12704;
-        }
-
-        /* Ripristino stile bottoni arrotondati come da file originale */
-        .btn-warning {
-            background-color: var(--amazon-orange);
-            border: none;
-            color: var(--amazon-dark);
-            font-weight: 600;
-            border-radius: 20px;
-            padding: 0.5rem;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-        }
-
-        .btn-warning:hover {
-            background-color: #ec8b00;
-            color: var(--amazon-dark);
-            transform: scale(1.02);
-            box-shadow: 0 4px 8px rgba(255, 153, 0, 0.3);
-        }
-
-        .btn-warning:active {
-            transform: scale(0.98);
-        }
-
-        .badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-        }
-
-        footer {
-            background-color: var(--amazon-dark);
-            color: white;
-            margin-top: auto;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--amazon-dark);
-            margin-bottom: 1.5rem;
-        }
-    </style>
+    <link rel="stylesheet" href="views/bookswap-responsive.css">
 </head>
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
         <div class="container-fluid">
-            <a class="navbar-brand ms-3" href="index.php">📚 BookSwap</a>
+            <a class="navbar-brand ms-2" href="index.php">📚 BookSwap</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id=\"navbarNav\">
-                <ul class="navbar-nav ms-auto align-items-center me-3">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center me-2">
                     <li class="nav-item">
                         <?php if(isset($_SESSION['id_user'])): ?>
                             <a class="nav-link" href="index.php?table=Listings&action=createListings">Crea Annuncio</a>
                         <?php else: ?>
-                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
-                                Crea Annuncio
-                            </a>
+                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Crea Annuncio</a>
                         <?php endif; ?>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="index.php?table=Order&action=viewMyOrders">Ordini</a></li>
+
+                    <?php if(isset($_SESSION['id_user'])): ?>
+                            <li class="nav-item"><a class="nav-link" href="index.php?table=Order&action=viewMyOrders">Tuoi Ordini</a></li>
+                    <?php else: ?>
+                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#orderModal">Tuoi Ordini</a>
+                    <?php endif; ?>
+                    
                     <?php
-                            if(!isset($_SESSION['id_user'])){
-                                echo '<li class="nav-item mx-2">';
-                                echo '  <a class="btn btn-login d-flex align-items-center gap-2" href="index.php?table=login&action=loginView">';
-                                echo 'Accedi';
-                                echo '</a>';
-                                echo '</li>';
-                            }
-                            else{
-                                echo '<li class="nav-item mx-2">';
-                                echo '  <a class="btn btn-login d-flex align-items-center gap-2" href="index.php?table=User&action=account">';
-                                echo '      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
-                                                <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
-                                            </svg>';
-                                echo '      Area Personale';
-                                echo '  </a>';
-                                echo '</li>';
-                            }
-                        ?>
-                    <li class="nav-item">
-                        <a class="nav-link position-relative" href="index.php?table=Home&action=cart">
-                            🛒 Carrello
-                            <span class="badge rounded-pill bg-danger">0</span>
-                        </a>
-                    </li>
+                    if (!isset($_SESSION['id_user'])) {
+                        echo '<li class="nav-item mx-1">';
+                        echo '<a class="btn-nav-cta" href="index.php?table=login&action=loginView">Accedi</a>';
+                        echo '</li>';
+                    } else {
+                        echo '<li class="nav-item mx-1">';
+                        echo '<a class="btn-nav-cta" href="index.php?table=User&action=account">';
+                        echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/><path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/></svg>';
+                        echo 'Area Personale';
+                        echo '</a></li>';
+                    }
+                    ?>
                 </ul>
             </div>
         </div>
@@ -274,20 +60,17 @@ defined("APP") or die("ACCESSO NEGATO");
             <div class="row">
                 <div class="col-lg-10 offset-lg-1">
                     <div class="input-group search-wrapper">
-                        <select class="form-select text-center" id="searchFilter" style="max-width: 140px; font-weight: 500;">
+                        <select class="form-select text-center" id="searchFilter" style="max-width:140px;font-weight:500;">
                             <option value="title">Titolo</option>
                             <option value="author">Autore</option>
                             <option value="isbn">ISBN</option>
                         </select>
-                        <input type="text" class="form-control" id="searchInput" placeholder="Inizia a digitare per cercare...">
-                        
-                        <div class="search-icon-box">
+                        <input type="text" class="form-control" id="searchInput" placeholder="Cerca un libro…">
+                        <div class="d-flex align-items-center px-3 bg-white">
                             <svg id="searchIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
                             </svg>
-                            <div id="loadingSpinner" class="spinner-border spinner-border-sm text-warning d-none" role="status">
-                                <span class="visually-hidden">Caricamento...</span>
-                            </div>
+                            <div id="loadingSpinner" class="spinner-border spinner-border-sm text-warning d-none ms-1" role="status"></div>
                         </div>
                     </div>
                 </div>
@@ -295,91 +78,372 @@ defined("APP") or die("ACCESSO NEGATO");
         </div>
     </div>
 
-    <main class="container my-5">
+    <main class="container my-4">
         <h2 class="section-title">Libri disponibili</h2>
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
-                <?php include 'Table.php'; ?>
+
+        <div id="defaultResults" class="row row-cols-2 row-cols-sm-3 row-cols-lg-5 g-3">
+            <?php include 'views/Table.php'; ?>
         </div>
 
+        <div id="searchResults" class="row row-cols-2 row-cols-sm-3 row-cols-lg-5 g-3 d-none"></div>
+
+        <div id="noResults" class="text-center py-5 w-100 d-none">
+            <h4 class="text-muted">Nessun libro trovato.</h4>
+            <p class="text-secondary">Prova a cercare con un termine diverso o cambia il filtro!</p>
+        </div>
     </main>
 
+    <!-- Modale dettaglio libro -->
     <div class="modal fade" id="bookDetailModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalBookTitle"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body text-center">
-                    <img id="modalBookImg" src="" class="img-fluid mb-3" style="max-height: 250px; object-fit: contain;">
-                    
-                    <div class="mb-3">
-                        <p class="mb-1"><strong>Autore:</strong> <span id="modalBookAuthor"></span></p>
-                        <p class="mb-1"><strong>Venditore:</strong> <span id="modalBookSeller"></span> | <strong>Classe:</strong> <span id="modalBookClasse"></span></p>
-                        <p class="mb-1"><strong>ISBN:</strong> <span id="modalBookISBN"></span></p>
-                        <p class="mb-1"><strong>Casa Editrice:</strong> <span id="modalBookPublisher"></span></p>
-                    </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Carousel Immagini (Sinistra) -->
+                        <div class="col-md-6 mb-3">
+                            <div class="modal-image-container">
+                                <div id="bookImagesCarousel" class="carousel slide" data-bs-ride="carousel">
+                                    <div class="carousel-inner" id="carouselImages">
+                                        <!-- Le immagini verranno caricate dinamicamente -->
+                                    </div>
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#bookImagesCarousel" data-bs-slide="prev" style="display:none;" id="carouselPrev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#bookImagesCarousel" data-bs-slide="next" style="display:none;" id="carouselNext">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                                <div class="carousel-indicators position-static mt-3" id="carouselIndicators" style="margin-bottom: 0;"></div>
+                            </div>
+                        </div>
 
-                    <div id="modalBookPrice" class="price mb-3" style="font-size: 1.8rem;"></div>
-                    
-                    <div class="text-start p-3 bg-light rounded">
-                        <h6><strong>Descrizione:</strong></h6>
-                        <p id="modalBookDescription" class="mb-0"></p>
+                        <!-- Dettagli Libro (Destra) -->
+                        <div class="col-md-6">
+                            <!-- Prezzo in alto -->
+                            <div class="modal-price-box mb-3">
+                                <span id="modalBookPrice" class="modal-price-large"></span>
+                            </div>
+
+                            <!-- Informazioni Ordinate -->
+                            <div class="modal-info-list">
+                                <div class="modal-info-item">
+                                    <strong><i class="bi bi-person-circle"></i> Autore:</strong>
+                                    <span id="modalBookAuthor"></span>
+                                </div>
+                                <div class="modal-info-item">
+                                    <strong><i class="bi bi-bookmark-fill"></i> ISBN:</strong>
+                                    <span id="modalBookISBN"></span>
+                                </div>
+                                <div class="modal-info-item">
+                                    <strong><i class="bi bi-building"></i> Casa Editrice:</strong>
+                                    <span id="modalBookPublisher"></span>
+                                </div>
+                                <div class="modal-info-item">
+                                    <strong><i class="bi bi-star-fill"></i> Condizioni:</strong>
+                                    <span id="modalBookCondition">Buone</span>
+                                </div>
+                                <div class="modal-info-item">
+                                    <strong><i class="bi bi-shop"></i> Venditore:</strong>
+                                    <span id="modalBookSeller"></span>
+                                </div>
+                            </div>
+
+                            <!-- Descrizione -->
+                            <div class="modal-description-container">
+                                <h6 class="modal-description-header">
+                                    <i class="bi bi-journal-text"></i> Descrizione
+                                </h6>
+                                <p id="modalBookDescription" class="modal-description-content"></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 20px; font-weight: 600; padding: 0.5rem 1.5rem;">Chiudi</button>
-                    <button type="button" class="btn btn-warning" style="border-radius: 20px; font-weight: 600; padding: 0.5rem 1.5rem;">Aggiungi al carrello</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                    <a href="#" id="modalBookCartBtn" class="btn-amazon"><i class="bi bi-cart-plus"></i> Acquista</a>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Accesso richiesto</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Per pubblicare un annuncio su <strong>BookSwap</strong> e vendere i tuoi libri, devi prima autenticarti.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
-                <a href="index.php?table=login&action=login" class="btn btn-warning">Accedi ora</a>
-            </div>
+                <div class="modal-header">
+                    <h5 class="modal-title">Accesso richiesto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Per pubblicare un annuncio su <strong>BookSwap</strong> devi prima autenticarti.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                    <a href="index.php?table=login&action=loginView" class="btn btn-amazon">Accedi ora</a>
+                </div>
             </div>
         </div>
     </div>
 
-    <footer class="text-center py-4 mt-auto">
+    <div class="modal fade" id="orderModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Accesso richiesto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Per visualizzare i tuoi <strong>Ordini</strong> devi prima autenticarti.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                    <a href="index.php?table=login&action=loginView" class="btn btn-amazon">Accedi ora</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
         <div class="container">
             <p class="mb-1">© 2026 BookSwap Team</p>
             <small class="text-muted">Kiper Illia, Melega Leonardo, Trevisani Martina, Bertolani Leo</small>
         </div>
     </footer>
 
+    <?php include 'views/ToastNotification.php'; ?>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const bookModal = document.getElementById('bookDetailModal');
-            bookModal.addEventListener('show.bs.modal', function (event) {
-                const element = event.relatedTarget;
-                
-                bookModal.querySelector('#modalBookTitle').textContent = element.getAttribute('data-title');
-                bookModal.querySelector('#modalBookImg').src = element.getAttribute('data-img');
-                bookModal.querySelector('#modalBookPrice').textContent = element.getAttribute('data-price');
-                bookModal.querySelector('#modalBookDescription').textContent = element.getAttribute('data-description');
-                
-                bookModal.querySelector('#modalBookAuthor').textContent = element.getAttribute('data-author');
-                bookModal.querySelector('#modalBookSeller').textContent = element.getAttribute('data-seller');
-                bookModal.querySelector('#modalBookISBN').textContent = element.getAttribute('data-isbn');
-                bookModal.querySelector('#modalBookPublisher').textContent = element.getAttribute('data-publisher');
-                // Popolamento del campo classe nel modale
-                bookModal.querySelector('#modalBookClasse').textContent = element.getAttribute('data-classe');
-            });
+    // Funzione conferma acquisto
+    function confirmPurchase(event, bookTitle) {
+        event.stopPropagation();
+        event.preventDefault();
+        const confirmed = confirm('Vuoi acquistare:\n\n"' + bookTitle + '"?\n\nVerrai portato al checkout.');
+        if (confirmed) window.location.href = event.target.closest('a').href;
+        return false;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Modale libro
+        const modalElement = document.getElementById('bookDetailModal');
+
+        modalElement.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+
+            // Cerca la card parent se l'elemento cliccato non ha i data attributes
+            let dataSource = button;
+            if (!button.getAttribute('data-title')) {
+                dataSource = button.closest('[data-title]');
+            }
+
+            if (!dataSource) {
+                console.error('Nessun elemento con data-title trovato!');
+                return;
+            }
+
+            // Popola i dati dal bottone/card che ha aperto il modale
+            const title = dataSource.getAttribute('data-title');
+            const price = dataSource.getAttribute('data-price');
+            const description = dataSource.getAttribute('data-description');
+            const author = dataSource.getAttribute('data-author');
+            const seller = dataSource.getAttribute('data-seller');
+            const isbn = dataSource.getAttribute('data-isbn');
+            const publisher = dataSource.getAttribute('data-publisher');
+            const classe = dataSource.getAttribute('data-classe');
+            const idItem = dataSource.getAttribute('data-id');
+            const img = dataSource.getAttribute('data-img');
+
+            // Imposta i valori nel modale
+            modalElement.querySelector('#modalBookTitle').textContent = title || 'N/D';
+            modalElement.querySelector('#modalBookPrice').textContent = price || '';
+            modalElement.querySelector('#modalBookDescription').textContent = description || 'Nessuna descrizione disponibile.';
+            modalElement.querySelector('#modalBookAuthor').textContent = author || 'N/D';
+            modalElement.querySelector('#modalBookSeller').textContent = seller || 'N/D';
+            modalElement.querySelector('#modalBookISBN').textContent = isbn || 'N/D';
+            modalElement.querySelector('#modalBookPublisher').textContent = publisher || 'N/D';
+
+            // Configura bottone acquisto
+            const cartBtn = modalElement.querySelector('#modalBookCartBtn');
+            if (idItem) {
+                cartBtn.href = "index.php?table=Order&action=checkout&id=" + idItem;
+                cartBtn.onclick = e => confirmPurchase(e, title);
+            }
+
+            // Carica le immagini del listing
+            const carouselImages = modalElement.querySelector('#carouselImages');
+            const carouselIndicators = modalElement.querySelector('#carouselIndicators');
+            const carouselPrev = modalElement.querySelector('#carouselPrev');
+            const carouselNext = modalElement.querySelector('#carouselNext');
+            const defaultImg = img || '../utils/immagini/prova_libro.png';
+
+            // Reset carousel
+            carouselImages.innerHTML = '';
+            carouselIndicators.innerHTML = '';
+            carouselPrev.style.display = 'none';
+            carouselNext.style.display = 'none';
+
+            // Fetch immagini del listing
+            if (idItem) {
+                fetch(`index.php?table=Listings&action=getListingImages&id=${idItem}`)
+                    .then(r => r.json())
+                    .then(images => {
+                        if (images && images.length > 0) {
+                            // Mostra controlli se ci sono più immagini
+                            if (images.length > 1) {
+                                carouselPrev.style.display = 'block';
+                                carouselNext.style.display = 'block';
+                            }
+
+                            // Crea slide per ogni immagine
+                            images.forEach((img, index) => {
+                                const imgPath = '../utils/immagini/' + img.image_path;
+
+                                // Slide
+                                const slide = document.createElement('div');
+                                slide.className = 'carousel-item' + (index === 0 ? ' active' : '');
+                                slide.innerHTML = `<img src="${imgPath}" class="d-block w-100" style="height: 400px; object-fit: contain;" alt="Foto ${index + 1}">`;
+                                carouselImages.appendChild(slide);
+
+                                // Indicator (thumbnail)
+                                const indicator = document.createElement('button');
+                                indicator.type = 'button';
+                                indicator.setAttribute('data-bs-target', '#bookImagesCarousel');
+                                indicator.setAttribute('data-bs-slide-to', index);
+                                if (index === 0) indicator.className = 'active';
+                                indicator.style.cssText = 'width: 60px; height: 60px; border-radius: 8px; overflow: hidden; margin: 0 5px; border: 2px solid #ddd; background-size: cover; background-position: center;';
+                                indicator.style.backgroundImage = `url('${imgPath}')`;
+                                carouselIndicators.appendChild(indicator);
+                            });
+                        } else {
+                            // Nessuna immagine - mostra immagine di default
+                            carouselImages.innerHTML = `
+                                <div class="carousel-item active">
+                                    <img src="${defaultImg}" class="d-block w-100" style="height: 400px; object-fit: contain;" alt="Nessuna foto">
+                                </div>
+                            `;
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Errore caricamento immagini:', err);
+                        // Fallback a immagine di default
+                        carouselImages.innerHTML = `
+                            <div class="carousel-item active">
+                                <img src="${defaultImg}" class="d-block w-100" style="height: 400px; object-fit: contain;" alt="Errore caricamento">
+                            </div>
+                        `;
+                    });
+            } else {
+                // Nessun ID - mostra solo immagine di default
+                carouselImages.innerHTML = `
+                    <div class="carousel-item active">
+                        <img src="${defaultImg}" class="d-block w-100" style="height: 400px; object-fit: contain;" alt="Immagine libro">
+                    </div>
+                `;
+            }
         });
+
+        // Ricerca live
+        let searchTimeout;
+        document.getElementById('searchInput').addEventListener('input', function () {
+            clearTimeout(searchTimeout);
+            const query   = this.value.trim();
+            const filter  = document.getElementById('searchFilter').value;
+            const defDiv  = document.getElementById('defaultResults');
+            const resDiv  = document.getElementById('searchResults');
+            const noRes   = document.getElementById('noResults');
+            const icon    = document.getElementById('searchIcon');
+            const spinner = document.getElementById('loadingSpinner');
+
+            if (query.length < 2) {
+                resDiv.innerHTML = '';
+                resDiv.classList.add('d-none');
+                noRes.classList.add('d-none');
+                defDiv.classList.remove('d-none');
+                icon.classList.remove('d-none');
+                spinner.classList.add('d-none');
+                return;
+            }
+
+            icon.classList.add('d-none');
+            spinner.classList.remove('d-none');
+
+            searchTimeout = setTimeout(() => {
+                fetch(`index.php?table=Listings&action=liveSearchListings&query=${encodeURIComponent(query)}&filter=${filter}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        icon.classList.remove('d-none');
+                        spinner.classList.add('d-none');
+                        defDiv.classList.add('d-none');
+                        resDiv.innerHTML = '';
+
+                        if (data.length > 0) {
+                            noRes.classList.add('d-none');
+                            resDiv.classList.remove('d-none');
+                            data.forEach(book => {
+                                const title   = book.title || 'Titolo sconosciuto';
+                                const seller  = ((book.Name || book.name || '') + ' ' + (book.Surname || book.surname || '')).trim() || 'N/D';
+                                const rawPrice = book.priceOffer !== undefined ? book.priceOffer : book.price;
+                                const priceText = (rawPrice !== null && parseFloat(rawPrice) > 0)
+                                    ? '€ ' + parseFloat(rawPrice).toFixed(2).replace('.', ',')
+                                    : 'Scambio';
+                                const imgSrc = book.main_image
+                                    ? '../utils/immagini/' + book.main_image
+                                    : '../utils/immagini/prova_libro.png';
+                                const idItem = book.id_listing || book.id_book || '';
+                                const safeQ  = s => (s || '').replace(/"/g, '&quot;');
+
+                                resDiv.innerHTML += `
+                                <div class="col">
+                                    <div class="card book-card h-100"
+                                        data-bs-toggle="modal" data-bs-target="#bookDetailModal"
+                                        data-id="${encodeURIComponent(idItem)}"
+                                        data-title="${safeQ(title)}"
+                                        data-img="${imgSrc}"
+                                        data-price="${priceText}"
+                                        data-description="${safeQ(book.description || '')}"
+                                        data-author="${safeQ(book.author || '')}"
+                                        data-seller="${safeQ(seller)}"
+                                        data-isbn="${safeQ(book.isbn || '')}"
+                                        data-publisher="${safeQ(book.publishing_house || book.publish || book.publisher || '')}"
+                                        data-classe="${safeQ(book.class || book.classe || '')}">
+                                        
+                                        <img src="${imgSrc}" class="card-img-top book-img" alt="Copertina" style="height: 280px; object-fit: cover;">
+                                        
+                                        <div class="card-body d-flex flex-column p-3">
+                                            
+                                            <!-- BLOCCO CHE SI ESPANDE PER ALLINEARE IL FONDO -->
+                                            <div class="flex-grow-1">
+                                                <h5 class="card-title mb-2" style="font-weight:600;line-height:1.3;">${title}</h5>
+                                                <div class="text-muted small mb-2"><i class="bi bi-person-circle"></i> ${safeQ(book.author || 'N/D')}</div>
+                                            </div>
+
+                                            <div class="seller-info mb-2"><i class="bi bi-shop"></i> <strong>${seller}</strong></div>
+                                            <div class="mb-2"><span class="price fs-5">${priceText}</span></div>
+                                            
+                                            <div class="mt-auto">
+                                                <a href="index.php?table=Order&action=checkout&id=${encodeURIComponent(idItem)}"
+                                                onclick="return confirmPurchase(event,'${title.replace(/'/g,"\\'")}');"
+                                                class="btn btn-warning w-100 d-flex justify-content-center align-items-center gap-2">
+                                                    <i class="bi bi-bag-check-fill"></i> Compra!
+                                                </a>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>`;
+                            });
+                        } else {
+                            resDiv.classList.add('d-none');
+                            noRes.classList.remove('d-none');
+                        }
+                    })
+                    .catch(() => { icon.classList.remove('d-none'); spinner.classList.add('d-none'); });
+            }, 50);
+        });
+    });
     </script>
 </body>
 </html>
