@@ -33,7 +33,35 @@ defined("APP") or die("ACCESSO NEGATO");
             font-size: var(--text-xl);
             margin-bottom: var(--sp-md);
             text-align: center;
+            letter-spacing: -0.02em;
         }
+<<<<<<< HEAD
+=======
+
+        .login-subtitle {
+            text-align: center;
+            color: #6c757d;
+            font-size: var(--text-sm);
+            margin-bottom: var(--sp-lg);
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        /* CORREZIONE QUI: Aggiunto il ">" per targettare solo lucchetto e busta */
+        .form-group > i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #adb5bd;
+            transition: color 0.3s ease;
+            z-index: 2;
+            pointer-events: none; /* Evita che l'icona blocchi il click sull'input */
+        }
+>>>>>>> 29cfd0a6574166754387fe48316296cb2d1d51ae
         .register-link {
             display: block;
             text-align: center;
@@ -56,8 +84,9 @@ defined("APP") or die("ACCESSO NEGATO");
         <div class="login-card">
             <h2 class="login-title">Login</h2>
             <form method="post" action="index.php?action=check&table=Login">
-                <div class="mb-3">
-                    <input type="email" name="email" class="form-control" placeholder="Inserisci Email" required>
+                <div class="form-group">
+                    <input type="email" name="email" class="form-control" placeholder="Email" required>
+                    <i class="bi bi-envelope-fill"></i>
                 </div>
                 <div class="mb-4 position-relative">
                     <input type="password" name="password" id="passwordField" class="form-control" placeholder="Inserisci Password" required>
@@ -74,7 +103,7 @@ defined("APP") or die("ACCESSO NEGATO");
     <footer>
         <div class="container">
             <p class="mb-1">© 2026 BookSwap Team</p>
-            <small class="text-muted">Kiper Illia, Melega Leonardo, Trevisani Martina, Bertolani Leo</small>
+            <small class="text-white-50">Kiper Illia, Melega Leonardo, Trevisani Martina, Bertolani Leo</small>
         </div>
     </footer>
 

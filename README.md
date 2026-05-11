@@ -91,8 +91,8 @@ https://github.com/kiperilyaas/bookswap
     - [x] Quando fai la ricerca dei libri disponibili, ti escono tutti i libri anche se non 
       sono disponibili
         --> aggiornata la Querry string impostando WHERE L.is_available = 1
-    - [x] quando scegli In Attesa da parte di Venditore, ordine conclude.
-    - [x] gestire cancellazione del ordine dalla parte di Customer
     - [ ] convertire prezzi in float
+    - [ ] quando scegli In Attesa da parte di Venditore, ordine conclude.
+    - [ ] gestire cancellazione del ordine dalla parte di Customer
 - [ ] Pubblicazione
 

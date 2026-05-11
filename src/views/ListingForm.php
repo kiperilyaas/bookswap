@@ -31,6 +31,7 @@ if (!isset($_SESSION['id_user'])) {
             border-radius: var(--radius-md);
             transition: background 0.2s, border-color 0.2s;
             cursor: pointer;
+            background: white;
         }
         .book-result-item:hover { background-color: #f7fafa; border-color: var(--orange); }
         .selected-book-alert {

@@ -33,7 +33,33 @@
             font-size: var(--text-xl);
             margin-bottom: var(--sp-md);
             text-align: center;
+            letter-spacing: -0.02em;
         }
+<<<<<<< HEAD
+=======
+
+        .reg-subtitle {
+            text-align: center;
+            color: #6c757d;
+            font-size: var(--text-sm);
+            margin-bottom: var(--sp-lg);
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #adb5bd;
+            transition: color 0.3s ease;
+            z-index: 2;
+        }
+>>>>>>> 29cfd0a6574166754387fe48316296cb2d1d51ae
     </style>
 </head>
 <body>
