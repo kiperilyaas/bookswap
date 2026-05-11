@@ -61,7 +61,6 @@ defined("APP") or die("ACCESSO NEGATO");
             z-index: 2;
             pointer-events: none; /* Evita che l'icona blocchi il click sull'input */
         }
->>>>>>> 29cfd0a6574166754387fe48316296cb2d1d51ae
         .register-link {
             display: block;
             text-align: center;

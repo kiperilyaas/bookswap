@@ -59,7 +59,6 @@
             transition: color 0.3s ease;
             z-index: 2;
         }
->>>>>>> 29cfd0a6574166754387fe48316296cb2d1d51ae
     </style>
 </head>
 <body>
