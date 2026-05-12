@@ -57,14 +57,14 @@ https://github.com/kiperilyaas/bookswap
         - [x] Gallery con thumbnails nel modal BS5 dettagli
         - [x] Visualizzazione foto in Account/Vetrina
         - [x] Visualizzazione foto in myOrders
-- [ ] Back-End
+- [x] Back-End
     - [x] Models
         - [x] Users
         - [x] Books
         - [x] Orders
         - [x] Listings
         - [x] Utils 
-    - [ ] Controller
+    - [x] Controller
         - [x] Login
             - [x] Funzionamento generale
             - [x] Gestione dei errori
@@ -73,17 +73,17 @@ https://github.com/kiperilyaas/bookswap
         - [x] Offerte
             - [x] creare una offerta di vendita
             - [x] creazione del libro
-        - [ ] User
+        - [x] User
             - [x] modificare anagrafe/email/password
-            - [ ] eliminare utente
+            - [x] eliminare utente
             - [x] eliminazione di una offerta
             - [x] gestione della offerta/ordine del utente
             - [x] acquistare un libro
             - [x] verifica di chiusura del ordine
-            - [ ] Quando nella mia vetrina clicco sul libro, di devono vedere le informazioni
+            - [x] Quando nella mia vetrina clicco sul libro, di devono vedere le informazioni
         - [x] Error
             - [x] Gestione del Errore
-- [ ] Test 
+- [x] Test 
     - [x] Quando un numero è troppo alto da errore (es. 1milione di euro)
         --> risolto impostando il limite nel <input> di 1000$
     - [x] Quando la scheda è a meta schermo, il menu per accedere non si apre
@@ -91,8 +91,8 @@ https://github.com/kiperilyaas/bookswap
     - [x] Quando fai la ricerca dei libri disponibili, ti escono tutti i libri anche se non 
       sono disponibili
         --> aggiornata la Querry string impostando WHERE L.is_available = 1
-    - [ ] convertire prezzi in float
-    - [ ] quando scegli In Attesa da parte di Venditore, ordine conclude.
-    - [ ] gestire cancellazione del ordine dalla parte di Customer
+    - [x] convertire prezzi in float
+    - [x] quando scegli In Attesa da parte di Venditore, ordine conclude.
+    - [x] gestire cancellazione del ordine dalla parte di Customer
 - [ ] Pubblicazione
 
