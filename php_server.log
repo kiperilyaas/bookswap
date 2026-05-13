@@ -1,0 +1,31 @@
+[Wed May 13 20:44:24 2026] PHP 8.3.6 Development Server (http://localhost:8000) started
+[Wed May 13 20:45:12 2026] [::1]:47012 Accepted
+[Wed May 13 20:45:12 2026] PHP Warning:  require_once(config/dbconnect.php): Failed to open stream: No such file or directory in /app/src/models/ListingsModel.php on line 4
+[Wed May 13 20:45:12 2026] PHP Fatal error:  Uncaught Error: Failed opening required 'config/dbconnect.php' (include_path='.:/usr/share/php') in /app/src/models/ListingsModel.php:4
+Stack trace:
+#0 /app/src/controllers/HomeController.php(3): require_once()
+#1 /app/src/index.php(32): require_once('...')
+#2 {main}
+  thrown in /app/src/models/ListingsModel.php on line 4
+[Wed May 13 20:45:12 2026] [::1]:47012 [500]: GET /index.php - Uncaught Error: Failed opening required 'config/dbconnect.php' (include_path='.:/usr/share/php') in /app/src/models/ListingsModel.php:4
+Stack trace:
+#0 /app/src/controllers/HomeController.php(3): require_once()
+#1 /app/src/index.php(32): require_once('...')
+#2 {main}
+  thrown in /app/src/models/ListingsModel.php on line 4
+[Wed May 13 20:45:12 2026] [::1]:47012 Closing
+[Wed May 13 20:45:12 2026] [::1]:47018 Accepted
+[Wed May 13 20:45:12 2026] PHP Warning:  require_once(config/dbconnect.php): Failed to open stream: No such file or directory in /app/src/models/UserModel.php on line 4
+[Wed May 13 20:45:12 2026] PHP Fatal error:  Uncaught Error: Failed opening required 'config/dbconnect.php' (include_path='.:/usr/share/php') in /app/src/models/UserModel.php:4
+Stack trace:
+#0 /app/src/controllers/UserController.php(4): require_once()
+#1 /app/src/index.php(32): require_once('...')
+#2 {main}
+  thrown in /app/src/models/UserModel.php on line 4
+[Wed May 13 20:45:12 2026] [::1]:47018 [500]: GET /index.php?table=User&action=account - Uncaught Error: Failed opening required 'config/dbconnect.php' (include_path='.:/usr/share/php') in /app/src/models/UserModel.php:4
+Stack trace:
+#0 /app/src/controllers/UserController.php(4): require_once()
+#1 /app/src/index.php(32): require_once('...')
+#2 {main}
+  thrown in /app/src/models/UserModel.php on line 4
+[Wed May 13 20:45:12 2026] [::1]:47018 Closing
