@@ -32,7 +32,7 @@ https://github.com/kiperilyaas/bookswap
 - [x] Progettazione del Database
     - [x] Diagramma ER
     - [x] Progettazione Fisica
-- [ ] Front-End
+- [x] Front-End
     - [x] Idea visiva
         - [x] Schermata Home
         - [x] Schermata Vendi
