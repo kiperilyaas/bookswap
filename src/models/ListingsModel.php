@@ -130,7 +130,7 @@ class ListingsModel{
     }
 
     public function deleteListing($param = []){
-        $sql = "DELETE FROM listings where id_listing = ?";
+        $sql = "DELETE FROM listings where id_listing = ? AND id_seller = ?";
         $stm = $this->pdo->prepare($sql);
         $stm->execute($param);
 
