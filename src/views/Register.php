@@ -85,9 +85,14 @@
                     <small class="text-muted d-block mt-1 ms-1"><i class="bi bi-info-circle-fill"></i> Usa solo email @isit100.fe.it</small>
                 </div>
                 <div class="form-group">
-                    <input type="password" name="password" class="form-control" placeholder="Password (min 8 caratteri)" required>
+                    <input type="password" name="password" id="password" class="form-control" placeholder="Password (min 6 caratteri)" required minlength="6">
                     <i class="bi bi-lock-fill"></i>
-                    <small class="text-muted d-block mt-1 ms-1"><i class="bi bi-shield-lock-fill"></i> Minimo 8 caratteri richiesti</small>
+                    <small class="text-muted d-block mt-1 ms-1"><i class="bi bi-shield-lock-fill"></i> Minimo 6 caratteri richiesti</small>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="confirm_password" id="confirmPassword" class="form-control" placeholder="Conferma Password" required minlength="6">
+                    <i class="bi bi-lock-fill"></i>
+                    <small class="text-muted d-block mt-1 ms-1"><i class="bi bi-check-circle-fill"></i> Ripeti la password</small>
                 </div>
                 <button type="submit" class="btn-amazon w-100 d-block text-center">Registrati</button>
             </form>
@@ -111,6 +116,7 @@
         const classInput    = document.querySelector('input[name="class"]');
         const emailInput    = document.querySelector('input[name="email"]');
         const passwordInput = document.querySelector('input[name="password"]');
+        const confirmPasswordInput = document.querySelector('input[name="confirm_password"]');
         const CLASS_RE      = /^[1-5][A-Z]$/;
 
         classInput.addEventListener('blur', function() {
@@ -138,7 +144,7 @@
             }
         });
 
-        [nameInput, surnameInput, classInput, emailInput, passwordInput].forEach(i =>
+        [nameInput, surnameInput, classInput, emailInput, passwordInput, confirmPasswordInput].forEach(i =>
             i.addEventListener('input', function() { this.classList.remove('is-invalid'); removeErr(this); })
         );
 
@@ -155,7 +161,10 @@
             else if (/[^a-zA-Z0-9.@_-]/.test(em)) { e.preventDefault(); emailInput.classList.add('is-invalid'); showErr(emailInput, 'Email contiene caratteri non validi'); ok = false; }
             const pw = passwordInput.value;
             if (!pw) { e.preventDefault(); passwordInput.classList.add('is-invalid'); showErr(passwordInput, 'Password obbligatoria'); ok = false; }
-            else if (pw.length < 8) { e.preventDefault(); passwordInput.classList.add('is-invalid'); showErr(passwordInput, 'Min 8 caratteri'); ok = false; }
+            else if (pw.length < 6) { e.preventDefault(); passwordInput.classList.add('is-invalid'); showErr(passwordInput, 'Min 6 caratteri'); ok = false; }
+            const confirmPw = confirmPasswordInput.value;
+            if (!confirmPw) { e.preventDefault(); confirmPasswordInput.classList.add('is-invalid'); showErr(confirmPasswordInput, 'Conferma password obbligatoria'); ok = false; }
+            else if (pw !== confirmPw) { e.preventDefault(); confirmPasswordInput.classList.add('is-invalid'); showErr(confirmPasswordInput, 'Le password non coincidono'); ok = false; }
         });
 
         function showErr(input, msg) {

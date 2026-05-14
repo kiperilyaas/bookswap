@@ -59,6 +59,36 @@ defined("APP") or die("ACCESSO NEGATO");
             z-index: 2;
             pointer-events: none; /* Evita che l'icona blocchi il click sull'input */
         }
+
+        .form-group input.form-control {
+            padding-left: 2.75rem;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            padding-right: 3rem;
+        }
+
+        .password-wrapper #togglePassword {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #adb5bd;
+            cursor: pointer;
+            padding: 0.25rem;
+            z-index: 2;
+        }
+
+        .password-wrapper #togglePassword:hover {
+            color: #6c757d;
+        }
+
         .register-link {
             display: block;
             text-align: center;
@@ -87,7 +117,7 @@ defined("APP") or die("ACCESSO NEGATO");
                     
                 </div>
                 <div class="form-group password-wrapper">
-                    <input type="password" name="password" id="passwordField" class="form-control" placeholder="Password (min 6 caratteri)" required>
+                    <input type="password" name="password" id="passwordField" class="form-control" placeholder="Password (min 6 caratteri)" required minlength="6">
                     <i class="bi bi-lock-fill"></i>
                     <button type="button" id="togglePassword" aria-label="Mostra password">
                         <i class="bi bi-eye" id="eyeIcon"></i>
@@ -154,7 +184,7 @@ defined("APP") or die("ACCESSO NEGATO");
             else if (!email.endsWith('@isit100.fe.it')) { e.preventDefault(); emailInput.classList.add('is-invalid'); showErr(emailInput, "Usa un'email @isit100.fe.it"); ok = false; }
             else if (/[^a-zA-Z0-9.@_-]/.test(email)) { e.preventDefault(); emailInput.classList.add('is-invalid'); showErr(emailInput, 'Email contiene caratteri non validi'); ok = false; }
             if (!pwd) { e.preventDefault(); passwordField.classList.add('is-invalid'); showErr(passwordField, 'Password obbligatoria'); ok = false; }
-            else if (pwd.length < 3) { e.preventDefault(); passwordField.classList.add('is-invalid'); showErr(passwordField, 'Password troppo corta'); ok = false; }
+            else if (pwd.length < 6) { e.preventDefault(); passwordField.classList.add('is-invalid'); showErr(passwordField, 'Password troppo corta (min 6 caratteri)'); ok = false; }
         });
 
         function showErr(input, msg) {
