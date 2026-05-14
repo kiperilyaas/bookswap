@@ -130,15 +130,30 @@ class ListingsController
 
     public function deleteListing()
     {
-        $id = $_GET['id'] ?? -1;
+        // Verifica login
+        $seller = $_SESSION['id_user'] ?? -1;
+        if ($seller == -1) {
+            $_SESSION['error'][] = "Devi effettuare il login";
+            header("location: index.php?table=login&action=login");
+            exit;
+        }
+
+        $id = $_POST['id'] ?? -1;
         if ($id == -1) {
             $_SESSION['error'][] = "L'id dell'offerta non è valido";
             header("location: index.php?table=User&action=account");
             exit;
         }
 
-        $this->model->deleteListing([$id]);
-        $_SESSION['success'][] = "Annuncio eliminato con successo";
+        // Passiamo sia l'id del listing che l'id del seller per sicurezza (IDOR protection)
+        $result = $this->model->deleteListing([$id, $seller]);
+
+        if ($result) {
+            $_SESSION['success'][] = "Annuncio eliminato con successo";
+        } else {
+            $_SESSION['error'][] = "Non è stato possibile eliminare l'annuncio o non hai i permessi necessari";
+        }
+
         header("location: index.php?table=User&action=account");
         exit;
     }
