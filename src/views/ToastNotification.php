@@ -70,6 +70,22 @@ document.addEventListener('DOMContentLoaded', function() {
     min-width: 300px;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
     animation: slideInRight 0.3s ease-out;
+    opacity: 1 !important;
+}
+
+.toast.text-bg-danger {
+    background-color: #dc3545 !important;
+    color: white !important;
+}
+
+.toast.text-bg-success {
+    background-color: #198754 !important;
+    color: white !important;
+}
+
+.toast.text-bg-warning {
+    background-color: #ffc107 !important;
+    color: #000 !important;
 }
 
 @keyframes slideInRight {
