@@ -8,7 +8,8 @@ if (!empty($myOrders)) {
         $gs = $order['state']          ?? 'open';
         $sc = $order['state_customer'] ?? 'pending';
         $ss = $order['state_seller']   ?? 'pending';
-        if ($gs === 'closed' || ($sc === 'confirmed' && $ss === 'confirmed') || $sc === 'cancelled')
+        // Ordini chiusi: completati o annullati
+        if ($gs === 'closed' || ($sc === 'confirmed' && $ss === 'confirmed') || $sc === 'cancelled' || $ss === 'cancelled')
             $ordiniChiusi[] = $order;
         else
             $ordiniAttivi[] = $order;
@@ -90,6 +91,8 @@ if (!empty($myOrders)) {
             <?php foreach($ordiniAttivi as $order):
                 $orderId    = $order['id_order']       ?? 'N/D';
                 $bookTitle  = $order['title']           ?? 'Libro sconosciuto';
+                $bookIsbn   = $order['isbn']            ?? 'N/D';
+                $bookAuthor = $order['author']          ?? 'N/D';
                 $dateOrder  = $order['date_order']      ?? 'N/D';
                 $dateFmt    = ($dateOrder !== 'N/D') ? date('d/m/Y', strtotime($dateOrder)) . ' alle ' . date('H:i', strtotime($dateOrder)) : 'N/D';
                 $sc         = $order['state_customer']  ?? 'pending';
@@ -130,17 +133,33 @@ if (!empty($myOrders)) {
             <div class="order-card">
                 <div class="order-header">
                     <div>
-                        <div class="order-id"><i class="bi bi-hash"></i> Ordine: <?= htmlspecialchars($orderId) ?></div>
                         <div class="order-id"><i class="bi bi-calendar3"></i> <?= htmlspecialchars($dateFmt) ?></div>
                     </div>
-                    <div class="d-flex gap-2 align-items-center">
+                    <div class="d-flex gap-2 align-items-center flex-wrap">
                         <span class="badge-state <?= $badgeClass ?>"><?= $stateText ?></span>
-                        <?php if($sc !== 'cancelled' && $ss !== 'cancelled'): ?>
-                        <button class="btn btn-sm btn-outline-warning change-order-state-btn"
+                        <button class="btn btn-sm btn-outline-primary view-order-details-btn"
                                 data-order-id="<?= htmlspecialchars($orderId) ?>"
                                 data-book-title="<?= htmlspecialchars($bookTitle) ?>"
-                                data-current-state="<?= htmlspecialchars($sc) ?>">
-                            <i class="bi bi-arrow-repeat"></i>
+                                data-seller="<?= htmlspecialchars($sellerFull) ?>"
+                                data-price="<?= htmlspecialchars($priceFmt) ?>"
+                                data-time="<?= htmlspecialchars($timeFmt) ?>"
+                                data-place="<?= htmlspecialchars($placeMeet) ?>"
+                                data-description="<?= htmlspecialchars($descMeet) ?>"
+                                data-listing-id="<?= htmlspecialchars($order['id_listing'] ?? '') ?>">
+                            <i class="bi bi-info-circle"></i> Riepilogo
+                        </button>
+                        <?php if($sc === 'pending' && $ss !== 'cancelled'): ?>
+                        <button class="btn btn-sm btn-success confirm-receipt-btn"
+                                data-order-id="<?= htmlspecialchars($orderId) ?>"
+                                data-book-title="<?= htmlspecialchars($bookTitle) ?>"
+                                title="Conferma di aver ricevuto il libro">
+                            <i class="bi bi-check-circle-fill"></i> Ho ricevuto
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger cancel-order-btn"
+                                data-order-id="<?= htmlspecialchars($orderId) ?>"
+                                data-book-title="<?= htmlspecialchars($bookTitle) ?>"
+                                title="Annulla l'ordine">
+                            <i class="bi bi-x-circle"></i> Annulla
                         </button>
                         <?php endif; ?>
                     </div>
@@ -150,13 +169,30 @@ if (!empty($myOrders)) {
                     <i class="bi bi-exclamation-triangle-fill me-1"></i><?= htmlspecialchars($warningMsg) ?>
                 </div>
                 <?php endif; ?>
-                <div class="book-title"><i class="bi bi-book"></i> <?= htmlspecialchars($bookTitle) ?></div>
-                <span class="badge bg-secondary mb-2"><i class="bi bi-person-fill"></i> Venditore: <?= htmlspecialchars($sellerFull) ?></span>
-                <div class="order-details">
-                    <div class="detail-item">
-                        <div class="detail-label"><i class="bi bi-cash-coin"></i> Prezzo</div>
-                        <div class="detail-value text-success fw-bold"><?= $priceFmt ?></div>
+
+                <!-- Immagine e dettagli libro -->
+                <div class="row mb-3">
+                    <div class="col-md-3 col-4 mb-2">
+                        <img src="../utils/immagini/prova_libro.png"
+                             class="img-fluid rounded shadow-sm order-main-image"
+                             alt="Copertina libro"
+                             data-listing-id="<?= htmlspecialchars($order['id_listing'] ?? '') ?>"
+                             style="width: 100%; height: auto; object-fit: cover;">
                     </div>
+                    <div class="col-md-9 col-8">
+                        <div class="book-title mb-2"><i class="bi bi-book"></i> <?= htmlspecialchars($bookTitle) ?></div>
+                        <div class="mb-2">
+                            <small class="text-muted"><i class="bi bi-upc-scan"></i> ISBN: <?= htmlspecialchars($bookIsbn) ?></small>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted"><i class="bi bi-pen"></i> Autore: <?= htmlspecialchars($bookAuthor) ?></small>
+                        </div>
+                        <span class="badge bg-secondary mb-2"><i class="bi bi-person-fill"></i> Venditore: <?= htmlspecialchars($sellerFull) ?></span>
+                        <div class="text-success fw-bold fs-5"><?= $priceFmt ?></div>
+                    </div>
+                </div>
+
+                <div class="order-details">
                     <div class="detail-item">
                         <div class="detail-label"><i class="bi bi-clock"></i> Orario Incontro</div>
                         <div class="detail-value"><?= htmlspecialchars($timeFmt) ?></div>
@@ -218,34 +254,123 @@ if (!empty($myOrders)) {
         </div>
     </div>
 
-    <!-- Modale cambia stato -->
-    <div class="modal fade" id="changeOrderStateModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+    <!-- Modale riepilogo ordine -->
+    <div class="modal fade" id="orderDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title text-dark fw-bold"><i class="bi bi-arrow-repeat me-2"></i>Cambia Stato Ordine</h5>
+                <div class="modal-header" style="background-color: var(--orange); color: var(--dark);">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-receipt me-2"></i>Riepilogo Ordine</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="index.php?table=Order&action=changeStateCustomer" method="post">
-                    <div class="modal-body">
-                        <input type="hidden" name="currentOrderId" id="currentOrderId">
-                        <div class="mb-3"><label class="fw-bold text-muted small">Ordine</label><p class="mb-0 fw-bold" id="modalOrderId"></p></div>
-                        <div class="mb-3"><label class="fw-bold text-muted small">Libro</label><p class="mb-0" id="modalBookTitle"></p></div>
-                        <hr>
-                        <div class="mb-3">
-                            <label for="modalNewState" class="form-label fw-bold">Nuovo Stato</label>
-                            <select class="form-select" id="modalNewState" name="newState">
-                                <option value="pending">In attesa</option>
-                                <option value="confirmed">Consegnato</option>
-                                <option value="cancelled">Annullato</option>
-                            </select>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Carousel Immagini -->
+                        <div class="col-md-5 mb-3">
+                            <div id="orderImagesCarousel" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner" id="orderCarouselImages" style="border-radius: 12px; overflow: hidden;">
+                                    <!-- Immagini caricate dinamicamente -->
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#orderImagesCarousel" data-bs-slide="prev" style="display:none;" id="orderCarouselPrev">
+                                    <span class="carousel-control-prev-icon"></span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#orderImagesCarousel" data-bs-slide="next" style="display:none;" id="orderCarouselNext">
+                                    <span class="carousel-control-next-icon"></span>
+                                </button>
+                            </div>
+                            <div class="carousel-indicators position-static mt-2" id="orderCarouselIndicators"></div>
+                        </div>
+
+                        <!-- Dettagli Ordine -->
+                        <div class="col-md-7">
+                            <h5 class="fw-bold mb-3" id="detailBookTitle"></h5>
+
+                            <div class="mb-3 p-3 bg-light rounded">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-muted">Prezzo:</span>
+                                    <span class="fs-4 fw-bold text-success" id="detailPrice"></span>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="fw-bold text-muted small mb-1"><i class="bi bi-person-fill"></i> Venditore</label>
+                                <p class="mb-0 fw-bold" id="detailSeller"></p>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="fw-bold text-muted small mb-1"><i class="bi bi-clock-fill"></i> Orario Incontro</label>
+                                <p class="mb-0" id="detailTime"></p>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="fw-bold text-muted small mb-1"><i class="bi bi-geo-alt-fill"></i> Luogo Incontro</label>
+                                <p class="mb-0" id="detailPlace"></p>
+                            </div>
+
+                            <div class="mb-3" id="detailDescriptionContainer" style="display:none;">
+                                <label class="fw-bold text-muted small mb-1"><i class="bi bi-chat-left-text-fill"></i> Note</label>
+                                <p class="mb-0 text-muted" id="detailDescription"></p>
+                            </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-                        <button type="submit" class="btn btn-warning"><i class="bi bi-check-circle"></i> Conferma</button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale conferma ricezione -->
+    <div class="modal fade" id="confirmReceiptModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="bi bi-check-circle-fill me-2"></i>Conferma Ricezione</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-3">Confermi di aver ricevuto il libro:</p>
+                    <div class="alert alert-light border">
+                        <strong id="confirmBookTitle"></strong>
                     </div>
-                </form>
+                    <p class="text-muted small mb-0">
+                        <i class="bi bi-info-circle"></i> Questa azione segnalerà l'ordine come completato da parte tua.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                    <button type="button" class="btn btn-success" id="confirmReceiptBtn">
+                        <i class="bi bi-check-circle-fill"></i> Conferma Ricezione
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale annulla ordine -->
+    <div class="modal fade" id="cancelOrderModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="bi bi-x-circle-fill me-2"></i>Annulla Ordine</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-3">Vuoi annullare l'ordine del libro:</p>
+                    <div class="alert alert-light border">
+                        <strong id="cancelBookTitle"></strong>
+                    </div>
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <strong>Attenzione:</strong> Questa azione è irreversibile e il libro tornerà disponibile per altri acquirenti.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                    <button type="button" class="btn btn-danger" id="confirmCancelBtn">
+                        <i class="bi bi-x-circle-fill"></i> Annulla Ordine
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -261,14 +386,169 @@ if (!empty($myOrders)) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const modal = new bootstrap.Modal(document.getElementById('changeOrderStateModal'));
-        document.querySelectorAll('.change-order-state-btn').forEach(btn => {
+        const detailsModal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
+
+        // Carica immagini principali nelle card degli ordini
+        document.querySelectorAll('.order-main-image').forEach(img => {
+            const listingId = img.dataset.listingId;
+            if (listingId) {
+                fetch(`index.php?table=Listings&action=getListingImages&id=${listingId}`)
+                    .then(r => r.json())
+                    .then(images => {
+                        if (images && images.length > 0) {
+                            const mainImg = images.find(i => i.is_primary == 1) || images[0];
+                            img.src = '../utils/immagini/' + mainImg.image_path;
+                        }
+                    })
+                    .catch(err => console.error('Errore caricamento immagine:', err));
+            }
+        });
+
+        // Gestione bottone "Ho ricevuto"
+        const confirmReceiptModal = new bootstrap.Modal(document.getElementById('confirmReceiptModal'));
+        let currentReceiptOrderId = null;
+
+        document.querySelectorAll('.confirm-receipt-btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                document.getElementById('currentOrderId').value = this.dataset.orderId;
-                document.getElementById('modalOrderId').textContent  = this.dataset.orderId;
-                document.getElementById('modalBookTitle').textContent = this.dataset.bookTitle;
-                document.getElementById('modalNewState').value = this.dataset.currentState;
-                modal.show();
+                currentReceiptOrderId = this.dataset.orderId;
+                const bookTitle = this.dataset.bookTitle;
+                document.getElementById('confirmBookTitle').textContent = bookTitle;
+                confirmReceiptModal.show();
+            });
+        });
+
+        document.getElementById('confirmReceiptBtn').addEventListener('click', function() {
+            if(currentReceiptOrderId) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'index.php?table=Order&action=changeStateCustomer';
+
+                const orderInput = document.createElement('input');
+                orderInput.type = 'hidden';
+                orderInput.name = 'currentOrderId';
+                orderInput.value = currentReceiptOrderId;
+
+                const stateInput = document.createElement('input');
+                stateInput.type = 'hidden';
+                stateInput.name = 'newState';
+                stateInput.value = 'confirmed';
+
+                form.appendChild(orderInput);
+                form.appendChild(stateInput);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+
+        // Gestione bottone "Annulla"
+        const cancelOrderModal = new bootstrap.Modal(document.getElementById('cancelOrderModal'));
+        let currentCancelOrderId = null;
+
+        document.querySelectorAll('.cancel-order-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                currentCancelOrderId = this.dataset.orderId;
+                const bookTitle = this.dataset.bookTitle;
+                document.getElementById('cancelBookTitle').textContent = bookTitle;
+                cancelOrderModal.show();
+            });
+        });
+
+        document.getElementById('confirmCancelBtn').addEventListener('click', function() {
+            if(currentCancelOrderId) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'index.php?table=Order&action=changeStateCustomer';
+
+                const orderInput = document.createElement('input');
+                orderInput.type = 'hidden';
+                orderInput.name = 'currentOrderId';
+                orderInput.value = currentCancelOrderId;
+
+                const stateInput = document.createElement('input');
+                stateInput.type = 'hidden';
+                stateInput.name = 'newState';
+                stateInput.value = 'cancelled';
+
+                form.appendChild(orderInput);
+                form.appendChild(stateInput);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+
+        // Gestione modale riepilogo ordine
+        document.querySelectorAll('.view-order-details-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const bookTitle = this.dataset.bookTitle;
+                const seller = this.dataset.seller;
+                const price = this.dataset.price;
+                const time = this.dataset.time;
+                const place = this.dataset.place;
+                const description = this.dataset.description;
+                const listingId = this.dataset.listingId;
+
+                document.getElementById('detailBookTitle').textContent = bookTitle;
+                document.getElementById('detailSeller').textContent = seller;
+                document.getElementById('detailPrice').textContent = price;
+                document.getElementById('detailTime').textContent = time;
+                document.getElementById('detailPlace').textContent = place;
+
+                const descContainer = document.getElementById('detailDescriptionContainer');
+                if (description && description.trim() !== '') {
+                    document.getElementById('detailDescription').textContent = description;
+                    descContainer.style.display = 'block';
+                } else {
+                    descContainer.style.display = 'none';
+                }
+
+                const carouselImages = document.getElementById('orderCarouselImages');
+                const carouselIndicators = document.getElementById('orderCarouselIndicators');
+                const carouselPrev = document.getElementById('orderCarouselPrev');
+                const carouselNext = document.getElementById('orderCarouselNext');
+                const defaultImg = '../utils/immagini/prova_libro.png';
+
+                carouselImages.innerHTML = '';
+                carouselIndicators.innerHTML = '';
+                carouselPrev.style.display = 'none';
+                carouselNext.style.display = 'none';
+
+                if (listingId) {
+                    fetch(`index.php?table=Listings&action=getListingImages&id=${listingId}`)
+                        .then(r => r.json())
+                        .then(images => {
+                            if (images && images.length > 0) {
+                                if (images.length > 1) {
+                                    carouselPrev.style.display = 'block';
+                                    carouselNext.style.display = 'block';
+                                }
+                                images.forEach((img, index) => {
+                                    const imgPath = '../utils/immagini/' + img.image_path;
+                                    const slide = document.createElement('div');
+                                    slide.className = 'carousel-item' + (index === 0 ? ' active' : '');
+                                    slide.innerHTML = `<img src="${imgPath}" class="d-block w-100" style="height: 300px; object-fit: contain; background: #f8f9fa;" alt="Foto ${index + 1}">`;
+                                    carouselImages.appendChild(slide);
+
+                                    const indicator = document.createElement('button');
+                                    indicator.type = 'button';
+                                    indicator.setAttribute('data-bs-target', '#orderImagesCarousel');
+                                    indicator.setAttribute('data-bs-slide-to', index);
+                                    if (index === 0) indicator.className = 'active';
+                                    indicator.style.cssText = 'width: 50px; height: 50px; border-radius: 8px; overflow: hidden; margin: 0 4px; border: 2px solid #ddd; background-size: cover; background-position: center;';
+                                    indicator.style.backgroundImage = `url('${imgPath}')`;
+                                    carouselIndicators.appendChild(indicator);
+                                });
+                            } else {
+                                carouselImages.innerHTML = `<div class="carousel-item active"><img src="${defaultImg}" class="d-block w-100" style="height: 300px; object-fit: contain; background: #f8f9fa;" alt="Nessuna foto"></div>`;
+                            }
+                        })
+                        .catch(err => {
+                            carouselImages.innerHTML = `<div class="carousel-item active"><img src="${defaultImg}" class="d-block w-100" style="height: 300px; object-fit: contain; background: #f8f9fa;" alt="Errore"></div>`;
+                        });
+                } else {
+                    carouselImages.innerHTML = `<div class="carousel-item active"><img src="${defaultImg}" class="d-block w-100" style="height: 300px; object-fit: contain; background: #f8f9fa;" alt="Nessuna foto"></div>`;
+                }
+
+                detailsModal.show();
             });
         });
     });

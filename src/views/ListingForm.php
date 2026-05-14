@@ -31,6 +31,7 @@ if (!isset($_SESSION['id_user'])) {
             border-radius: var(--radius-md);
             transition: background 0.2s, border-color 0.2s;
             cursor: pointer;
+            background: white;
         }
         .book-result-item:hover { background-color: #f7fafa; border-color: var(--orange); }
         .selected-book-alert {
@@ -216,7 +217,6 @@ if (!isset($_SESSION['id_user'])) {
                                 <select class="form-select" id="condizioni" name="condizioni" required>
                                     <option value="" selected disabled>Seleziona stato...</option>
                                     <option value="nuovo">Nuovo</option>
-                                    <option value="ottimo">Come nuovo</option>
                                     <option value="buono">Buone condizioni</option>
                                     <option value="usurato">Segni di usura / Scritto</option>
                                 </select>
@@ -307,13 +307,20 @@ if (!isset($_SESSION['id_user'])) {
                         data.forEach(book => {
                             const author  = book.author || 'Autore sconosciuto';
                             const isbn    = book.isbn   || 'N/D';
+                            const vol     = book.vol    || '';
+                            const classe  = book.class_name || '';
                             const raw     = book.priceOffer !== undefined ? book.priceOffer : (book.price || '0');
                             const fmt     = parseFloat(raw).toFixed(2).replace('.', ',');
+
+                            let subtitle = `${author} | ISBN: ${isbn}`;
+                            if (vol) subtitle += ` | Vol. ${vol}`;
+                            if (classe) subtitle += ` | Classi: ${classe}`;
+
                             resDiv.innerHTML += `
                             <div class="book-result-item p-3 mb-2 bg-white d-flex align-items-center justify-content-between shadow-sm gap-3">
                                 <div>
                                     <div class="fw-bold" style="color:#0066c0;font-size:var(--text-sm);">${book.title}</div>
-                                    <div class="text-muted" style="font-size:var(--text-xs);">${author} | ISBN: ${isbn}</div>
+                                    <div class="text-muted" style="font-size:var(--text-xs);">${subtitle}</div>
                                     <div class="text-muted fw-bold" style="font-size:var(--text-xs);">Copertina: ${fmt}€</div>
                                 </div>
                                 <button type="button" class="btn-amazon flex-shrink-0"

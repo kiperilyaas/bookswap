@@ -103,8 +103,11 @@ class ListingsModel{
         if (!in_array($filter, $allowedFilters)) {
             $filter = 'title';
         }
-        $sql = "SELECT L.*, B.title, B.author, B.isbn, L.price as priceOffer,
+        $sql = "SELECT L.id_listing, L.id_book, L.id_seller, L.price as priceOffer,
+                L.book_condition, L.description, L.is_available, L.created_at,
+                B.title, B.author, B.isbn, B.vol,
                 U.name, U.surname, PH.name as publisher,
+                GROUP_CONCAT(DISTINCT C.class ORDER BY C.class SEPARATOR ', ') as class_name,
                 (SELECT image_path FROM listing_images
                  WHERE id_listing = L.id_listing AND is_primary = 1
                  LIMIT 1) as main_image
@@ -119,8 +122,8 @@ class ListingsModel{
         } else {
             $sql .= "WHERE B.$filter LIKE :query ";
         }
-        $sql .= " AND L.is_available = 1 ";
-        $sql .= "GROUP BY L.id_listing
+        $sql .= " AND L.is_available = 1
+                GROUP BY L.id_listing, B.isbn, B.title, B.author, B.vol
                 LIMIT 10";
 
         $stm = $this->pdo->prepare($sql);

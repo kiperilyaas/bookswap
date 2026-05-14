@@ -124,7 +124,7 @@
 </head>
 <body>
     <div class="content">
-        <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: var(--dark);">
             <div class="container-fluid">
                 <a class="navbar-brand ms-2" href="index.php">📚 BookSwap</a>
                 <div class="ms-auto me-2">
