@@ -11,88 +11,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="views/bookswap-responsive.css">
     <style>
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-        }
-
-        .form-card {
-            background: white;
-            padding: clamp(2rem, 3vw, 3rem);
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            border: none;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 2rem;
-        }
-
-        .form-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--orange), var(--orange-hover));
-        }
-
-        .section-title {
-            color: var(--dark);
-            font-weight: 800;
-            font-size: var(--text-2xl);
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.02em;
-        }
-
-        .text-primary-amazon {
-            color: #0066c0 !important;
-        }
-
-        h5.fw-bold {
-            font-size: var(--text-md);
-            color: var(--dark);
-            margin-bottom: 1rem;
-        }
-
-        .form-label {
-            font-weight: 600;
-            color: #2d3748;
-            margin-bottom: 0.5rem;
-            font-size: var(--text-sm);
-        }
-
-        .form-control, .form-select {
-            padding: 0.9rem 1rem;
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            font-size: var(--text-sm);
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus, .form-select:focus {
-            border-color: var(--orange);
-            box-shadow: 0 0 0 4px rgba(255, 153, 0, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .input-group-text {
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
-            border-right: none;
-            border-radius: 12px 0 0 12px;
-            font-weight: 600;
-            color: #495057;
-        }
-
-        .input-group .form-control {
-            border-left: none;
-            border-radius: 0 12px 12px 0;
-        }
-
-        .input-group .form-control:focus {
-            border-left: 2px solid var(--orange);
-        }
+        .text-primary-amazon { color: #0066c0 !important; }
+        h5.fw-bold { font-size: var(--text-md); }
 
         /* Upload Zone Styles */
         .upload-zone {
@@ -100,26 +20,24 @@
         }
 
         .drop-area {
-            border: 3px dashed #cbd5e0;
-            border-radius: 16px;
+            border: 3px dashed #ddd;
+            border-radius: var(--radius-lg);
             padding: 3rem 2rem;
             text-align: center;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background-color: #f8f9fa;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .drop-area:hover {
-            border-color: var(--orange);
-            background: linear-gradient(135deg, #fff8e1 0%, #ffe0b2 100%);
-            transform: scale(1.02);
+            border-color: #0066c0;
+            background-color: #f0f8ff;
         }
 
         .drop-area.drag-over {
-            border-color: var(--orange);
-            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
-            transform: scale(1.05);
-            box-shadow: 0 8px 24px rgba(255, 153, 0, 0.3);
+            border-color: #ff9900;
+            background-color: #fff8e1;
+            transform: scale(1.02);
         }
 
         .preview-grid {
@@ -131,17 +49,17 @@
 
         .preview-item {
             position: relative;
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             overflow: hidden;
-            border: 2px solid #e9ecef;
+            border: 2px solid #ddd;
             background: white;
-            transition: all 0.3s ease;
+            transition: all 0.2s;
         }
 
         .preview-item:hover {
-            border-color: var(--orange);
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border-color: #0066c0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .preview-item img {
@@ -152,73 +70,55 @@
 
         .preview-item .remove-btn {
             position: absolute;
-            top: 8px;
-            right: 8px;
-            background: rgba(220, 53, 69, 0.95);
+            top: 5px;
+            right: 5px;
+            background: rgba(220, 53, 69, 0.9);
             color: white;
             border: none;
             border-radius: 50%;
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
         .preview-item .remove-btn:hover {
             background: #dc3545;
-            transform: scale(1.15);
+            transform: scale(1.1);
         }
 
         .preview-item .primary-badge {
             position: absolute;
-            bottom: 8px;
-            left: 8px;
-            background: linear-gradient(135deg, var(--orange), var(--orange-hover));
+            bottom: 5px;
+            left: 5px;
+            background: rgba(255, 153, 0, 0.95);
             color: white;
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 12px;
             font-size: 0.7rem;
-            font-weight: 700;
+            font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 4px;
-            box-shadow: 0 2px 8px rgba(255, 153, 0, 0.4);
+            gap: 3px;
         }
 
         .preview-item .order-badge {
             position: absolute;
-            top: 8px;
-            left: 8px;
-            background: linear-gradient(135deg, #0066c0, #004d99);
+            top: 5px;
+            left: 5px;
+            background: rgba(0, 102, 192, 0.9);
             color: white;
-            width: 28px;
-            height: 28px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 700;
-            box-shadow: 0 2px 8px rgba(0, 102, 192, 0.4);
-        }
-
-        hr {
-            border-color: #e9ecef;
-            margin: 2rem 0;
-        }
-
-        @media (max-width: 768px) {
-            .form-card {
-                padding: 1.5rem;
-            }
-
-            .section-title {
-                font-size: 1.8rem;
-            }
         }
     </style>
 </head>
@@ -226,11 +126,9 @@
     <div class="content">
         <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: var(--dark);">
             <div class="container-fluid">
-                <a class="navbar-brand ms-2 fw-bold text-white" href="index.php">📚 BookSwap</a>
+                <a class="navbar-brand ms-2" href="index.php">📚 BookSwap</a>
                 <div class="ms-auto me-2">
-                    <a href="index.php" class="btn btn-outline-light btn-sm rounded-pill">
-                        <i class="bi bi-x-lg me-1"></i>Annulla e Torna
-                    </a>
+                    <a href="index.php" class="btn btn-outline-light btn-sm rounded-pill">Annulla e Torna</a>
                 </div>
             </div>
         </nav>
@@ -358,7 +256,7 @@
         </div>
     </div>
 
-    <footer class="text-center py-4 bg-dark text-white mt-auto">
+    <footer>
         <div class="container">
             <p class="mb-1">© 2026 BookSwap Team</p>
         </div>
