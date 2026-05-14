@@ -359,10 +359,11 @@ if (!empty($myOrders)) {
                     <p class="mb-2 text-dark">Vuoi eliminare questo annuncio?</p>
                     <p class="fw-bold text-dark fs-5 mb-0" id="deleteBookTitle"></p>
                     <p class="text-muted small mt-2">Azione non reversibile.</p>
+                    <input type="hidden" id="deleteListingId">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-                    <a href="#" id="confirmDeleteBtn" class="btn btn-danger"><i class="bi bi-trash"></i> Elimina</a>
+                    <button type="button" id="confirmDeleteBtn" class="btn btn-danger"><i class="bi bi-trash"></i> Elimina</button>
                 </div>
             </div>
         </div>
@@ -731,13 +732,31 @@ if (!empty($myOrders)) {
         });
 
         // Elimina annuncio
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
         document.querySelectorAll('.delete-listing-btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                const m = new bootstrap.Modal(document.getElementById('deleteModal'));
                 document.getElementById('deleteBookTitle').textContent = this.dataset.title;
-                document.getElementById('confirmDeleteBtn').href = `index.php?table=Listings&action=deleteListing&id=${this.dataset.id}`;
-                m.show();
+                document.getElementById('deleteListingId').value = this.dataset.id;
+                deleteModal.show();
             });
+        });
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+            const listingId = document.getElementById('deleteListingId').value;
+            if (listingId) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'index.php?table=Listings&action=deleteListing';
+
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'id';
+                input.value = listingId;
+
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
         });
 
         // Logout

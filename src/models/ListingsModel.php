@@ -39,6 +39,14 @@ class ListingsModel{
         return $stm->rowCount() !== 0;
     }
 
+    public function deleteListingSecure($id_listing, $id_seller){
+        $sql = "DELETE FROM listings WHERE id_listing = ? AND id_seller = ?";
+        $stm = $this->pdo->prepare($sql);
+        $stm->execute([$id_listing, $id_seller]);
+
+        return $stm->rowCount() !== 0;
+    }
+
     /**
      * Recupera l'ID dell'ultimo record inserito
      * @return int
