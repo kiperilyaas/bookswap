@@ -216,11 +216,12 @@
             <p class="login-subtitle">Accedi al tuo account BookSwap</p>
             <form method="post" action="index.php?action=check&table=Login">
                 <div class="form-group">
-                    <input type="email" name="email" class="form-control" placeholder="Email" required>
+                    <input type="email" name="email" class="form-control" placeholder="Email scolastica @isit100.fe.it" required>
                     <i class="bi bi-envelope-fill"></i>
+                    
                 </div>
                 <div class="form-group password-wrapper">
-                    <input type="password" name="password" id="passwordField" class="form-control" placeholder="Password" required>
+                    <input type="password" name="password" id="passwordField" class="form-control" placeholder="Password (min 6 caratteri)" required>
                     <i class="bi bi-lock-fill"></i>
                     <button type="button" id="togglePassword" aria-label="Mostra password">
                         <i class="bi bi-eye" id="eyeIcon"></i>
@@ -269,6 +270,19 @@
             } else { this.classList.remove('is-invalid'); removeErr(this); }
         });
 
+        emailInput.addEventListener('input', function() {
+            // Rimuovi caratteri non validi in tempo reale
+            const invalidChars = /[^a-zA-Z0-9.@_-]/g;
+            if (invalidChars.test(this.value)) {
+                this.value = this.value.replace(invalidChars, '');
+                this.classList.add('is-invalid');
+                showErr(this, 'Caratteri non validi rimossi. Usa solo lettere, numeri, punto, trattino e underscore');
+            } else {
+                this.classList.remove('is-invalid');
+                removeErr(this);
+            }
+        });
+
         [emailInput, passwordField].forEach(i => i.addEventListener('input', function() {
             this.classList.remove('is-invalid'); removeErr(this);
         }));
@@ -279,6 +293,7 @@
             let ok = true;
             if (!email) { e.preventDefault(); emailInput.classList.add('is-invalid'); showErr(emailInput, 'Email obbligatoria'); ok = false; }
             else if (!email.endsWith('@isit100.fe.it')) { e.preventDefault(); emailInput.classList.add('is-invalid'); showErr(emailInput, "Usa un'email @isit100.fe.it"); ok = false; }
+            else if (/[^a-zA-Z0-9.@_-]/.test(email)) { e.preventDefault(); emailInput.classList.add('is-invalid'); showErr(emailInput, 'Email contiene caratteri non validi'); ok = false; }
             if (!pwd) { e.preventDefault(); passwordField.classList.add('is-invalid'); showErr(passwordField, 'Password obbligatoria'); ok = false; }
             else if (pwd.length < 3) { e.preventDefault(); passwordField.classList.add('is-invalid'); showErr(passwordField, 'Password troppo corta'); ok = false; }
         });

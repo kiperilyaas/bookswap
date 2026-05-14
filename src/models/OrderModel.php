@@ -13,9 +13,9 @@ class OrderModel
   }
   public function insertRecord(array $param): bool
   {
-    // Ordine parametri: id_listing, id_customer, id_seller, final_price, date_order, state, time_meet, place_meet, description_meet
-    $dml = "INSERT INTO orders (id_listing, id_customer, id_seller, final_price, date_order, state, time_meet, place_meet, description_meet)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    // Ordine parametri: id_listing, id_customer, id_seller, final_price, date_order, state, state_customer, state_seller, time_meet, place_meet, description_meet
+    $dml = "INSERT INTO orders (id_listing, id_customer, id_seller, final_price, date_order, state, state_customer, state_seller, time_meet, place_meet, description_meet)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stm = $this->pdo->prepare($dml);
     $stm->execute($param);

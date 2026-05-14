@@ -85,8 +85,10 @@ class OrderController {
 
         $date_order = date('Y-m-d H:i:s');
         $state = 'pending';
+        $state_customer = 'pending';
+        $state_seller = 'pending';
 
-        // Parametri per insertRecord: id_listing, id_customer, id_seller, final_price, date_order, state, time_meet, place_meet, description_meet
+        // Parametri per insertRecord: id_listing, id_customer, id_seller, final_price, date_order, state, state_customer, state_seller, time_meet, place_meet, description_meet
         $param = [
             $id_listing,
             $id_customer,
@@ -94,6 +96,8 @@ class OrderController {
             $final_price,
             $date_order,
             $state,
+            $state_customer,
+            $state_seller,
             $time_meet,
             $place_meet,
             $description_meet
