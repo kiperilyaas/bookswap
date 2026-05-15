@@ -220,6 +220,9 @@ class ListingsController
         }
 
         $isbn = $_POST['isbn'] ?? "";
+        // Rimuovi trattini e spazi dall'ISBN
+        $isbn = str_replace(['-', ' '], '', $isbn);
+
         if (!isValidISBN($isbn)) {
             $_SESSION['error'][] = "ISBN non valido (deve essere di 13 caratteri)";
             header("location: index.php?table=Listings&action=addBookForm");
@@ -279,6 +282,46 @@ class ListingsController
 
         $_SESSION['success'][] = "Libro aggiunto al catalogo!";
         header("location:index.php?table=Listings&action=createListings");
+        exit;
+    }
+
+    /**
+     * API per recuperare tutte le case editrici
+     */
+    public function getPublishingHouses() {
+        $data = $this->modelBook->getAllPublishingHouses();
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit;
+    }
+
+    /**
+     * API per recuperare tutte le materie
+     */
+    public function getSubjects() {
+        $data = $this->modelBook->getAllSubjects();
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit;
+    }
+
+    /**
+     * API per recuperare tutti gli indirizzi
+     */
+    public function getFaculties() {
+        $data = $this->modelBook->getAllFaculties();
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit;
+    }
+
+    /**
+     * API per recuperare tutte le classi
+     */
+    public function getClasses() {
+        $data = $this->modelBook->getAllClasses();
+        header('Content-Type: application/json');
+        echo json_encode($data);
         exit;
     }
 

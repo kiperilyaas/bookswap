@@ -193,4 +193,48 @@ class BookModel
     return $stm->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  /**
+   * Recupera tutte le case editrici
+   * @return array
+   */
+  public function getAllPublishingHouses(): array {
+    $sql = "SELECT id_publish_house, name FROM publishing_house ORDER BY name ASC";
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute();
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  /**
+   * Recupera tutte le materie
+   * @return array
+   */
+  public function getAllSubjects(): array {
+    $sql = "SELECT id_subject, name FROM subjects ORDER BY name ASC";
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute();
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  /**
+   * Recupera tutti gli indirizzi
+   * @return array
+   */
+  public function getAllFaculties(): array {
+    $sql = "SELECT id_faculty, name FROM faculty ORDER BY name ASC";
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute();
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  /**
+   * Recupera tutte le classi
+   * @return array
+   */
+  public function getAllClasses(): array {
+    $sql = "SELECT id_class, class FROM class ORDER BY class ASC";
+    $stm = $this->pdo->prepare($sql);
+    $stm->execute();
+    return $stm->fetchAll(PDO::FETCH_ASSOC);
+  }
+
 }

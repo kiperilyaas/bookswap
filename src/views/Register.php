@@ -11,6 +11,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="views/bookswap-responsive.css">
     <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
         .reg-wrap {
             flex-grow: 1;
             display: flex;
@@ -48,14 +53,23 @@
             margin-bottom: 1.2rem;
         }
 
-        .form-group i {
+        .form-group > i {
             position: absolute;
             left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
+            top: 0.75rem;
             color: #adb5bd;
             transition: color 0.3s ease;
             z-index: 2;
+            pointer-events: none;
+        }
+
+        .form-group input.form-control {
+            padding-left: 2.75rem;
+        }
+
+        footer {
+            width: 100%;
+            margin-top: auto;
         }
     </style>
 </head>
@@ -82,17 +96,32 @@
                 <div class="form-group">
                     <input type="email" name="email" class="form-control" placeholder="Email scolastica @isit100.fe.it" required>
                     <i class="bi bi-envelope-fill"></i>
-                    <small class="text-muted d-block mt-1 ms-1"><i class="bi bi-info-circle-fill"></i> Usa solo email @isit100.fe.it</small>
+                    <div id="emailRequirements" class="mt-2 ms-1 small">
+                        <div id="emailDomain" class="text-muted">
+                            <i class="bi bi-circle"></i> Deve terminare con @isit100.fe.it
+                        </div>
+                        <div id="emailChars" class="text-muted">
+                            <i class="bi bi-circle"></i> Solo lettere, numeri, punto, trattino e underscore
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <input type="password" name="password" id="password" class="form-control" placeholder="Password (min 6 caratteri)" required minlength="6">
                     <i class="bi bi-lock-fill"></i>
-                    <small class="text-muted d-block mt-1 ms-1"><i class="bi bi-shield-lock-fill"></i> Minimo 6 caratteri richiesti</small>
+                    <div id="passwordRequirements" class="mt-2 ms-1 small">
+                        <div id="pwLength" class="text-muted">
+                            <i class="bi bi-circle"></i> Minimo 6 caratteri
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <input type="password" name="confirm_password" id="confirmPassword" class="form-control" placeholder="Conferma Password" required minlength="6">
                     <i class="bi bi-lock-fill"></i>
-                    <small class="text-muted d-block mt-1 ms-1"><i class="bi bi-check-circle-fill"></i> Ripeti la password</small>
+                    <div id="confirmPasswordRequirements" class="mt-2 ms-1 small">
+                        <div id="pwMatch" class="text-muted">
+                            <i class="bi bi-circle"></i> Le password devono coincidere
+                        </div>
+                    </div>
                 </div>
                 <button type="submit" class="btn-amazon w-100 d-block text-center">Registrati</button>
             </form>
@@ -132,17 +161,75 @@
         });
 
         emailInput.addEventListener('input', function() {
-            // Rimuovi caratteri non validi in tempo reale
-            const invalidChars = /[^a-zA-Z0-9.@_-]/g;
-            if (invalidChars.test(this.value)) {
-                this.value = this.value.replace(invalidChars, '');
-                this.classList.add('is-invalid');
-                showErr(this, 'Caratteri non validi rimossi. Usa solo lettere, numeri, punto, trattino e underscore');
+            const email = this.value;
+            const emailDomainCheck = document.getElementById('emailDomain');
+            const emailCharsCheck = document.getElementById('emailChars');
+
+            // Verifica dominio
+            if (email.endsWith('@isit100.fe.it')) {
+                emailDomainCheck.className = 'text-success';
+                emailDomainCheck.innerHTML = '<i class="bi bi-check-circle-fill"></i> Deve terminare con @isit100.fe.it';
             } else {
+                emailDomainCheck.className = 'text-muted';
+                emailDomainCheck.innerHTML = '<i class="bi bi-circle"></i> Deve terminare con @isit100.fe.it';
+            }
+
+            // Verifica caratteri validi
+            const invalidChars = /[^a-zA-Z0-9.@_-]/g;
+            if (email && !invalidChars.test(email)) {
+                emailCharsCheck.className = 'text-success';
+                emailCharsCheck.innerHTML = '<i class="bi bi-check-circle-fill"></i> Solo lettere, numeri, punto, trattino e underscore';
                 this.classList.remove('is-invalid');
                 removeErr(this);
+            } else if (email && invalidChars.test(email)) {
+                this.value = this.value.replace(invalidChars, '');
+                emailCharsCheck.className = 'text-danger';
+                emailCharsCheck.innerHTML = '<i class="bi bi-x-circle-fill"></i> Caratteri non validi rimossi';
+            } else {
+                emailCharsCheck.className = 'text-muted';
+                emailCharsCheck.innerHTML = '<i class="bi bi-circle"></i> Solo lettere, numeri, punto, trattino e underscore';
             }
         });
+
+        passwordInput.addEventListener('input', function() {
+            const pw = this.value;
+            const pwLengthCheck = document.getElementById('pwLength');
+
+            if (pw.length >= 6) {
+                pwLengthCheck.className = 'text-success';
+                pwLengthCheck.innerHTML = '<i class="bi bi-check-circle-fill"></i> Minimo 6 caratteri';
+            } else if (pw.length > 0) {
+                pwLengthCheck.className = 'text-warning';
+                pwLengthCheck.innerHTML = '<i class="bi bi-exclamation-circle-fill"></i> Minimo 6 caratteri (' + pw.length + '/6)';
+            } else {
+                pwLengthCheck.className = 'text-muted';
+                pwLengthCheck.innerHTML = '<i class="bi bi-circle"></i> Minimo 6 caratteri';
+            }
+
+            // Verifica corrispondenza se conferma password è già compilata
+            checkPasswordMatch();
+        });
+
+        confirmPasswordInput.addEventListener('input', function() {
+            checkPasswordMatch();
+        });
+
+        function checkPasswordMatch() {
+            const pw = passwordInput.value;
+            const confirmPw = confirmPasswordInput.value;
+            const pwMatchCheck = document.getElementById('pwMatch');
+
+            if (confirmPw.length === 0) {
+                pwMatchCheck.className = 'text-muted';
+                pwMatchCheck.innerHTML = '<i class="bi bi-circle"></i> Le password devono coincidere';
+            } else if (pw === confirmPw) {
+                pwMatchCheck.className = 'text-success';
+                pwMatchCheck.innerHTML = '<i class="bi bi-check-circle-fill"></i> Le password coincidono';
+            } else {
+                pwMatchCheck.className = 'text-danger';
+                pwMatchCheck.innerHTML = '<i class="bi bi-x-circle-fill"></i> Le password non coincidono';
+            }
+        }
 
         [nameInput, surnameInput, classInput, emailInput, passwordInput, confirmPasswordInput].forEach(i =>
             i.addEventListener('input', function() { this.classList.remove('is-invalid'); removeErr(this); })

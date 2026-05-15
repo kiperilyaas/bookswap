@@ -471,7 +471,7 @@ defined("APP") or die("ACCESSO NEGATO");
                                             </div>
 
                                             <div class="seller-info mb-2"><i class="bi bi-shop"></i> <strong>${seller}</strong></div>
-                                            <div class="mb-2"><span class="price fs-5">${priceText}</span></div>
+                                            <div class="mb-2"><span class="price fs-5 text-success fw-bold">${priceText}</span></div>
 
                                             <div class="mb-3">
                                                 <span class="status-badge status-available">Disponibile</span>
