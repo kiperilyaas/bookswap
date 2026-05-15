@@ -91,10 +91,8 @@ if (!empty($table) && is_array($table)) {
     <?php foreach ($annunciPreparati as $annuncio): ?>
         
         <div class="col">
-            <div class="card book-card h-100" 
-                 data-bs-toggle="modal" 
-                 data-bs-target="#bookDetailModal"
-                 data-id="<?= htmlspecialchars($annuncio['idItem']) ?>" 
+            <div class="card book-card h-100 clickable-card"
+                 data-id="<?= htmlspecialchars($annuncio['idItem']) ?>"
                  data-title="<?= htmlspecialchars($annuncio['titolo']) ?>"
                  data-img="<?= htmlspecialchars($annuncio['immagine']) ?>"
                  data-price="<?= htmlspecialchars($annuncio['prezzo']) ?>"
@@ -137,7 +135,7 @@ if (!empty($table) && is_array($table)) {
                     <div class="mt-auto">
                         <a href="index.php?table=Order&action=checkout&id=<?= urlencode($annuncio['idItem']) ?>"
                            class="btn btn-warning w-100 shadow-sm d-flex justify-content-center align-items-center gap-2 buy-btn"
-                           onclick="return confirmPurchase(event, '<?= htmlspecialchars($annuncio['titolo'], ENT_QUOTES) ?>');">
+                           onclick="showPurchaseConfirm(event, '<?= htmlspecialchars($annuncio['titolo'], ENT_QUOTES) ?>', '<?= htmlspecialchars($annuncio['prezzo'], ENT_QUOTES) ?>', 'index.php?table=Order&action=checkout&id=<?= urlencode($annuncio['idItem']) ?>'); return false;">
                             <i class="bi bi-bag-check-fill"></i> Compra!
                         </a>
                     </div>

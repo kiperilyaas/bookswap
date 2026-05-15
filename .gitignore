@@ -1,5 +1,5 @@
 .vscode/
 src/config/
 utils/pdf_libri
-claudecode.sh
-cc.bat
+*.bat
+*.sh

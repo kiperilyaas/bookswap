@@ -6,6 +6,10 @@ require_once 'models/ListingImagesModel.php';
 require_once "../utils/function.php";
 require_once "../utils/imageUpload.php";
 
+/**
+ * Summary of ListingsController
+ * controller viene usato per gestione dei annunci sul sito
+ */
 class ListingsController
 {
     private $model;
@@ -19,48 +23,47 @@ class ListingsController
         $this->modelImages = new ListingImagesModel();
     }
 
+    /**
+     * Reindirizzamento sulla pagina della creazione del annuncio
+     * @return void
+     */
     public function createListings()
     {
         $books = $this->modelBook->selectAll();
         include "views/ListingForm.php";
     }
 
-
-    public function liveSearchListings()
+    /**
+     * Reindirizzamento sulla pagina del inserimento di un nuovo libro
+     * @return void
+     */
+    public function addBookForm()
     {
-        $query =  $_GET['query'] ?? '';
-        $filter = $_GET['filter'] ?? 'title';
-        $results = $this->model->searchBookOnly($query, $filter);
-
-        //serve per mandare il risultato sulla pagina  
-        header('Content-Type: application/json');
-        echo json_encode($results);
-        exit;
+        include "views/AddBook.php";
     }
 
-    public function liveSearchBooks() {
-        $query = $_GET['query'] ?? '';
-        $filter = $_GET['filter'] ?? 'title';
-        
-        $results = $this->model->searchBooksListings($query, $filter);
-        
-        header('Content-Type: application/json; charset=utf-8');
-        echo json_encode($results);
-        exit;
-    }
-
+    /**
+     * Summary of addListing
+     * Una semplice funzione di inserimento di un annuncio 
+     * con tutti appositi controlli
+     * @param $price
+     * @param $condition -> condizioni del libro
+     * @param $book -> id del libro
+     * @param $seller -> id del venditore
+     * @param $description
+     */
     public function addListing()
     {
-        $price = $_POST['prezzo'] ?? -1;
-        if ($price == -1) {
-            $_SESSION['error'][] = "Prezzo dell'offerta non valido";
+        $price = floatval($_POST['prezzo'] ?? -1);
+        if ($price < 0) {
+            $_SESSION['error'][] = "Il prezzo dell'offerta non è valido";
             header("location: index.php?table=Listings&action=createListings");
             exit;
         }
 
         $condition = $_POST['condizioni'] ?? "";
         if ($condition == "") {
-            $_SESSION['error'][] = "Condizioni dell'offerta non valide";
+            $_SESSION['error'][] = "Le condizioni dell'offerta non sono valide";
             header("location: index.php?table=Listings&action=createListings");
             exit;
         }
@@ -86,7 +89,7 @@ class ListingsController
         $result = $this->model->insertRecord($param);
 
         if ($result) {
-            // Recupera l'ID del listing appena creato
+            // Recupero l'ID del listing appena creato
             $id_listing = $this->model->getLastInsertedId();
 
             // Gestione upload immagini
@@ -94,6 +97,7 @@ class ListingsController
                 $uploadedImages = handleImageUpload($_FILES['listing_images'], $id_listing);
 
                 if (!empty($uploadedImages)) {
+                    //per ogni immagine presente viene eseguito il caricament nel DB.
                     foreach ($uploadedImages as $index => $imagePath) {
                         $is_primary = ($index === 0) ? 1 : 0; // Prima immagine = principale
                         $this->modelImages->addImage($id_listing, $imagePath, $is_primary);
@@ -113,6 +117,71 @@ class ListingsController
         exit;
     }
 
+    /**
+     * Summary of deleteListing
+     * Funzione di eliminazione di un annuncio
+     */
+    public function deleteListing()
+    {
+        $id = $_GET['id'] ?? -1;
+        if ($id == -1) {
+            $_SESSION['error'][] = "L'id dell'offerta non è valido";
+            header("location: index.php?table=User&action=account");
+            exit;
+        }
+
+        $this->model->deleteListing([$id]);
+        $_SESSION['success'][] = "Annuncio eliminato con successo";
+        header("location: index.php?table=User&action=account");
+        exit;
+    }
+
+
+    /**
+     * Summary of liveSearchListings
+     * la funzione di ricerca a vivo usando fetch di JS.
+     * @param $query La querry inserita da utente
+     * @param $filter il filtro per Titolo/Autore etc
+     */
+    public function liveSearchListings()
+    {
+        $query =  $_GET['query'] ?? '';
+        $filter = $_GET['filter'] ?? 'title';
+
+        //methodo di ricerca dei annunci dal DB.
+        $results = $this->model->searchBookOnly($query, $filter);
+
+        //serve per mandare il risultato sulla pagina  
+        header('Content-Type: application/json');
+        echo json_encode($results);
+        exit;
+    }
+
+    /**
+     * Summary of liveSearchBooks
+     * Funzione quasi lo stessa del liveSearchListings
+     * che cerca tutti libri presenti nel catalogo del DB
+     * @param $query La querry di ricerca
+     * @param $filter il filtro di ricerca
+     */
+    public function liveSearchBooks() {
+        $query = $_GET['query'] ?? '';
+        $filter = $_GET['filter'] ?? 'title';
+        
+        //methodo di ricerca dei libri presenti nel DB
+        $results = $this->model->searchBooksListings($query, $filter);
+        
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($results);
+        exit;
+    }
+
+    
+
+    /**
+     * Summary of getListingImages
+     * Funzione che restituisci a vivo le immagine di un annuncio.
+     */
     public function getListingImages() {
         $id_listing = $_GET['id'] ?? -1;
 
@@ -128,36 +197,32 @@ class ListingsController
         exit;
     }
 
-    public function deleteListing()
-    {
-        $id = $_GET['id'] ?? -1;
-        if ($id == -1) {
-            $_SESSION['error'][] = "ID dell'offerta non valido";
-            header("location: index.php?table=User&action=account");
-            exit;
-        }
-
-        $this->model->deleteListing([$id]);
-        $_SESSION['success'][] = "Annuncio eliminato con successo";
-        header("location: index.php?table=User&action=account");
-        exit;
-    }
-
-    public function addBookForm()
-    {
-        include "views/AddBook.php";
-    }
-
+    /**
+     * Summary of addBook
+     * La funzione che aggiunge un libro al catalogo
+     * @param $title
+     * @param $isbn
+     * @param $vol
+     * @param $author
+     * @param $class
+     * @param $subject
+     * @param $faculty
+     * @param $price
+     * @param $publish
+     */
     public function addBook()
     {
         $title = $_POST['title'] ?? "";
         if($title == ""){
-            $_SESSION['error'][] = "Titolo del libro non valido ";
+            $_SESSION['error'][] = "Il titolo del libro non è valido";
             header("location: index.php?table=Listings&action=addBookForm");
             exit;
         }
 
         $isbn = $_POST['isbn'] ?? "";
+        // Rimuovi trattini e spazi dall'ISBN
+        $isbn = str_replace(['-', ' '], '', $isbn);
+
         if (!isValidISBN($isbn)) {
             $_SESSION['error'][] = "ISBN non valido (deve essere di 13 caratteri)";
             header("location: index.php?table=Listings&action=addBookForm");
@@ -166,49 +231,49 @@ class ListingsController
 
         $vol = $_POST['vol'] ?? "";
         if($vol !== "U" && $vol !== "1" && $vol !== "2" && $vol !== "3"){
-            $_SESSION['error'][] = "Volume non valido solo (U, 1, 2 o 3)";
+            $_SESSION['error'][] = "Il volume non è valido, solo (U, 1, 2 o 3)";
             header("Location: index.php?table=Listings&action=addBookForm");
             exit;
         }
 
         $author = $_POST['author'] ?? "";
         if($author == ""){
-            $_SESSION['error'][] = "Nome di Autore non valido";
+            $_SESSION['error'][] = "Il nome dell'autore non è valido";
             header("location: index.php?table=Listings&action=addBookForm");
             exit;
         }
 
         $class = $_POST['class'] ?? "";
         if (!classExist($class)) {
-            $_SESSION['error'][] = "Classe non esistente, scelgi una classe presente nel elenco delle classi del ISIT";
+            $_SESSION['error'][] = "Classe inesistente, scelgi una classe presente nell' elenco delle classi dell' ISIT";
             header("location: index.php?table=Listings&action=addBookForm");
             exit;
         }
 
         $subject = $_POST['subject'] ?? "";
         /*if(!subjectExist($subject)){
-            $_SESSION['error'][] = "Materia non esiste";
+            $_SESSION['error'][] = "Materia inesistente";
             header("location: index.php?table=Listings&action=addBookForm");
             exit;
         }*/
 
         $faculty = $_POST['faculty'] ?? "";
         /* if(!facultyExist($faculty)){
-            $_SESSION['error'][] = "Indirizzo non esiste";
+            $_SESSION['error'][] = "Indirizzo inesistente";
             header("location: index.php?table=Listings&action=addBookForm");
             exit;
         } */
 
-        $price = $_POST['price'] ?? -1;
-        if ($price == -1 || $price < 0) {
-            $_SESSION['error'][] = "Prezzo non valido";
+        $price = floatval($_POST['price'] ?? -1);
+        if ($price < 0) {
+            $_SESSION['error'][] = "Il prezzo nonè valido";
             header("location: index.php?table=Listings&action=addBookForm");
             exit;
         }
 
         $publish = $_POST['publish'] ?? "";
         if($publish == ""){
-            $_SESSION['error'][] = "Casa editrice non valida";
+            $_SESSION['error'][] = "La casa editrice non è valida";
             header("location: index.php?table=Listings&action=addBookForm");
             exit;
         }
@@ -217,6 +282,46 @@ class ListingsController
 
         $_SESSION['success'][] = "Libro aggiunto al catalogo!";
         header("location:index.php?table=Listings&action=createListings");
+        exit;
+    }
+
+    /**
+     * API per recuperare tutte le case editrici
+     */
+    public function getPublishingHouses() {
+        $data = $this->modelBook->getAllPublishingHouses();
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit;
+    }
+
+    /**
+     * API per recuperare tutte le materie
+     */
+    public function getSubjects() {
+        $data = $this->modelBook->getAllSubjects();
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit;
+    }
+
+    /**
+     * API per recuperare tutti gli indirizzi
+     */
+    public function getFaculties() {
+        $data = $this->modelBook->getAllFaculties();
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit;
+    }
+
+    /**
+     * API per recuperare tutte le classi
+     */
+    public function getClasses() {
+        $data = $this->modelBook->getAllClasses();
+        header('Content-Type: application/json');
+        echo json_encode($data);
         exit;
     }
 

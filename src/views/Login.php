@@ -1,5 +1,5 @@
 <?php
-#defined("APP") or die("ACCESSO NEGATO");
+defined("APP") or die("ACCESSO NEGATO");
 ?>
 <!DOCTYPE html>
 <html lang="it">
@@ -33,7 +33,62 @@
             font-size: var(--text-xl);
             margin-bottom: var(--sp-md);
             text-align: center;
+            letter-spacing: -0.02em;
         }
+
+        .login-subtitle {
+            text-align: center;
+            color: #6c757d;
+            font-size: var(--text-sm);
+            margin-bottom: var(--sp-lg);
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        /* CORREZIONE QUI: Aggiunto il ">" per targettare solo lucchetto e busta */
+        .form-group > i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #adb5bd;
+            transition: color 0.3s ease;
+            z-index: 2;
+            pointer-events: none; /* Evita che l'icona blocchi il click sull'input */
+        }
+
+        .form-group input.form-control {
+            padding-left: 2.75rem;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            padding-right: 3rem;
+        }
+
+        .password-wrapper #togglePassword {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #adb5bd;
+            cursor: pointer;
+            padding: 0.25rem;
+            z-index: 2;
+        }
+
+        .password-wrapper #togglePassword:hover {
+            color: #6c757d;
+        }
+
         .register-link {
             display: block;
             text-align: center;
@@ -56,12 +111,15 @@
         <div class="login-card">
             <h2 class="login-title">Login</h2>
             <form method="post" action="index.php?action=check&table=Login">
-                <div class="mb-3">
-                    <input type="email" name="email" class="form-control" placeholder="Inserisci Email" required>
+                <div class="form-group">
+                    <input type="email" name="email" class="form-control" placeholder="Email scolastica @isit100.fe.it" required>
+                    <i class="bi bi-envelope-fill"></i>
+                    
                 </div>
-                <div class="mb-4 position-relative">
-                    <input type="password" name="password" id="passwordField" class="form-control" placeholder="Inserisci Password" required>
-                    <button type="button" id="togglePassword" class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3" style="text-decoration:none;z-index:10;">
+                <div class="form-group password-wrapper">
+                    <input type="password" name="password" id="passwordField" class="form-control" placeholder="Password (min 6 caratteri)" required minlength="6">
+                    <i class="bi bi-lock-fill"></i>
+                    <button type="button" id="togglePassword" aria-label="Mostra password">
                         <i class="bi bi-eye" id="eyeIcon"></i>
                     </button>
                 </div>
@@ -74,7 +132,7 @@
     <footer>
         <div class="container">
             <p class="mb-1">© 2026 BookSwap Team</p>
-            <small class="text-muted">Kiper Illia, Melega Leonardo, Trevisani Martina, Bertolani Leo</small>
+            <small class="text-white-50">Kiper Illia, Melega Leonardo, Trevisani Martina, Bertolani Leo</small>
         </div>
     </footer>
 
@@ -101,6 +159,19 @@
             } else { this.classList.remove('is-invalid'); removeErr(this); }
         });
 
+        emailInput.addEventListener('input', function() {
+            // Rimuovi caratteri non validi in tempo reale
+            const invalidChars = /[^a-zA-Z0-9.@_-]/g;
+            if (invalidChars.test(this.value)) {
+                this.value = this.value.replace(invalidChars, '');
+                this.classList.add('is-invalid');
+                showErr(this, 'Caratteri non validi rimossi. Usa solo lettere, numeri, punto, trattino e underscore');
+            } else {
+                this.classList.remove('is-invalid');
+                removeErr(this);
+            }
+        });
+
         [emailInput, passwordField].forEach(i => i.addEventListener('input', function() {
             this.classList.remove('is-invalid'); removeErr(this);
         }));
@@ -111,8 +182,9 @@
             let ok = true;
             if (!email) { e.preventDefault(); emailInput.classList.add('is-invalid'); showErr(emailInput, 'Email obbligatoria'); ok = false; }
             else if (!email.endsWith('@isit100.fe.it')) { e.preventDefault(); emailInput.classList.add('is-invalid'); showErr(emailInput, "Usa un'email @isit100.fe.it"); ok = false; }
+            else if (/[^a-zA-Z0-9.@_-]/.test(email)) { e.preventDefault(); emailInput.classList.add('is-invalid'); showErr(emailInput, 'Email contiene caratteri non validi'); ok = false; }
             if (!pwd) { e.preventDefault(); passwordField.classList.add('is-invalid'); showErr(passwordField, 'Password obbligatoria'); ok = false; }
-            else if (pwd.length < 3) { e.preventDefault(); passwordField.classList.add('is-invalid'); showErr(passwordField, 'Password troppo corta'); ok = false; }
+            else if (pwd.length < 6) { e.preventDefault(); passwordField.classList.add('is-invalid'); showErr(passwordField, 'Password troppo corta (min 6 caratteri)'); ok = false; }
         });
 
         function showErr(input, msg) {

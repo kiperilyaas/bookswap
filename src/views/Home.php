@@ -206,6 +206,30 @@ defined("APP") or die("ACCESSO NEGATO");
         </div>
     </div>
 
+    <!-- Modale conferma acquisto -->
+    <div class="modal fade" id="purchaseConfirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title"><i class="bi bi-cart-check-fill"></i> Conferma Acquisto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-2">Stai per acquistare:</p>
+                    <h6 class="fw-bold text-primary" id="confirmBookTitle"></h6>
+                    <p class="text-muted mb-2">Prezzo: <strong id="confirmBookPrice"></strong></p>
+                    <p class="small text-secondary">Verrai portato alla pagina di checkout per completare l'ordine.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                    <a href="#" id="confirmPurchaseBtn" class="btn btn-warning">
+                        <i class="bi bi-bag-check-fill"></i> Procedi al Checkout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <div class="container">
             <p class="mb-1">© 2026 BookSwap Team</p>
@@ -217,44 +241,62 @@ defined("APP") or die("ACCESSO NEGATO");
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    // Funzione conferma acquisto
-    function confirmPurchase(event, bookTitle) {
-        event.stopPropagation();
-        event.preventDefault();
-        const confirmed = confirm('Vuoi acquistare:\n\n"' + bookTitle + '"?\n\nVerrai portato al checkout.');
-        if (confirmed) window.location.href = event.target.closest('a').href;
+    // Variabili globali per i modali
+    let purchaseConfirmModal;
+    let bookDetailModalInstance;
+
+    // Funzione per aprire il modale di conferma acquisto
+    function showPurchaseConfirm(event, bookTitle, bookPrice, checkoutUrl) {
+        if (event) {
+            event.stopPropagation();
+            event.preventDefault();
+            event.stopImmediatePropagation();
+        }
+
+        // Chiudi il modale dettaglio se aperto
+        if (bookDetailModalInstance) {
+            bookDetailModalInstance.hide();
+        }
+
+        // Popola il modale di conferma
+        document.getElementById('confirmBookTitle').textContent = bookTitle;
+        document.getElementById('confirmBookPrice').textContent = bookPrice;
+        document.getElementById('confirmPurchaseBtn').href = checkoutUrl;
+
+        // Mostra il modale di conferma
+        if (!purchaseConfirmModal) {
+            purchaseConfirmModal = new bootstrap.Modal(document.getElementById('purchaseConfirmModal'));
+        }
+        purchaseConfirmModal.show();
+
         return false;
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        // Modale libro
+        // Inizializza il modale dettaglio
         const modalElement = document.getElementById('bookDetailModal');
+        bookDetailModalInstance = new bootstrap.Modal(modalElement);
 
-        modalElement.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-
-            // Cerca la card parent se l'elemento cliccato non ha i data attributes
-            let dataSource = button;
-            if (!button.getAttribute('data-title')) {
-                dataSource = button.closest('[data-title]');
+        // Gestione clic sulle card
+        document.addEventListener('click', function(e) {
+            const card = e.target.closest('.clickable-card');
+            if (card && !e.target.closest('.buy-btn')) {
+                // Cliccato sulla card ma non sul bottone compra
+                openBookDetailModal(card);
             }
+        });
 
-            if (!dataSource) {
-                console.error('Nessun elemento con data-title trovato!');
-                return;
-            }
-
-            // Popola i dati dal bottone/card che ha aperto il modale
-            const title = dataSource.getAttribute('data-title');
-            const price = dataSource.getAttribute('data-price');
-            const description = dataSource.getAttribute('data-description');
-            const author = dataSource.getAttribute('data-author');
-            const seller = dataSource.getAttribute('data-seller');
-            const isbn = dataSource.getAttribute('data-isbn');
-            const publisher = dataSource.getAttribute('data-publisher');
-            const classe = dataSource.getAttribute('data-classe');
-            const idItem = dataSource.getAttribute('data-id');
-            const img = dataSource.getAttribute('data-img');
+        function openBookDetailModal(card) {
+            const title = card.getAttribute('data-title');
+            const price = card.getAttribute('data-price');
+            const description = card.getAttribute('data-description');
+            const author = card.getAttribute('data-author');
+            const seller = card.getAttribute('data-seller');
+            const isbn = card.getAttribute('data-isbn');
+            const publisher = card.getAttribute('data-publisher');
+            const classe = card.getAttribute('data-classe');
+            const idItem = card.getAttribute('data-id');
+            const img = card.getAttribute('data-img');
 
             // Imposta i valori nel modale
             modalElement.querySelector('#modalBookTitle').textContent = title || 'N/D';
@@ -268,16 +310,24 @@ defined("APP") or die("ACCESSO NEGATO");
             // Configura bottone acquisto
             const cartBtn = modalElement.querySelector('#modalBookCartBtn');
             if (idItem) {
-                cartBtn.href = "index.php?table=Order&action=checkout&id=" + idItem;
-                cartBtn.onclick = e => confirmPurchase(e, title);
+                const checkoutUrl = "index.php?table=Order&action=checkout&id=" + idItem;
+                cartBtn.href = checkoutUrl;
+                cartBtn.onclick = e => showPurchaseConfirm(e, title, price, checkoutUrl);
             }
 
             // Carica le immagini del listing
+            loadBookImages(idItem, img);
+
+            // Mostra il modale
+            bookDetailModalInstance.show();
+        }
+
+        function loadBookImages(idItem, defaultImg) {
             const carouselImages = modalElement.querySelector('#carouselImages');
             const carouselIndicators = modalElement.querySelector('#carouselIndicators');
             const carouselPrev = modalElement.querySelector('#carouselPrev');
             const carouselNext = modalElement.querySelector('#carouselNext');
-            const defaultImg = img || '../utils/immagini/prova_libro.png';
+            const imgDefault = defaultImg || '../utils/immagini/prova_libro.png';
 
             // Reset carousel
             carouselImages.innerHTML = '';
@@ -321,7 +371,7 @@ defined("APP") or die("ACCESSO NEGATO");
                             // Nessuna immagine - mostra immagine di default
                             carouselImages.innerHTML = `
                                 <div class="carousel-item active">
-                                    <img src="${defaultImg}" class="d-block w-100" style="height: 400px; object-fit: contain;" alt="Nessuna foto">
+                                    <img src="${imgDefault}" class="d-block w-100" style="height: 400px; object-fit: contain;" alt="Nessuna foto">
                                 </div>
                             `;
                         }
@@ -331,7 +381,7 @@ defined("APP") or die("ACCESSO NEGATO");
                         // Fallback a immagine di default
                         carouselImages.innerHTML = `
                             <div class="carousel-item active">
-                                <img src="${defaultImg}" class="d-block w-100" style="height: 400px; object-fit: contain;" alt="Errore caricamento">
+                                <img src="${imgDefault}" class="d-block w-100" style="height: 400px; object-fit: contain;" alt="Errore caricamento">
                             </div>
                         `;
                     });
@@ -339,11 +389,11 @@ defined("APP") or die("ACCESSO NEGATO");
                 // Nessun ID - mostra solo immagine di default
                 carouselImages.innerHTML = `
                     <div class="carousel-item active">
-                        <img src="${defaultImg}" class="d-block w-100" style="height: 400px; object-fit: contain;" alt="Immagine libro">
+                        <img src="${imgDefault}" class="d-block w-100" style="height: 400px; object-fit: contain;" alt="Immagine libro">
                     </div>
                 `;
             }
-        });
+        }
 
         // Ricerca live
         let searchTimeout;
@@ -421,11 +471,15 @@ defined("APP") or die("ACCESSO NEGATO");
                                             </div>
 
                                             <div class="seller-info mb-2"><i class="bi bi-shop"></i> <strong>${seller}</strong></div>
-                                            <div class="mb-2"><span class="price fs-5">${priceText}</span></div>
-                                            
+                                            <div class="mb-2"><span class="price fs-5 text-success fw-bold">${priceText}</span></div>
+
+                                            <div class="mb-3">
+                                                <span class="status-badge status-available">Disponibile</span>
+                                            </div>
+
                                             <div class="mt-auto">
                                                 <a href="index.php?table=Order&action=checkout&id=${encodeURIComponent(idItem)}"
-                                                onclick="return confirmPurchase(event,'${title.replace(/'/g,"\\'")}');"
+                                                onclick="return showPurchaseConfirm(event,'${title.replace(/'/g,"\\'")}','${priceText}','index.php?table=Order&action=checkout&id=${encodeURIComponent(idItem)}');"
                                                 class="btn btn-warning w-100 d-flex justify-content-center align-items-center gap-2">
                                                     <i class="bi bi-bag-check-fill"></i> Compra!
                                                 </a>
