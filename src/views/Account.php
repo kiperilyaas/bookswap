@@ -331,10 +331,13 @@ if (!empty($myOrders)) {
                     <p class="fw-bold text-dark fs-5 mb-0" id="deleteBookTitle"></p>
                     <p class="text-muted small mt-2">Azione non reversibile.</p>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-                    <a href="#" id="confirmDeleteBtn" class="btn btn-danger"><i class="bi bi-trash"></i> Elimina</a>
-                </div>
+                <form action="index.php?table=Listings&action=deleteListing" method="POST">
+                    <input type="hidden" name="id" id="deleteListingId">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                        <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Elimina</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -456,7 +459,7 @@ if (!empty($myOrders)) {
             btn.addEventListener('click', function() {
                 const m = new bootstrap.Modal(document.getElementById('deleteModal'));
                 document.getElementById('deleteBookTitle').textContent = this.dataset.title;
-                document.getElementById('confirmDeleteBtn').href = `index.php?table=Listings&action=deleteListing&id=${this.dataset.id}`;
+                document.getElementById('deleteListingId').value = this.dataset.id;
                 m.show();
             });
         });
