@@ -2,6 +2,11 @@
 defined("APP") or die("ACCESSO NEGATO");
 require_once("models/UserModel.php");
 require_once "../utils/function.php";
+
+/**
+ * Summary of LoginController
+ * Il controller che gestisce l'autenticazione di utente
+ */
 class LoginController{
     private $model;
 
@@ -13,12 +18,24 @@ class LoginController{
     public function loginView(){
         include "views/Login.php";
     }
+    public function registerView(){
+        include "views/Register.php";
+    }
+    public function logout(){
+        session_destroy();
+        header("location: index.php");
+    }
 
+    /**
+     * Summary of check
+     * Verifica della mail e password
+     */
     public function check(){
         //email check
         $email = $_POST['email'] ?? null;
         $domain = substr($email, strpos($email, '@') + 1);
 
+        //verifica del dominio
         if($email != null){
             if($domain != "isit100.fe.it"){
                 $_SESSION["error"][] = "Il dominio dell'email non è verificato. Utilizza un'email @isit100.fe.it";
@@ -27,6 +44,7 @@ class LoginController{
             }
         }
 
+        //verifica della presenze della mail nel DB
         if(!isEmailExist($email)){
             $_SESSION["error"][] = "L'email non è registrata nel sistema";
             header("location: index.php?table=login&action=loginView");
@@ -56,10 +74,15 @@ class LoginController{
         }
     }
 
-    public function registerView(){
-        include "views/Register.php";
-    }
-
+    /**
+     * Summary of insert
+     * Funzione di inserimento di un nuovo utente
+     * @param $name
+     * @param $surname
+     * @param $email
+     * @param $class
+     * @param $password
+     */
     public function insert(){
         $name = $_POST['name'] ?? null;
         $name = strtoupper($name);
@@ -97,7 +120,7 @@ class LoginController{
             exit;
         }
         
-        //check name and surname
+        //verifica della classe all'interno della scuola uttilizzando API della scuola
         $url = "https://lab.isit100.fe.it/api/studenti.php?elencoclassi";
         $response = file_get_contents($url);
         $clases = json_decode($response, true);
@@ -122,6 +145,24 @@ class LoginController{
             header("location: index.php?table=Login&action=registerView");
             exit;
         }
+        if(strlen($password) < 6){
+            $_SESSION["error"][] = "La password deve essere di almeno 6 caratteri";
+            header("location: index.php?table=Login&action=registerView");
+            exit;
+        }
+
+        $confirmPassword = $_POST['confirm_password'] ?? null;
+        if(!$confirmPassword){
+            $_SESSION["error"][] = "La conferma password non è stata inserita";
+            header("location: index.php?table=Login&action=registerView");
+            exit;
+        }
+        if($password !== $confirmPassword){
+            $_SESSION["error"][] = "Le password non coincidono";
+            header("location: index.php?table=Login&action=registerView");
+            exit;
+        }
+
         $password_hash = password_hash($password, PASSWORD_BCRYPT);
 
         $param = [$name, $surname, $class, $email, $password_hash];
@@ -132,10 +173,7 @@ class LoginController{
         exit;
     }
 
-    public function logout(){
-        session_destroy();
-        header("location: index.php");
-    }
+    
 }
 
 ?>

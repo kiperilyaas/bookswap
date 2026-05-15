@@ -14,6 +14,7 @@ class UserModel // Iniziale maiuscola
   {
     $this->pdo = DB::connect();
   }
+  
   public function selectAll(): array
   {
     $dql = "SELECT id_user AS id,

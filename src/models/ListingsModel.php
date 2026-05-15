@@ -11,6 +11,11 @@ class ListingsModel{
         $this->pdo = DB::connect();
     }
 
+    /**
+     * Recupero dal DB di tutti annunci
+     * @param mixed $param
+     * @return array
+     */
     public function selectAll($param = []){
         $dql = "SELECT * FROM listings";
         $stm = $this->pdo->prepare($dql);
@@ -19,6 +24,11 @@ class ListingsModel{
         return $stm->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Recupero di id del annucio di un ordine
+     * @param mixed $id
+     * @return int
+     */
     public function getListingByOrderId($id){
         $sql = "SELECT L.id_listing from listings L
         join orders O using(id_listing)
@@ -30,6 +40,11 @@ class ListingsModel{
         return $result ? $result['id_listing'] : null;
     }
 
+    /**
+     * Inserimento di un ordine
+     * param  -> $idbook, idseller, price, book_condition, desciprtion, is_available
+     * @return bool
+     */
     public function insertRecord($param = []){
         $dml = "INSERT INTO listings(id_book, id_seller, price, book_condition, description, is_available)
         values(?, ?, ?, ?, ?, ?);";
@@ -47,6 +62,16 @@ class ListingsModel{
         return $this->pdo->lastInsertId();
     }
 
+
+    /**
+     * Funzione viene usata per mostrare la lista completa di annunci nella home page 
+     * con tutti questi campi 
+     *          L.*, B.title, B.author, B.isbn,
+     *          L.price as priceOffer, U.name, U.surname, C.class as classe,
+     *          PH.name as publisher
+     * @param mixed $param
+     * @return array
+     */
     public function selectListings($param = []){
         $dql = "SELECT L.*, B.title, B.author, B.isbn,
                 L.price as priceOffer, U.name, U.surname, C.class as classe,
@@ -65,8 +90,15 @@ class ListingsModel{
         return $stm->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Ricerca del annuncio nella HomePage
+     * @param mixed $query
+     * @param mixed $filter
+     * @return array
+     */
     public function searchBooksListings($query, $filter) {
         try{
+            //imposto il filtro
             $allowedFilters = ['title', 'author', 'isbn', 'class'];
             if (!in_array($filter, $allowedFilters)) {
                 $filter = 'title';
@@ -76,6 +108,7 @@ class ListingsModel{
                     FROM books B
                     LEFT JOIN class C ON B.id_class = C.id_class ";
 
+            //in base al filtro si scelgi per cosa cercare
             if ($filter === 'class') {
                 $sql .= "WHERE C.class LIKE :query ";
             } else {
@@ -89,7 +122,7 @@ class ListingsModel{
 
             $results = $stm->fetchAll(PDO::FETCH_ASSOC);
 
-            if ($results === false) return [];
+            if ($results === false);
             return $results;
 
         } catch (PDOException) {
@@ -98,6 +131,12 @@ class ListingsModel{
             exit;
         }
     }
+    /**
+     * Funzione di ricerca dei libri dal catalogo con informazioni complete
+     * @param mixed $query
+     * @param mixed $filter
+     * @return array
+     */
     public function searchBookOnly($query, $filter) {
         $allowedFilters = ['title', 'author', 'isbn', 'class'];
         if (!in_array($filter, $allowedFilters)) {
@@ -140,12 +179,18 @@ class ListingsModel{
         return $stm->rowCount() !== 0;
     }
 
+    /**
+     * Recupero del id dell'annuncio di un ordine 
+     * @param mixed $ids
+     * @return array
+     */
     public function getListingsById($ids = []){
         if(empty($ids)){
             return [];
         }
 
         // Crea placeholders per la query (?, ?, ?)
+        // server per essere flessibile con il numero di id
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
 
         $sql = "SELECT *, B.title, L.price as priceOffer, L.id_listing

@@ -173,7 +173,7 @@ if (!isset($_SESSION['id_user'])) {
                                     </ul>
                                     <input type="hidden" id="searchFilter" value="title">
                                     <input type="text" class="form-control" id="searchInput"
-                                           placeholder="Cerca per titolo, autore o ISBN…"
+                                           placeholder="Cerca il libro"
                                            style="border-radius:0 20px 20px 0;">
                                 </div>
                                 <div class="mt-2 text-end">
