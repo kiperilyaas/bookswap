@@ -1,0 +1,4 @@
+## 2025-05-14 - IDOR and CSRF in Listing Deletion
+**Vulnerability:** The `deleteListing` functionality in `ListingsController` was using a `GET` request and lacked any authorization check. This allowed any user (or even an unauthenticated one if the route was hit) to delete any listing by simply providing its ID in the URL.
+**Learning:** The application followed a pattern where most actions were routed via `GET` parameters for simplicity, but this is highly insecure for destructive operations. The lack of a `$_SESSION['id_user']` check against the `id_seller` of the listing was a classic IDOR.
+**Prevention:** Always use `POST` for destructive actions to mitigate basic CSRF. Implement server-side ownership verification by fetching the resource from the database and comparing its owner ID with the currently authenticated user's ID before proceeding with the operation.
