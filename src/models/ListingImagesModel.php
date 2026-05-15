@@ -19,6 +19,7 @@ class ListingImagesModel {
      */
     public function addImage($id_listing, $image_path, $is_primary = 0) {
         // Se questa è la principale, rimuovi il flag dalle altre
+        // perche non sempre la prima viene caricata come principale
         if ($is_primary == 1) {
             $this->removePrimaryFlag($id_listing);
         }
@@ -33,7 +34,6 @@ class ListingImagesModel {
     /**
      * Recupera tutte le immagini di un listing
      * @param int $id_listing
-     * @return array
      */
     public function getImagesByListing($id_listing) {
         $sql = "SELECT * FROM listing_images
@@ -47,7 +47,6 @@ class ListingImagesModel {
     /**
      * Recupera solo l'immagine principale di un listing
      * @param int $id_listing
-     * @return string|null - Path dell'immagine o null
      */
     public function getPrimaryImage($id_listing) {
         $sql = "SELECT image_path FROM listing_images

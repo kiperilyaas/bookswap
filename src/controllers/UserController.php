@@ -3,6 +3,10 @@ if(!defined('APP')) die('Accesso negato');
 
 require_once 'models/UserModel.php';
 
+/**
+ * Summary of UserController
+ * Controller che gestisce azioni di utente
+ */
 class UserController{
   private $Usermodel;
   public function __construct()
@@ -10,6 +14,11 @@ class UserController{
     $this->Usermodel = new UserModel();
   }
 
+  /**
+   * Summary of account
+   * mostra annunci e ordini disponibili di un utente
+   * e reindirizza sulla pagina di Account
+   */
   public function account(){
     $myOffers = $this->Usermodel->getListingsOfUser([$_SESSION['id_user']]);
     $myOrders = $this->Usermodel->getOrdersOfUser([$_SESSION['id_user']]);
@@ -20,6 +29,10 @@ class UserController{
     include "views/Account.php";
   }
 
+  /**
+   * Summary of updateProfile
+   * Aggiornamento del profilo di un utente
+   */
   public function updateProfile(){
     $userId = $_SESSION['id_user'] ?? -1;
     if($userId == -1){
