@@ -1,5 +1,5 @@
 <?php
-#defined("APP") or die("ACCESSO NEGATO");
+defined("APP") or die("ACCESSO NEGATO");
 ?>
 <!DOCTYPE html>
 <html lang="it">
@@ -56,6 +56,11 @@
 
         .login-subtitle {
             text-align: center;
+            letter-spacing: -0.02em;
+        }
+
+        .login-subtitle {
+            text-align: center;
             color: #6c757d;
             font-size: var(--text-sm);
             margin-bottom: var(--sp-lg);
@@ -78,81 +83,33 @@
             pointer-events: none; /* Evita che l'icona blocchi il click sull'input */
         }
 
-        .form-control {
-            padding: 0.9rem 1rem 0.9rem 2.8rem;
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            font-size: var(--text-sm);
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus {
-            border-color: var(--orange);
-            box-shadow: 0 0 0 4px rgba(255, 153, 0, 0.1);
-            transform: translateY(-2px);
-        }
-
-        /* Quando l'input è a fuoco, colora l'icona a sinistra */
-        .form-control:focus + i {
-            color: var(--orange);
+        .form-group input.form-control {
+            padding-left: 2.75rem;
         }
 
         .password-wrapper {
             position: relative;
         }
 
-        .password-wrapper .form-control {
+        .password-wrapper input {
             padding-right: 3rem;
         }
 
-        #togglePassword {
+        .password-wrapper #togglePassword {
             position: absolute;
-            right: 0.5rem;
+            right: 1rem;
             top: 50%;
             transform: translateY(-50%);
+            background: none;
             border: none;
-            background: transparent;
+            color: #adb5bd;
+            cursor: pointer;
+            padding: 0.25rem;
+            z-index: 2;
+        }
+
+        .password-wrapper #togglePassword:hover {
             color: #6c757d;
-            padding: 0.5rem;
-            z-index: 3;
-            transition: color 0.2s ease;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* L'icona dell'occhio ora si comporterà normalmente */
-        #togglePassword i {
-            font-size: 1.1rem;
-        }
-
-        #togglePassword:hover {
-            color: var(--orange);
-        }
-
-        #togglePassword:focus {
-            outline: none;
-            box-shadow: none;
-        }
-
-        .btn-amazon {
-            padding: 1rem;
-            font-size: var(--text-base);
-            font-weight: 700;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(255, 153, 0, 0.3);
-            border: none;
-            background-color: var(--orange);
-            color: white;
-        }
-
-        .btn-amazon:hover {
-            background-color: var(--orange-hover);
-            color: white;
-            box-shadow: 0 6px 20px rgba(255, 153, 0, 0.4);
-            transform: translateY(-2px);
         }
 
         .register-link {
@@ -216,11 +173,12 @@
             <p class="login-subtitle">Accedi al tuo account BookSwap</p>
             <form method="post" action="index.php?action=check&table=Login">
                 <div class="form-group">
-                    <input type="email" name="email" class="form-control" placeholder="Email" required>
+                    <input type="email" name="email" class="form-control" placeholder="Email scolastica @isit100.fe.it" required>
                     <i class="bi bi-envelope-fill"></i>
+                    
                 </div>
                 <div class="form-group password-wrapper">
-                    <input type="password" name="password" id="passwordField" class="form-control" placeholder="Password" required>
+                    <input type="password" name="password" id="passwordField" class="form-control" placeholder="Password (min 6 caratteri)" required minlength="6">
                     <i class="bi bi-lock-fill"></i>
                     <button type="button" id="togglePassword" aria-label="Mostra password">
                         <i class="bi bi-eye" id="eyeIcon"></i>
@@ -269,6 +227,19 @@
             } else { this.classList.remove('is-invalid'); removeErr(this); }
         });
 
+        emailInput.addEventListener('input', function() {
+            // Rimuovi caratteri non validi in tempo reale
+            const invalidChars = /[^a-zA-Z0-9.@_-]/g;
+            if (invalidChars.test(this.value)) {
+                this.value = this.value.replace(invalidChars, '');
+                this.classList.add('is-invalid');
+                showErr(this, 'Caratteri non validi rimossi. Usa solo lettere, numeri, punto, trattino e underscore');
+            } else {
+                this.classList.remove('is-invalid');
+                removeErr(this);
+            }
+        });
+
         [emailInput, passwordField].forEach(i => i.addEventListener('input', function() {
             this.classList.remove('is-invalid'); removeErr(this);
         }));
@@ -279,8 +250,9 @@
             let ok = true;
             if (!email) { e.preventDefault(); emailInput.classList.add('is-invalid'); showErr(emailInput, 'Email obbligatoria'); ok = false; }
             else if (!email.endsWith('@isit100.fe.it')) { e.preventDefault(); emailInput.classList.add('is-invalid'); showErr(emailInput, "Usa un'email @isit100.fe.it"); ok = false; }
+            else if (/[^a-zA-Z0-9.@_-]/.test(email)) { e.preventDefault(); emailInput.classList.add('is-invalid'); showErr(emailInput, 'Email contiene caratteri non validi'); ok = false; }
             if (!pwd) { e.preventDefault(); passwordField.classList.add('is-invalid'); showErr(passwordField, 'Password obbligatoria'); ok = false; }
-            else if (pwd.length < 3) { e.preventDefault(); passwordField.classList.add('is-invalid'); showErr(passwordField, 'Password troppo corta'); ok = false; }
+            else if (pwd.length < 6) { e.preventDefault(); passwordField.classList.add('is-invalid'); showErr(passwordField, 'Password troppo corta (min 6 caratteri)'); ok = false; }
         });
 
         function showErr(input, msg) {

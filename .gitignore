@@ -2,6 +2,5 @@
 src/config/dbconfig.php
 src/config/dbconnect.php
 utils/pdf_libri
-claudecode.sh
-cc.bat
-claudecode.sh
+*.bat
+*.sh
