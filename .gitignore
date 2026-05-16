@@ -1,5 +1,6 @@
 .vscode/
-src/config/
+src/config/dbconfig.php
+src/config/dbconnect.php
 utils/pdf_libri
 *.bat
 *.sh

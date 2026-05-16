@@ -94,5 +94,5 @@ https://github.com/kiperilyaas/bookswap
     - [x] convertire prezzi in float
     - [x] quando scegli In Attesa da parte di Venditore, ordine conclude.
     - [x] gestire cancellazione del ordine dalla parte di Customer
-- [ ] Pubblicazione
+- [x] Pubblicazione
 

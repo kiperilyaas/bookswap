@@ -11,6 +11,11 @@ defined("APP") or die("ACCESSO NEGATO");
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="views/bookswap-responsive.css">
     <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
         .login-wrap {
             flex-grow: 1;
             display: flex;
@@ -18,20 +23,38 @@ defined("APP") or die("ACCESSO NEGATO");
             align-items: center;
             padding: var(--sp-md);
         }
+
         .login-card {
             background: white;
-            padding: var(--sp-lg);
-            border-radius: var(--radius-lg);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: clamp(2rem, 3vw, 3rem);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: clamp(320px, 35vw, 500px);
-            border: 1px solid #ddd;
+            max-width: clamp(320px, 35vw, 480px);
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--orange), var(--orange-hover));
         }
         .login-title {
             color: var(--dark);
             font-weight: 800;
-            font-size: var(--text-xl);
-            margin-bottom: var(--sp-md);
+            font-size: var(--text-2xl);
+            margin-bottom: 0.5rem;
+            text-align: center;
+            letter-spacing: -0.02em;
+        }
+
+        .login-subtitle {
             text-align: center;
             letter-spacing: -0.02em;
         }
@@ -96,20 +119,58 @@ defined("APP") or die("ACCESSO NEGATO");
             color: #0066c0;
             text-decoration: none;
             font-size: var(--text-sm);
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .register-link:hover {
+            color: var(--orange);
+            transform: translateX(2px);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 1.5rem 0;
+            color: #adb5bd;
+            font-size: var(--text-xs);
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .divider span {
+            padding: 0 1rem;
+        }
+
+        @media (max-width: 576px) {
+            .login-card {
+                padding: 1.5rem;
+            }
+
+            .login-title {
+                font-size: 1.8rem;
+            }
         }
         .register-link:hover { color: #c45500; text-decoration: underline; }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: var(--dark);">
         <div class="container-fluid">
-            <a href="index.php" class="navbar-brand ms-2">📚 BookSwap</a>
+            <a href="index.php" class="navbar-brand ms-2 fw-bold text-white">📚 BookSwap</a>
         </div>
     </nav>
 
     <div class="login-wrap">
         <div class="login-card">
-            <h2 class="login-title">Login</h2>
+            <h2 class="login-title">Bentornato!</h2>
+            <p class="login-subtitle">Accedi al tuo account BookSwap</p>
             <form method="post" action="index.php?action=check&table=Login">
                 <div class="form-group">
                     <input type="email" name="email" class="form-control" placeholder="Email scolastica @isit100.fe.it" required>
@@ -123,13 +184,20 @@ defined("APP") or die("ACCESSO NEGATO");
                         <i class="bi bi-eye" id="eyeIcon"></i>
                     </button>
                 </div>
-                <button type="submit" class="btn-amazon w-100 d-block text-center">Login</button>
+                <button type="submit" class="btn-amazon w-100 d-block text-center mt-4">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Accedi
+                </button>
             </form>
-            <a href="index.php?table=login&action=registerView" class="register-link">Non hai un account? Registrati</a>
+            <div class="divider">
+                <span>oppure</span>
+            </div>
+            <a href="index.php?table=login&action=registerView" class="register-link">
+                <i class="bi bi-person-plus-fill me-1"></i>Non hai un account? Registrati
+            </a>
         </div>
     </div>
 
-    <footer>
+    <footer class="text-center py-4 bg-dark text-white mt-auto">
         <div class="container">
             <p class="mb-1">© 2026 BookSwap Team</p>
             <small class="text-white-50">Kiper Illia, Melega Leonardo, Trevisani Martina, Bertolani Leo</small>
