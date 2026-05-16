@@ -123,9 +123,24 @@ class ListingsController
      */
     public function deleteListing()
     {
-        $id = $_GET['id'] ?? -1;
+        // Security check: must be a POST request
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $_SESSION['error'][] = "Azione non consentita";
+            header("location: index.php?table=User&action=account");
+            exit;
+        }
+
+        $id = $_POST['id'] ?? -1;
         if ($id == -1) {
             $_SESSION['error'][] = "L'id dell'offerta non è valido";
+            header("location: index.php?table=User&action=account");
+            exit;
+        }
+
+        // Security check: verify ownership
+        $listing = $this->model->getListingsById([$id]);
+        if (empty($listing) || $listing[0]['id_seller'] != $_SESSION['id_user']) {
+            $_SESSION['error'][] = "Non hai il permesso di eliminare questo annuncio";
             header("location: index.php?table=User&action=account");
             exit;
         }
