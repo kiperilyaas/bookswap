@@ -13,12 +13,16 @@ function handleImageUpload($files, $id_listing) {
 
     // Crea la directory se non esiste
     if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
+        mkdir($uploadDir, 0755, true);
     }
 
     $maxFiles = 3;
     $maxSize = 50 * 1024 * 1024; // 10MB
-    $allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    $allowedTypes = [
+        'image/jpeg' => 'jpg',
+        'image/png'  => 'png',
+        'image/webp' => 'webp'
+    ];
 
     $fileCount = count($files['name']);
     $fileCount = min($fileCount, $maxFiles);
@@ -33,7 +37,7 @@ function handleImageUpload($files, $id_listing) {
         $mimeType = finfo_file($finfo, $files['tmp_name'][$i]);
         finfo_close($finfo);
 
-        if (!in_array($mimeType, $allowedTypes)) {
+        if (!array_key_exists($mimeType, $allowedTypes)) {
             $_SESSION['warning'][] = "File {$files['name'][$i]} non è un'immagine valida";
             continue;
         }
@@ -45,7 +49,7 @@ function handleImageUpload($files, $id_listing) {
         }
 
         // Genera nome file univoco: listing_{id}_{timestamp}_{index}.ext
-        $extension = pathinfo($files['name'][$i], PATHINFO_EXTENSION);
+        $extension = $allowedTypes[$mimeType];
         $timestamp = time();
         $filename = "listing_{$id_listing}_{$timestamp}_" . ($i + 1) . ".{$extension}";
         $filepath = $uploadDir . $filename;
