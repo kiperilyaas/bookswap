@@ -127,9 +127,23 @@ class UserController{
   }
 
   public function deleteUser(){
+    $userId = $_SESSION['id_user'] ?? -1;
+    if ($userId == -1) {
+      $_SESSION['error'][] = "Devi prima effettuare il login";
+      header("location: index.php?table=login&action=login");
+      exit;
+    }
+
     $idUser = $_POST['id_user'] ?? -1;
     if ($idUser == -1){
       $_SESSION['error'][] = "Utente inesistente";
+      header("location: index.php?table=User&action=account");
+      exit;
+    }
+
+    // Verifica che l'utente stia eliminando se stesso (Prevenzione IDOR)
+    if ($idUser != $userId) {
+      $_SESSION['error'][] = "Non hai i permessi per eliminare questo utente";
       header("location: index.php?table=User&action=account");
       exit;
     }
