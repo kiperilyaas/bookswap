@@ -362,7 +362,10 @@ if (!empty($myOrders)) {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-                    <a href="#" id="confirmDeleteBtn" class="btn btn-danger"><i class="bi bi-trash"></i> Elimina</a>
+                    <form action="index.php?table=Listings&action=deleteListing" method="POST" id="deleteListingForm" style="display: inline;">
+                        <input type="hidden" name="id" id="deleteListingId">
+                        <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Elimina</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -735,7 +738,7 @@ if (!empty($myOrders)) {
             btn.addEventListener('click', function() {
                 const m = new bootstrap.Modal(document.getElementById('deleteModal'));
                 document.getElementById('deleteBookTitle').textContent = this.dataset.title;
-                document.getElementById('confirmDeleteBtn').href = `index.php?table=Listings&action=deleteListing&id=${this.dataset.id}`;
+                document.getElementById('deleteListingId').value = this.dataset.id;
                 m.show();
             });
         });
