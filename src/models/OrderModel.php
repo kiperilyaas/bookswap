@@ -29,32 +29,38 @@ class OrderModel
     return $stm->rowCount() !== 0;
   }
 
-  public function changeOrderStateSeller($orderId, $newState){
-    $sql = "SELECT O.state_seller FROM orders O where id_order = ?";
+  public function changeOrderStateSeller($orderId, $newState, $userId){
+    // Security: verify that the order belongs to the seller
+    $sql = "SELECT O.state_seller FROM orders O where id_order = ? AND id_seller = ?";
     $stm = $this->pdo->prepare($sql);
-    $stm->execute([$orderId]);
+    $stm->execute([$orderId, $userId]);
     $result = $stm->fetchAll(PDO::FETCH_ASSOC);
 
-    if($result[0] != $newState){
-      $sql = "UPDATE orders set `state_seller` = ? where id_order = ?";
+    if(empty($result)) return false;
+
+    if($result[0]['state_seller'] != $newState){
+      $sql = "UPDATE orders set `state_seller` = ? where id_order = ? AND id_seller = ?";
       $stm = $this->pdo->prepare($sql);
-      $stm->execute([$newState, $orderId]);
-    }else return 1;
+      $stm->execute([$newState, $orderId, $userId]);
+    }else return true;
 
     return $stm->rowCount() !== 0;
   }
 
-  public function changeOrderStateCustomer($orderId, $newState){
-    $sql = "SELECT O.state_customer FROM orders O where id_order = ?";
+  public function changeOrderStateCustomer($orderId, $newState, $userId){
+    // Security: verify that the order belongs to the customer
+    $sql = "SELECT O.state_customer FROM orders O where id_order = ? AND id_customer = ?";
     $stm = $this->pdo->prepare($sql);
-    $stm->execute([$orderId]);
+    $stm->execute([$orderId, $userId]);
     $result = $stm->fetchAll(PDO::FETCH_ASSOC);
 
-    if($result[0] != $newState){
-      $sql = "UPDATE orders set `state_customer` = ? where id_order = ?";
+    if(empty($result)) return false;
+
+    if($result[0]['state_customer'] != $newState){
+      $sql = "UPDATE orders set `state_customer` = ? where id_order = ? AND id_customer = ?";
       $stm = $this->pdo->prepare($sql);
-      $stm->execute([$newState, $orderId]);
-    }else return 1;
+      $stm->execute([$newState, $orderId, $userId]);
+    }else return true;
 
     return $stm->rowCount() !== 0;
   }
