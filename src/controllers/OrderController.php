@@ -166,7 +166,7 @@ class OrderController {
             exit;
         }
 
-        $result = $this->orderModel->changeOrderStateSeller($orderId, $newState);
+        $result = $this->orderModel->changeOrderStateSeller($orderId, $newState, $_SESSION['id_user']);
         
         if(!$result){
             $_SESSION['error'][] = "Non è stato possibile aggiornare lo stato della vendita";
@@ -217,7 +217,7 @@ class OrderController {
             exit;
         }
         
-        $result = $this->orderModel->changeOrderStateCustomer($orderId, $newState);
+        $result = $this->orderModel->changeOrderStateCustomer($orderId, $newState, $_SESSION['id_user']);
 
         if(!$result){
             $_SESSION['error'][] = "Non è stato possibile aggiornare lo stato dell' ordine";
